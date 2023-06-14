@@ -48,7 +48,7 @@ class DMDungeonMap:
                 if col in {0, 5}:
                     room = None
                 else:
-                    room = empty_room(game, row=row, col=col)
+                    room = empty_room(game, position=Vector2(col, row))
                 row_rooms.append(room)
             return row_rooms
 
@@ -60,9 +60,9 @@ class DMDungeonMap:
         ]
 
         # Fill in Boss, Entry, and starter Battle rooms.
-        self.grid[1][0] = self.game.spawn(obj_id="BOSS-000")(self.game, col=0, row=1)
-        self.grid[1][3] = self.game.spawn(obj_id="BTL-101")(self.game, col=3, row=1)
-        self.grid[1][5] = self.game.spawn(obj_id="ENTR-000")(self.game, col=5, row=1)
+        self.grid[1][0] = self.game.spawn(obj_id="BOSS-000")(self.game, Vector2(0, 1))
+        self.grid[1][3] = self.game.spawn(obj_id="BTL-101")(self.game, Vector2(3, 1))
+        self.grid[1][5] = self.game.spawn(obj_id="ENTR-000")(self.game, Vector2(5, 1))
 
         self.boss_tile._init_dark_lord()
 
@@ -107,10 +107,14 @@ class DMDungeonMap:
         return len(self.grid[0])
 
 ###############################################################################
-    def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Vector2, debug=False) -> Optional[DMRoom]:
+
+        if pos.x < 0 or pos.y < 0:
+            print(f"{pos} invalid")
+            return
 
         try:
-            return self.grid[int(pos.x)][int(pos.y)]
+            return self.grid[int(pos.y)][int(pos.x)]
         except IndexError:
             return
 

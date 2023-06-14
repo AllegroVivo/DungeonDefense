@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING, List, Optional, TypeVar
 
 from dm.core.objects.room import DMRoom
@@ -8,7 +9,7 @@ from utilities      import *
 if TYPE_CHECKING:
     from pygame     import Surface
 
-    from dm.core    import DMFighter, DMGame, DMMonster
+    from dm.core    import DMUnit, DMGame, DMMonster
 ################################################################################
 
 __all__ = ("DMBattleRoom",)
@@ -27,8 +28,7 @@ class DMBattleRoom(DMRoom):
     def __init__(
         self,
         state: DMGame,
-        row: int,
-        col: int,
+        position: Vector2,
         _id: str,
         name: str,
         description: str,
@@ -38,7 +38,7 @@ class DMBattleRoom(DMRoom):
         monster_cap: int = 3
     ):
 
-        super().__init__(state, row, col, _id, name, description, rank, level, unlock)
+        super().__init__(state, position, _id, name, description, rank, level, unlock)
 
         self._monsters: List[DMMonster] = []
         self.monster_cap: int = monster_cap
@@ -94,7 +94,7 @@ class DMBattleRoom(DMRoom):
             monster.graphics.draw(screen)
 
 ################################################################################
-    def try_engage_monster(self, unit: DMFighter) -> bool:
+    def try_engage_monster(self, unit: DMUnit) -> bool:
 
         for monster in self.monsters:
             if not monster.engaged:

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Optional, Type, TypeVar
+from typing     import TYPE_CHECKING, Optional, TypeVar
 
-from .fighter import DMFighter
+from dm.core.objects.unit import DMUnit
 from ..graphics import MonsterGraphical
 from utilities  import *
 
@@ -15,7 +15,7 @@ __all__ = ("DMMonster",)
 M = TypeVar("M", bound="DMMonster")
 
 ################################################################################
-class DMMonster(DMFighter):
+class DMMonster(DMUnit):
 
     def __init__(
         self,

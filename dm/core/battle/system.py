@@ -7,7 +7,7 @@ from .encounter import DMEncounter
 from utilities  import DMFateType
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame, DMHero
+    from dm.core    import DMUnit, DMGame, DMHero
 ################################################################################
 
 __all__ = ("DMBattleManager", )
@@ -120,7 +120,7 @@ class DMBattleManager:
             self._spawn_elapsed = 0
 
 ################################################################################
-    def engage(self, attacker: DMFighter, defender: DMFighter) -> None:
+    def engage(self, attacker: DMUnit, defender: DMUnit) -> None:
 
         self._encounters.append(DMEncounter(self.game, attacker, defender))
 

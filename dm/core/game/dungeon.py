@@ -3,14 +3,18 @@ from __future__ import annotations
 import random
 
 from pygame         import Surface, Vector2
-from typing         import TYPE_CHECKING, List, Optional, Tuple, Type, Union
+from typing         import TYPE_CHECKING, List, Optional, Tuple, Union
 
 from .map           import DMDungeonMap
 from utilities      import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMHero, DMMonster, DMRoom
-    from dm.rooms   import EntranceRoom
+    from .game import DMGame
+    from ..objects.hero import DMHero
+    from ..objects.monster import DMMonster
+    from ..objects.room import DMRoom
+    from ...rooms.special.Entrance   import EntranceRoom
+    from ..objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("DMDungeon",)
@@ -40,33 +44,6 @@ class DMDungeon:
         return self.map[index]
 
 ################################################################################
-    def _init_map(self):
-        """Initializes the dungeon grid map with a fresh 4x3 main grid
-        (with boss/entry rooms on their respective sides).
-        """
-
-        def create_row(game, row):
-            empty_room: Type[EmptyRoom] = game.spawn(obj_id="ROOM-000", init_obj=False)  # type: ignore
-            row_rooms = []
-            for col in range(6):
-                if col in {0, 5}:
-                    room = None
-                else:
-                    room = empty_room(game, row=row, col=col)
-                row_rooms.append(room)
-            return row_rooms
-
-        self.map = [
-            create_row(self.game, 0),
-            create_row(self.game, 1),
-            create_row(self.game, 2)
-        ]
-
-        self.map[1][0] = self.game.spawn(obj_id="BOSS-000")(self.game, col=0, row=1)
-        self.map[1][3] = self.game.spawn(obj_id="BTL-101")(self.game, col=3, row=1)
-        self.map[1][5] = self.game.spawn(obj_id="ENTR-000")(self.game, col=5, row=1)
-
-################################################################################
     def draw(self, screen: Surface) -> None:
 
         self.map.draw(screen)
@@ -78,9 +55,9 @@ class DMDungeon:
         self.game.dark_lord.update(dt)
 
 ###############################################################################
-    def get_room_at(self, pos: Union[Vector2, Tuple[int, int]]) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Union[Vector2, Tuple[int, int]], debug=False) -> Optional[DMRoom]:
 
-        return self.map.get_room_at(Vector2(pos))
+        return self.map.get_room_at(Vector2(pos), debug)
 
 ################################################################################
     def all_rooms(self, entry: bool = False, boss: bool = False, empty: bool = False) -> List[DMRoom]:

@@ -18,6 +18,7 @@ __all__ = ("DungeonSelectState",)
 
 ################################################################################
 class DungeonSelectState(DMState):
+
     __slots__ = (
         "_boss",
     )
@@ -35,13 +36,13 @@ class DungeonSelectState(DMState):
 
         if event.type == KEYDOWN:
             if event.key == K_LEFT:
-                self.move_cursor(0, -1)
-            elif event.key == K_RIGHT:
-                self.move_cursor(0, 1)
-            elif event.key == K_UP:
                 self.move_cursor(-1, 0)
-            elif event.key == K_DOWN:
+            elif event.key == K_RIGHT:
                 self.move_cursor(1, 0)
+            elif event.key == K_UP:
+                self.move_cursor(0, -1)
+            elif event.key == K_DOWN:
+                self.move_cursor(0, 1)
 
 ################################################################################
     def update(self, dt: float) -> None:

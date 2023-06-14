@@ -7,7 +7,7 @@ from typing     import TYPE_CHECKING
 from ..traproom import DMTrapRoom
 
 if TYPE_CHECKING:
-    from ...core    import DMFighter, DMGame, RoomChangeContext
+    from ...core    import DMUnit, DMGame, RoomChangeContext
 ################################################################################
 
 __all__ = ("Guillotine",)
@@ -52,7 +52,7 @@ class Guillotine(DMTrapRoom):
         return damage
 
 ################################################################################
-    def scaled_effect(self, unit: DMFighter) -> int:
+    def scaled_effect(self, unit: DMUnit) -> int:
 
         health_ratio = unit.life / unit.max_life
         scalar = 1 + 2 * (1 - health_ratio)

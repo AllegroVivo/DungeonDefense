@@ -14,7 +14,7 @@ from .context  import Context
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMEncounter, DMFighter, DMGame, DMRoom, DMStatus
+    from dm.core    import DMEncounter, DMUnit, DMGame, DMRoom, DMStatus
 ################################################################################
 
 __all__ = ("AttackContext", )
@@ -116,8 +116,8 @@ class AttackContext(Context):
     def __init__(
         self,
         state: DMGame,
-        attacker: Union[DMFighter],  # DMTrapRoom],
-        defender: DMFighter,
+        attacker: Union[DMUnit],  # DMTrapRoom],
+        defender: DMUnit,
         attack_type: AttackType = AttackType.Attack,
         # skill: Optional[DMSkill] = None
     ):
@@ -131,15 +131,15 @@ class AttackContext(Context):
             raise ArgumentMissingError(
                 "AttackContext.__init__()",
                 "attacker'/'defender",
-                type(DMFighter),
+                type(DMUnit),
                 additional_info=(
                     "Must have a valid attacker and defender attached to AttackContext.\n"
                     f"<Attacker: {atk_name} || Defender: {def_name}>"
                 )
             )
 
-        self._attacker: Union[DMFighter] = attacker  # , DMTrapRoom] = attacker
-        self._defender: DMFighter = defender
+        self._attacker: Union[DMUnit] = attacker  # , DMTrapRoom] = attacker
+        self._defender: DMUnit = defender
 
         self._damage: DamageComponent = DamageComponent(attacker.attack)
         # self._skill: DMSkill = skill
@@ -181,13 +181,13 @@ class AttackContext(Context):
 
 ################################################################################
     @property
-    def attacker(self) -> DMFighter:
+    def attacker(self) -> DMUnit:
 
         return self._attacker
 
 ################################################################################
     @property
-    def defender(self) -> DMFighter:
+    def defender(self) -> DMUnit:
 
         return self._defender
 
@@ -346,10 +346,10 @@ class AttackContext(Context):
         self._fail = value
 
 ################################################################################
-    def would_kill(self, unit: Optional[DMFighter] = None) -> bool:
+    def would_kill(self, unit: Optional[DMUnit] = None) -> bool:
 
-        if not isinstance(unit, DMFighter):
-            raise ArgumentTypeError("AttackContext.would_kill()", type(unit), type(DMFighter))
+        if not isinstance(unit, DMUnit):
+            raise ArgumentTypeError("AttackContext.would_kill()", type(unit), type(DMUnit))
 
         # If the attack is already marked to fail, we can just return.
         if self.will_fail:

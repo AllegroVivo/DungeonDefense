@@ -3,7 +3,7 @@ from __future__ import annotations
 from pygame     import Surface
 from typing     import TYPE_CHECKING
 
-from dm.core.objects.fighter import DMFighter
+from dm.core.objects.unit import DMUnit
 from ..graphics.darklord    import DarkLordGraphical
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("DMDarkLord",)
 
 ################################################################################
-class DMDarkLord(DMFighter):
+class DMDarkLord(DMUnit):
 
     __slots__ = (
         "_state",
@@ -40,6 +40,8 @@ class DMDarkLord(DMFighter):
 
         self._max_mana = 10
         self.current_mana = 10
+
+        self._mover = None
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

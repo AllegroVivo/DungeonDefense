@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ...rooms.battleroom    import DMBattleRoom
 from utilities              import *
@@ -19,10 +20,10 @@ class BossRoom(DMBattleRoom):
     )
 
 ################################################################################
-    def __init__(self, game: DMGame, row: int = 2, col: int = 0):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None):
 
         super().__init__(
-            game, row, col,
+            game, position or Vector2(0, 1),
             _id="BOSS-000",
             name="Boss Chamber",
             description="The Dungeon Boss awaits the intruders...",
@@ -37,7 +38,7 @@ class BossRoom(DMBattleRoom):
     def _init_dark_lord(self) -> None:
 
         self.dark_lord = self.game.dark_lord
-        self.monsters.append(self.dark_lord)
+        self.monsters.append(self.dark_lord)  # type: ignore
 
 ################################################################################
     @property

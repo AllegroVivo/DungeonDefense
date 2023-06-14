@@ -150,7 +150,7 @@ def pixel_to_grid(screen_position: Vector2) -> Vector2:
     grid_x = (screen_position.x - 50) // (ROOM_SIZE + GRID_PADDING)
     grid_y = (screen_position.y - 50) // (ROOM_SIZE + GRID_PADDING)
 
-    return Vector2(grid_y, grid_x)
+    return Vector2(grid_x, grid_y)
 
 ################################################################################
 def grid_to_topleft_pixel(grid_position: Vector2) -> Vector2:
@@ -158,7 +158,7 @@ def grid_to_topleft_pixel(grid_position: Vector2) -> Vector2:
     pixel_x = grid_position.x * (ROOM_SIZE + GRID_PADDING) + 50
     pixel_y = grid_position.y * (ROOM_SIZE + GRID_PADDING) + 50
 
-    return Vector2(pixel_y, pixel_x)
+    return Vector2(pixel_x, pixel_y)
 
 ################################################################################
 def grid_to_center_pixel(grid_x, grid_y):

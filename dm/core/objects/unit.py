@@ -10,22 +10,24 @@ from typing     import (
     Union
 )
 
-from ..graphics._graphical  import GraphicalComponent
-from ..objects.levelable    import DMLevelable
-from ..battle.stats         import BaseStats
-from ..objects.status       import DMStatus
+from dm.core.game.movement import MovementComponent
+from dm.core.graphics._graphical import GraphicalComponent
+from dm.core.objects.levelable import DMLevelable
+from dm.core.battle.stats import BaseStats
+from dm.core.objects.status import DMStatus
 from utilities              import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMRoom
+    from dm.core.game.game import DMGame
+    from dm.core.objects.room import DMRoom
 ################################################################################
 
-__all__ = ("DMFighter",)
+__all__ = ("DMUnit",)
 
-F = TypeVar("F", bound="DMFighter")
+U = TypeVar("U", bound="DMUnit")
 
 ################################################################################
-class DMFighter(DMLevelable):
+class DMUnit(DMLevelable):
 
     __slots__ = (
         "stats",
@@ -36,7 +38,9 @@ class DMFighter(DMLevelable):
         "_room",
         "_action_timer",
         "_move_penalty",
-        "_engaged"
+        "_engaged",
+        "_screen_pos",
+        "_mover"
     )
 
 ################################################################################
@@ -72,11 +76,13 @@ class DMFighter(DMLevelable):
         self._move_penalty: float = 0.0  # this needs to be factored in as a flat amount of seconds that the unit is immobilized for.
 
         self._graphics: GraphicalComponent = graphics
+        self._screen_pos: Optional[Vector2] = None
+        self._mover: MovementComponent = MovementComponent(self)
 
         self._engaged: bool = False
 
 ################################################################################
-    def __iadd__(self, other: DMStatus) -> DMFighter:
+    def __iadd__(self, other: DMStatus) -> DMUnit:
 
         if isinstance(other, DMStatus):
             self._add_status(other)
@@ -105,6 +111,12 @@ class DMFighter(DMLevelable):
                 type(value),
                 type(Vector2), type(DMRoom)
             )
+
+################################################################################
+    @property
+    def screen_pos(self) -> Vector2:
+
+        return self._screen_pos
 
 ################################################################################
     @property
@@ -223,9 +235,10 @@ class DMFighter(DMLevelable):
         return self._engaged
 
 ################################################################################
-    def engage(self, unit: DMFighter) -> None:
+    def engage(self, unit: DMUnit) -> None:
 
         self._engaged = True
+        print("Engaging Monster")
         self.game.battle_mgr.engage(unit, self)
 
 ################################################################################
@@ -290,10 +303,19 @@ class DMFighter(DMLevelable):
     def update(self, dt: float) -> None:
 
         self._action_timer -= dt
+        if self._mover is not None:
+            self._mover.update(dt)
         self.graphics.update(dt)
 
 ################################################################################
-    def _copy(self, **kwargs) -> DMFighter:
+    def entered_room(self) -> None:
+
+        engaged = self.room.try_engage_monster(self)
+        if not engaged:
+            self._mover.start_movement()
+
+################################################################################
+    def _copy(self, **kwargs) -> DMUnit:
         """Returns a clean copy of the current fighter class type with any given
         kwargs substituted in.
 
@@ -329,7 +351,7 @@ class DMFighter(DMLevelable):
 
         """
 
-        new_obj: Type[F] = super()._copy()  # type: ignore
+        new_obj: Type[U] = super()._copy()  # type: ignore
 
         new_obj.stats = self.stats._copy()
 
@@ -342,6 +364,7 @@ class DMFighter(DMLevelable):
 
         new_obj._room = kwargs.pop("room", None)
         new_obj._graphics = self._graphics._copy()
+        new_obj._mover = self._mover._copy(new_obj)
 
         new_obj._statuses = kwargs.pop("statuses", None) or []
         new_obj._action_timer = 1.0

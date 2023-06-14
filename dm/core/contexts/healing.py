@@ -8,7 +8,7 @@ from .context  import Context
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame
+    from dm.core    import DMUnit, DMGame
 ################################################################################
 
 __all__ = ("HealingContext",)
@@ -23,11 +23,11 @@ class HealingContext(Context):
     )
 
 ################################################################################
-    def __init__(self, state: DMGame, target: DMFighter, amount: int):
+    def __init__(self, state: DMGame, target: DMUnit, amount: int):
 
         super().__init__(state)
 
-        self.target: DMFighter = target
+        self.target: DMUnit = target
         self._base: int = amount
         self._scalar: float = 1.0
 

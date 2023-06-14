@@ -8,9 +8,9 @@ SCREEN_HEIGHT = 768
 GAME_AREA_WIDTH = SCREEN_WIDTH * 0.75
 LOG_AREA_WIDTH = SCREEN_WIDTH * 0.25
 
-FPS = 30
+FPS = 40
 
-EPSILON = 0.01
+EPSILON = 3
 
 ################################################################################
 # Colors

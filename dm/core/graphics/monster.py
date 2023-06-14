@@ -65,7 +65,7 @@ class MonsterGraphical(AnimatableComponent):
     def topleft(self, index: Optional[int] = None) -> Tuple[int, int]:
 
         parent_room = self.parent.room  # type: ignore
-        room_y, room_x = parent_room.graphics.topleft
+        room_x, room_y = parent_room.graphics.topleft
         monster_spacing = ROOM_SIZE / (len(parent_room.monsters) + 1)
 
         if index is None:

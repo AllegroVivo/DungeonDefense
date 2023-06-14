@@ -1,4 +1,4 @@
-from dm.core    import DMGame
+from dm.core.game.game  import DMGame
 ################################################################################
 def main() -> None:
 

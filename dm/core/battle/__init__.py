@@ -1,4 +1,4 @@
-from .encounter import DMEncounter
-from .stats     import *
-from .system    import DMBattleManager
+from .encounter     import DMEncounter
+from .stats         import StatComponent
+from .system        import DMBattleManager
 ################################################################################

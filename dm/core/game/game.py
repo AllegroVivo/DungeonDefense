@@ -6,15 +6,15 @@ import sys
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Callable, Optional, Type, Union
 
-from ..battle           import DMBattleManager
-from .darklord          import DMDarkLord
-from .dungeon           import DMDungeon
-from .event_manager     import DMEventManager
-from ..fates.fateboard  import DMFateBoard
-from .inventory         import DMInventory
-from .objpool           import DMObjectPool
-from dm.core.states     import DMStateMachine
-from utilities          import *
+from ..battle.system        import DMBattleManager
+from .darklord              import DMDarkLord
+from .dungeon               import DMDungeon
+from .event_manager         import DMEventManager
+from ..fates.fateboard      import DMFateBoard
+from .inventory             import DMInventory
+from .objpool               import DMObjectPool
+from ..states.state_manager import DMStateMachine
+from utilities              import *
 
 if TYPE_CHECKING:
     from pygame.event   import Event
@@ -90,12 +90,6 @@ class DMGame:
                 self.running = False
 
             self.state_machine.handle_event(event)
-
-################################################################################
-    def handle_keydown_event(self, event: Event) -> None:
-
-        if event.key == K_TAB:
-            self.dungeon += self.spawn(spawn_type=SpawnType.Hero, end_rank=3)
 
 ################################################################################
     def draw_dungeon(self) -> None:
@@ -191,14 +185,9 @@ class DMGame:
         )
 
 ###############################################################################
-    def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Vector2, debug=False) -> Optional[DMRoom]:
 
-        return self.dungeon.get_room_at(pos)
-
-################################################################################
-    # def get_relic(self, relic: Union[str, DMRelic]) -> Optional[DMRelic]:
-    #
-    #     return self.relics.get_relic(relic)
+        return self.dungeon.get_room_at(pos, debug)
 
 ################################################################################
     def display_popup(self, title: Optional[str], text: Optional[str]) -> None:

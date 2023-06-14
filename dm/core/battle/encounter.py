@@ -4,11 +4,11 @@ from pygame     import Surface
 from typing     import TYPE_CHECKING, List
 from uuid       import UUID, uuid4
 
-from ..contexts import AttackContext
-from utilities  import DMFateType
+from ..contexts.attack  import AttackContext
+from utilities          import DMFateType
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame, DMHero
+    from dm.core    import DMUnit, DMGame, DMHero
 ################################################################################
 
 __all__ = ("DMEncounter",)
@@ -26,13 +26,13 @@ class DMEncounter:
     )
 
 ################################################################################
-    def __init__(self, state: DMGame, attacker: DMFighter, defender: DMFighter):
+    def __init__(self, state: DMGame, attacker: DMUnit, defender: DMUnit):
 
         self._id: UUID = uuid4()
         self._state: DMGame = state
 
-        self._attacker: DMFighter = attacker
-        self._defender: DMFighter = defender
+        self._attacker: DMUnit = attacker
+        self._defender: DMUnit = defender
 
         self._attacks: List[AttackContext]
         self._actions_elapsed: int = 0
@@ -59,13 +59,13 @@ class DMEncounter:
 
 ################################################################################
     @property
-    def attacker(self) -> DMFighter:
+    def attacker(self) -> DMUnit:
 
         return self._attacker
 
 ################################################################################
     @property
-    def defender(self) -> DMFighter:
+    def defender(self) -> DMUnit:
 
         return self._defender
 

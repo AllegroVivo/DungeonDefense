@@ -100,7 +100,7 @@ class DarkLordGraphical(AnimatableComponent):
     def draw(self, screen: Surface) -> None:
 
         dl_rect = self.current_frame.get_rect()
-        dl_rect.center = (0, self.parent.game.dungeon.map.boss_tile.get_rect().center[1])
+        dl_rect.center = (0, self.parent.game.dungeon.map.boss_tile.center[1])
         dl_rect.x += 70
         dl_rect.y -= 25
 

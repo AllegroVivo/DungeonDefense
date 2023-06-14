@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
 
@@ -13,10 +14,10 @@ __all__ = ("Battle",)
 ################################################################################
 class Battle(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
+            game, position or Vector2(-1, -1),
             _id="BTL-101",
             name="Battle",
             description=(

@@ -3,8 +3,8 @@ from __future__ import annotations
 from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ..core.fates   import DMFateCard
-from utilities      import *
+from ..core.fates.fatecard  import DMFateCard
+from utilities              import *
 
 if TYPE_CHECKING:
     from dm.core    import DMGame

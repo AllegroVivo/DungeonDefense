@@ -1,4 +1,3 @@
-from .fighter   import DMFighter
 from .hero      import DMHero
 from .levelable import DMLevelable
 from .monster   import DMMonster

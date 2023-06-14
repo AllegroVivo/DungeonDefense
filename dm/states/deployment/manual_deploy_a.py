@@ -72,7 +72,7 @@ class ManualDeployStateA(DungeonSelectState):
         # If the previous room is set, (ie. the text is selected), then the
         # only direction we can move is up.
         if self._prev is not None:
-            if dx == -1:
+            if dy == -1:
                 self._prev.toggle_highlighting(True)
                 self._prev = None
             return
@@ -87,12 +87,12 @@ class ManualDeployStateA(DungeonSelectState):
         target = Vector2(position.x + dx, position.y + dy)
 
         # Disallow movement into entry and boss tiles (as toggled)
-        if target.y in {0 if self._boss else -1, self.game.map.width - 1}:
+        if target.x in {0 if self._boss else -1, self.game.map.width - 1}:
             return
 
         # If we're moving to the text, set the previous location so we can
         # move back to it, and clear all highlighting.
-        if target.x == self.game.map.height:
+        if target.y == self.game.map.height:
             self._prev = cur_room
             self.game.dungeon.reset_highlighting()
 

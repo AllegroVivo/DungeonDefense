@@ -18,7 +18,7 @@ from ..graphics import RoomGraphical
 from .levelable import DMLevelable
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame, DMHero
+    from dm.core    import DMUnit, DMGame, DMHero
 ################################################################################
 
 __all__ = ("DMRoom",)
@@ -37,8 +37,7 @@ class DMRoom(DMLevelable):
     def __init__(
         self,
         state: DMGame,
-        row: int,
-        col: int,
+        position: Vector2,
         _id: str,
         name: str,
         description: str,
@@ -49,8 +48,18 @@ class DMRoom(DMLevelable):
 
         super().__init__(state, _id, name, description, level, rank, unlock=unlock)
 
-        self._position: Vector2 = Vector2(row, col)
+        self._position: Vector2 = position
         self.graphics: RoomGraphical = RoomGraphical(self)
+
+################################################################################
+    def __repr__(self) -> str:
+
+        return (
+            f"<DMRoom: cls={self.__class__.__name__}, "
+            f"grid pos: {self._position}, "
+            f"center: {self.center}, "
+            f"type: {self.room_type}>"
+        )
 
 ################################################################################
     @property
@@ -129,24 +138,24 @@ class DMRoom(DMLevelable):
         # new_obj.highlighted = False
 
         # Dummy coordinates until it's placed.
-        new_obj.position = Vector2(kwargs.pop("row", -1), kwargs.pop("col", -1))
+        new_obj.position = kwargs.pop("position", None) or Vector2(-1, -1)
 
         return new_obj
 
-################################################################################
-    @property
-    def color(self) -> Tuple[int, int, int]:
-
-        class_name = type(self).__name__
-
-        if class_name == "EntranceRoom":
-            return GREEN
-        if class_name == "BossRoom":
-            return RED
-        if class_name == "Battle":
-            return BLUE
-
-        return ROOM_BG
+# ################################################################################
+#     @property
+#     def color(self) -> Tuple[int, int, int]:
+#
+#         class_name = type(self).__name__
+#
+#         if class_name == "EntranceRoom":
+#             return GREEN
+#         if class_name == "BossRoom":
+#             return RED
+#         if class_name == "Battle":
+#             return BLUE
+#
+#         return ROOM_BG
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
@@ -157,9 +166,10 @@ class DMRoom(DMLevelable):
 ################################################################################
     def update(self, dt: float) -> None:
 
-        if self.room_type is DMRoomType.Battle:
-            for monster in self.monsters:  # type: ignore
-                monster.update(dt)
+        pass
+        # if self.room_type is DMRoomType.Battle:
+        #     for monster in self.monsters:  # type: ignore
+        #         monster.update(dt)
 
 ################################################################################
     @property
@@ -171,11 +181,6 @@ class DMRoom(DMLevelable):
     def toggle_highlighting(self, value: bool) -> None:
 
         self.graphics.toggle_highlighting(value)
-
-################################################################################
-    def get_rect(self) -> Rect:
-
-        return self.graphics.calculate_rect()
 
 ################################################################################
     def on_acquire(self) -> None:
@@ -213,7 +218,7 @@ class DMRoom(DMLevelable):
         )[0]
 
 ################################################################################
-    def try_engage_monster(self, unit: DMFighter) -> bool:
+    def try_engage_monster(self, unit: DMUnit) -> bool:
 
         return False
 

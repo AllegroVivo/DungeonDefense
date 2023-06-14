@@ -63,7 +63,7 @@ class RoomGraphical(GraphicalComponent):
 
         new_obj: Type[RG] = super()._copy()  # type: ignore
 
-        new_obj._rect = self._rect
+        new_obj._rect = self._rect.copy()
         new_obj._highlighted = False
 
         return new_obj
@@ -71,7 +71,7 @@ class RoomGraphical(GraphicalComponent):
 ################################################################################
     def calculate_rect(self) -> Rect:
 
-        self._rect = Rect(self.topleft[1], self.topleft[0], ROOM_SIZE, ROOM_SIZE)
+        self._rect = Rect(self.topleft[0], self.topleft[1], ROOM_SIZE, ROOM_SIZE)
         return self._rect
 
 ################################################################################

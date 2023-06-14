@@ -8,7 +8,7 @@ from ..objects.room import DMRoom
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame
+    from dm.core    import DMUnit, DMGame
 ################################################################################
 
 __all__ = ("RoomChangeContext",)
@@ -23,13 +23,13 @@ class RoomChangeContext(Context):
     )
 
 ################################################################################
-    def __init__(self, state: DMGame, current: DMRoom, target: DMRoom, unit: DMFighter):
+    def __init__(self, state: DMGame, current: DMRoom, target: DMRoom, unit: DMUnit):
 
         super().__init__(state)
 
         self._current: DMRoom = current
         self._target: DMRoom = target
-        self.unit: DMFighter = unit
+        self.unit: DMUnit = unit
 
 ################################################################################
     def execute(self) -> None:

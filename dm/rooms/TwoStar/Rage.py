@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING, Optional
 
-from ...core.contexts   import ExperienceContext
-from ..battleroom       import DMBattleRoom
+from ...core.contexts.experience    import ExperienceContext
+from ..battleroom                   import DMBattleRoom
 
 if TYPE_CHECKING:
     from dm.core    import DMGame, RoomChangeContext

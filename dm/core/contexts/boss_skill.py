@@ -6,7 +6,7 @@ from .attack import AttackContext
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMFighter, DMGame, DMRoom, DMTrapRoom
+    from dm.core    import DMUnit, DMGame, DMRoom, DMTrapRoom
 ################################################################################
 
 __all__ = ("AttackContext", "BossSkillContext")
@@ -23,8 +23,8 @@ class BossSkillContext(AttackContext):
     def __init__(
         self,
         game: DMGame,
-        attacker: Union[DMFighter, DMTrapRoom],
-        defender: DMFighter,
+        attacker: Union[DMUnit, DMTrapRoom],
+        defender: DMUnit,
         room: DMRoom,
         # parent: DMBossSkill
     ):

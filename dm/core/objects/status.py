@@ -7,7 +7,7 @@ from utilities  import *
 
 if TYPE_CHECKING:
     # from .context       import AttackContext
-    from dm.core.objects.fighter import DMFighter
+    from dm.core.objects.unit import DMUnit
     from dm.core.game import DMGame
 ################################################################################
 
@@ -30,7 +30,7 @@ class DMStatus(DMObject):
     def __init__(
         self,
         state: DMGame,
-        parent: DMFighter,
+        parent: DMUnit,
         *,
         _id: str,
         name: str,
@@ -43,7 +43,7 @@ class DMStatus(DMObject):
 
         self.stacks: int = stacks
         self.type: DMStatusType = status_type
-        self.parent: DMFighter = parent
+        self.parent: DMUnit = parent
 
         self._flat_adjustment: int = 0
         self._scalar: float = 1.0
