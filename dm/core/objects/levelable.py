@@ -15,9 +15,9 @@ __all__ = ("DMLevelable",)
 class DMLevelable(DMObject):
 
     __slots__ = (
-        "level",
-        "experience",
-        "upgrades",
+        "_level",
+        "_exp",
+        "_upgrades",
     )
 
 ################################################################################
@@ -35,20 +35,38 @@ class DMLevelable(DMObject):
 
         super().__init__(state, _id, name, description, rank, unlock)
 
-        self.level: int = level
-        self.experience: int = 0
-        self.upgrades: int = upgrades
+        self._level: int = level
+        self._exp: int = 0
+        self._upgrades: int = upgrades
+
+################################################################################
+    @property
+    def level(self) -> int:
+
+        return self._level
+
+################################################################################
+    @property
+    def experience(self) -> int:
+
+        return self._exp
+
+################################################################################
+    @property
+    def upgrades(self) -> int:
+
+        return self._upgrades
 
 ################################################################################
     def grant_exp(self, amount: int) -> None:
 
-        self.experience += amount
+        self._exp += amount
         self.check_level_up()
 
 ################################################################################
     def upgrade(self) -> None:
 
-        self.upgrades += 1
+        self._upgrades += 1
 
 ################################################################################
     def check_level_up(self) -> None:
@@ -58,7 +76,7 @@ class DMLevelable(DMObject):
 ################################################################################
     def level_up(self, num_levels: int = 1) -> None:
 
-        self.level += num_levels
-        self.experience = 0
+        self._level += num_levels
+        self.exp = 0
 
 ################################################################################

@@ -3,11 +3,11 @@ import os
 import pygame
 import re
 
-from pygame         import Rect
+from pygame         import Rect, Vector2
 from pygame.font    import Font
 from typing         import Dict, List, Tuple, Union
 
-from .constants     import TEXT_ACCENT, WHITE, YELLOW
+from .constants     import GRID_PADDING, ROOM_SIZE, TEXT_ACCENT, WHITE, YELLOW
 
 from PIL    import Image
 ################################################################################
@@ -17,7 +17,10 @@ __all__ = (
     "rounded_rect",
     "text_to_multiline_str",
     "text_to_multiline_rect",
-    "multicolor_text"
+    "multicolor_text",
+    "pixel_to_grid",
+    "grid_to_topleft_pixel",
+    "grid_to_center_pixel"
 )
 
 ################################################################################
@@ -139,6 +142,30 @@ def multicolor_text(
             surface.blit(img, (x, y))
             x += img.get_width()  # update x-coordinate
 
-        y += font.get_height() + 3 # update y-coordinate
+        y += font.get_height() + 3  # update y-coordinate
+
+################################################################################
+def pixel_to_grid(screen_position: Vector2) -> Vector2:
+
+    grid_x = (screen_position.x - 50) // (ROOM_SIZE + GRID_PADDING)
+    grid_y = (screen_position.y - 50) // (ROOM_SIZE + GRID_PADDING)
+
+    return Vector2(grid_y, grid_x)
+
+################################################################################
+def grid_to_topleft_pixel(grid_position: Vector2) -> Vector2:
+
+    pixel_x = grid_position.x * (ROOM_SIZE + GRID_PADDING) + 50
+    pixel_y = grid_position.y * (ROOM_SIZE + GRID_PADDING) + 50
+
+    return Vector2(pixel_y, pixel_x)
+
+################################################################################
+def grid_to_center_pixel(grid_x, grid_y):
+
+    pixel_x = grid_x * (ROOM_SIZE + GRID_PADDING) + 50 + ROOM_SIZE // 2
+    pixel_y = grid_y * (ROOM_SIZE + GRID_PADDING) + 50 + ROOM_SIZE // 2
+
+    return Vector2(pixel_x, pixel_y)
 
 ################################################################################

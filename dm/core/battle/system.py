@@ -3,10 +3,11 @@ from __future__ import annotations
 from pygame     import Surface
 from typing     import TYPE_CHECKING, List
 
+from .encounter import DMEncounter
 from utilities  import DMFateType
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMHero
+    from dm.core    import DMFighter, DMGame, DMHero
 ################################################################################
 
 __all__ = ("DMBattleManager", )
@@ -18,7 +19,9 @@ class DMBattleManager:
         "_state",
         "_status",
         "_type",
-        "_encounters"
+        "_encounters",
+        "_spawn_interval",
+        "_spawn_elapsed",
     )
 
 ################################################################################
@@ -28,6 +31,9 @@ class DMBattleManager:
 
         self._type: DMFateType = None  # type: ignore
         self._encounters: List[DMEncounter] = []
+
+        self._spawn_interval: float = 2.0
+        self._spawn_elapsed: float = 0
 
 ################################################################################
     @property
@@ -44,12 +50,43 @@ class DMBattleManager:
 ################################################################################
     def update(self, dt: float) -> None:
 
-        pass
+        # Before battle event fires
+        self.game.dispatch_event("stat_calculation")
+        self.game.dispatch_event("before_battle")
+
+        # Check for battle over
+
+        self.game.dungeon.update(dt)
+
+        # Auto spawns a hero at the entrance tile after the appropriate
+        # amount of time has passed.
+        self.hero_spawn_check(dt)
+
+        # Update Heroes (movement)
+        for hero in self.heroes:
+            hero.update(dt)
+
+        # Update Monsters (No reason yet)
+        for monster in self.game.dungeon.deployed_monsters:
+            monster.update(dt)
+
+        # Run encounters
+        for encounter in self._encounters:
+            encounter.run_turn()
+
+        # After battle event fires
+        self.game.dispatch_event("after_battle")
+        self.game.dispatch_event("stats_reset")
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
 
-        pass
+        # Draw dungeon (including monsters)
+        self.game.dungeon.draw(screen)
+
+        # Draw heroes
+        for hero in self.heroes:
+            hero.draw(screen)
 
 ################################################################################
     def start_normal_battle(self) -> None:
@@ -72,11 +109,19 @@ class DMBattleManager:
         self._type = DMFateType.Boss
 
 ################################################################################
-    def battle_loop(self) -> None:
+    def hero_spawn_check(self, dt: float) -> None:
 
-        # Before battle event fires
+        # Update elapsed_spawn_time with the time passed since the last frame
+        self._spawn_elapsed += dt
 
-        while any(hero.is_alive for hero in self.game.dungeon.heroes):
+        # Check if it's time to spawn a new hero
+        if self._spawn_elapsed > self._spawn_interval:
+            self.game.dungeon.spawn_hero()
+            self._spawn_elapsed = 0
 
+################################################################################
+    def engage(self, attacker: DMFighter, defender: DMFighter) -> None:
+
+        self._encounters.append(DMEncounter(self.game, attacker, defender))
 
 ################################################################################

@@ -1,34 +1,34 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
 from ...core.fates  import DMFateCard
 from utilities      import *
-from ...core.vector import DMVector
 
 if TYPE_CHECKING:
-    from ...core.game       import DMGame
+    from ...core.game         import DMGame
 ################################################################################
 
-__all__ = ("RestFate",)
+__all__ = ("ReadingFate",)
 
 ################################################################################
-class RestFate(DMFateCard):
+class ReadingFate(DMFateCard):
 
-    FTYPE: DMFateType = DMFateType.Rest
+    FTYPE: DMFateType = DMFateType.Reading
 
-    def __init__(self, game: DMGame, x: int = 0, y: int = 0):
+    def __init__(self, game: DMGame, x: int = 3, y: int = 0):
 
         super().__init__(
             game,
-            _id="FAT-201",
-            name="Rest",
+            _id="FAT-204",
+            name="Reading",
             description=(
-                "Rest for a day and Recover 30% of your max LIFE rounded up."
+                "Select a book to read and gain a benefit for the rest of the run."
             ),
-            new_state="dng_rest",
+            next_state="dng_reading",
             rank=0,
-            position=DMVector(x, y)
+            position=Vector2(x, y)
         )
 
 ################################################################################

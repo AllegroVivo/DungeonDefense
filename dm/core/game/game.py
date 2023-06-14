@@ -6,6 +6,7 @@ import sys
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Callable, Optional, Type, Union
 
+from ..battle           import DMBattleManager
 from .darklord          import DMDarkLord
 from .dungeon           import DMDungeon
 from .event_manager     import DMEventManager
@@ -34,7 +35,7 @@ class DMGame:
         "state_machine",
         "inventory",
         "fateboard",
-        "battles",
+        "battle_mgr",
         "objpool",
         "relics",
         "day",
@@ -62,7 +63,7 @@ class DMGame:
         self.inventory: DMInventory = DMInventory(self)
         self.state_machine: DMStateMachine = DMStateMachine(self)
         # self.relics: RelicManager = RelicManager(self)
-        # self.battles: DMBattleManager = DMBattleManager(self)
+        self.battle_mgr: DMBattleManager = DMBattleManager(self)
 
 ################################################################################
     def run(self) -> None:

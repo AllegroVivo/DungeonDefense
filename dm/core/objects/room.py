@@ -2,15 +2,23 @@ from __future__ import annotations
 
 from abc        import abstractmethod
 from pygame     import Rect, Surface, Vector2
-from typing     import TYPE_CHECKING, List, Optional, Tuple, Type, TypeVar
+from typing     import (
+    TYPE_CHECKING,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union
+)
 
 from utilities  import *
 
-from dm.core.graphics import RoomGraphical
-from dm.core.objects.levelable import DMLevelable
+from ..graphics import RoomGraphical
+from .levelable import DMLevelable
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMHero, DMMonster
+    from dm.core    import DMFighter, DMGame, DMHero
 ################################################################################
 
 __all__ = ("DMRoom",)
@@ -21,8 +29,7 @@ R = TypeVar("R", bound="DMRoom")
 class DMRoom(DMLevelable):
 
     __slots__ = (
-        "position",
-        "_heroes",
+        "_position",
         "graphics",
     )
 
@@ -42,10 +49,8 @@ class DMRoom(DMLevelable):
 
         super().__init__(state, _id, name, description, level, rank, unlock=unlock)
 
-        self.position: Vector2 = Vector2(row, col)
+        self._position: Vector2 = Vector2(row, col)
         self.graphics: RoomGraphical = RoomGraphical(self)
-
-        self._heroes: List[DMHero] = []
 
 ################################################################################
     @property
@@ -56,21 +61,39 @@ class DMRoom(DMLevelable):
 
 ################################################################################
     @property
+    def position(self) -> Vector2:
+
+        return self._position
+
+################################################################################
+    @property
+    def x(self) -> int:
+
+        return self._position.x
+
+################################################################################
+    @property
+    def y(self) -> int:
+
+        return self._position.y
+
+################################################################################
+    @property
+    def rect(self) -> Rect:
+
+        return self.graphics.calculate_rect()
+
+################################################################################
+    @property
     def heroes(self) -> List[DMHero]:
 
-        return self._heroes
+        return [hero for hero in self.game.dungeon.heroes if hero.room == self]
 
 ################################################################################
-    def add_hero(self, hero: DMHero) -> None:
+    @property
+    def center(self) -> Vector2:
 
-        self._heroes.append(hero)
-
-################################################################################
-    def remove_hero(self, hero: DMHero) -> DMHero:
-
-        for i, h in enumerate(self._heroes):
-            if h == hero:
-                return self._heroes.pop(i)
+        return self.graphics.center()
 
 ################################################################################
     def _copy(self, **kwargs) -> DMRoom:
@@ -98,9 +121,6 @@ class DMRoom(DMLevelable):
         """
 
         new_obj: Type[R] = super()._copy()  # type: ignore
-
-        # Heroes can't be in a new room yet.
-        # new_obj.heroes = []
 
         new_obj.level = kwargs.pop("level", self.level)
         new_obj.experience = kwargs.pop("experience", None) or kwargs.pop("exp", 0)
@@ -172,5 +192,29 @@ class DMRoom(DMLevelable):
     def effect_value(self) -> int:
 
         return -1
+
+################################################################################
+    def get_adjacent_room(self, direction: Union[str, Vector2]) -> Optional[DMRoom]:
+
+        if direction not in (
+            "up", "down", "left", "right", "north", "south", "east", "west"
+        ):
+            raise ValueError(
+                f"Invalid direction {direction} provided to DMRoom.get_adjacent_room()."
+            )
+
+        return self.game.dungeon.get_adjacent_rooms(
+            pos=self.position,
+            all_rooms=False,
+            show_west=direction in ("west", "left"),
+            show_east=direction in ("east", "right"),
+            show_north=direction in ("north", "up"),
+            show_south=direction in ("south", "down"),
+        )[0]
+
+################################################################################
+    def try_engage_monster(self, unit: DMFighter) -> bool:
+
+        return False
 
 ################################################################################

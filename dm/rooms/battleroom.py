@@ -8,7 +8,7 @@ from utilities      import *
 if TYPE_CHECKING:
     from pygame     import Surface
 
-    from dm.core    import DMGame, DMMonster
+    from dm.core    import DMFighter, DMGame, DMMonster
 ################################################################################
 
 __all__ = ("DMBattleRoom",)
@@ -19,7 +19,7 @@ R = TypeVar("R")
 class DMBattleRoom(DMRoom):
 
     __slots__ = (
-        "monsters",
+        "_monsters",
         "monster_cap"
     )
 
@@ -40,32 +40,39 @@ class DMBattleRoom(DMRoom):
 
         super().__init__(state, row, col, _id, name, description, rank, level, unlock)
 
-        self.monsters: List[DMMonster] = []
+        self._monsters: List[DMMonster] = []
         self.monster_cap: int = monster_cap
 
 ################################################################################
     @property
     def is_full(self) -> bool:
 
-        return len(self.monsters) >= self.monster_cap
+        return len(self._monsters) >= self.monster_cap
 
 ################################################################################
     def deploy_monster(self, monster: DMMonster) -> None:
 
         monster.room = self.position
-        self.monsters.append(monster)
+        self._monsters.append(monster)
 
 ################################################################################
     def withdraw_monster(self, monster: DMMonster) -> None:
 
         if monster in self.monsters:
-            self.monsters.remove(monster)
+            self._monsters.remove(monster)
 
 ################################################################################
     @property
     def room_type(self) -> DMRoomType:
 
         return DMRoomType.Battle
+
+################################################################################
+    @property
+    def monsters(self) -> List[DMMonster]:
+
+        self._monsters.sort(key=lambda m: m.stat_score)
+        return self._monsters
 
 ################################################################################
     def set_monster_cap(self, value: int) -> None:
@@ -75,23 +82,33 @@ class DMBattleRoom(DMRoom):
 ################################################################################
     def reset_monster_deployment(self) -> None:
 
-        self.game.inventory.monsters.extend(self.monsters)
-        self.monsters.clear()
+        self.game.inventory.monsters.extend(self._monsters)
+        self._monsters.clear()
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
 
         super().draw(screen)
 
-        for monster in self.monsters:
+        for monster in self._monsters:
             monster.graphics.draw(screen)
+
+################################################################################
+    def try_engage_monster(self, unit: DMFighter) -> bool:
+
+        for monster in self.monsters:
+            if not monster.engaged:
+                monster.engage(unit)
+                return True
+
+        return False
 
 ################################################################################
     def _copy(self, **kwargs) -> DMBattleRoom:
 
         new_obj: DMBattleRoom = super()._copy(**kwargs)  # type: ignore
 
-        new_obj.monsters = []
+        new_obj._monsters = []
         new_obj.monster_cap = kwargs.pop("monster_cap", 3)
 
         return new_obj  # type: ignore

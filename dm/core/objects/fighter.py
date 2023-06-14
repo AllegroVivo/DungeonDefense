@@ -10,11 +10,11 @@ from typing     import (
     Union
 )
 
-from dm.core.graphics._graphical import GraphicalComponent
-from dm.core.objects.levelable import DMLevelable
-from dm.core.battle.stats import BaseStats
-from dm.core.objects.status import DMStatus
-from utilities      import *
+from ..graphics._graphical  import GraphicalComponent
+from ..objects.levelable    import DMLevelable
+from ..battle.stats         import BaseStats
+from ..objects.status       import DMStatus
+from utilities              import *
 
 if TYPE_CHECKING:
     from dm.core    import DMGame, DMRoom
@@ -29,14 +29,14 @@ class DMFighter(DMLevelable):
 
     __slots__ = (
         "stats",
-        "skills",
-        "equipment",
-        "graphics",
-        "statuses",
+        "_skills",
+        "_equip",
+        "_graphics",
+        "_statuses",
         "_room",
-        "position",
-        "action_delay",
-        "_move_penalty"
+        "_action_timer",
+        "_move_penalty",
+        "_engaged"
     )
 
 ################################################################################
@@ -54,24 +54,26 @@ class DMFighter(DMLevelable):
         graphics: GraphicalComponent,
         skills: Optional[List] = None,
         rank: int = 0,
-        unlock: Optional[UnlockPack] = None
+        unlock: Optional[UnlockPack] = None,
+        start_cell: Optional[Vector2] = None
     ):
 
         super().__init__(state, _id, name, description, level, rank, unlock=unlock)
 
         self.stats = BaseStats(life, attack, defense, dex)
 
-        self._room: Optional[Vector2] = None
-        self.position: Optional[Vector2] = None
+        self._room: Optional[Vector2] = start_cell
 
-        self.skills: List = skills or []
-        self.equipment = None
+        self._skills: List = skills or []
+        self._equip = None
 
-        self.statuses: List[DMStatus] = []
-        self.action_delay: float = 1.0
+        self._statuses: List[DMStatus] = []
+        self._action_timer: float = 1.0
         self._move_penalty: float = 0.0  # this needs to be factored in as a flat amount of seconds that the unit is immobilized for.
 
-        self.graphics: GraphicalComponent = graphics
+        self._graphics: GraphicalComponent = graphics
+
+        self._engaged: bool = False
 
 ################################################################################
     def __iadd__(self, other: DMStatus) -> DMFighter:
@@ -105,6 +107,23 @@ class DMFighter(DMLevelable):
             )
 
 ################################################################################
+    @property
+    def action_timer(self) -> float:
+
+        return self._action_timer
+
+################################################################################
+    def reset_action_timer(self) -> None:
+
+        self._action_timer = 0.0
+
+################################################################################
+    @property
+    def graphics(self) -> GraphicalComponent:
+
+        return self._graphics
+
+################################################################################
     def _add_status(self, status: DMStatus) -> None:
 
         # Only apply Curse for buffs.
@@ -121,7 +140,7 @@ class DMFighter(DMLevelable):
                             _n="Curse Resist")  # Just swap the buff for Curse Resist so the flow can continue.
 
         found = False
-        for s in self.statuses:
+        for s in self._statuses:
             if type(s) == type(status):
                 s += status
                 status = s
@@ -129,7 +148,7 @@ class DMFighter(DMLevelable):
 
         # Append the status if it wasn't already there.
         if not found:
-            self.statuses.append(status)
+            self._statuses.append(status)
 
 ################################################################################
     @property
@@ -192,6 +211,29 @@ class DMFighter(DMLevelable):
         return self.stats.speed
 
 ################################################################################
+    @property
+    def stat_score(self) -> float:
+
+        return (self.life + self.attack + self.defense) * self.level + self.experience
+
+################################################################################
+    @property
+    def engaged(self) -> bool:
+
+        return self._engaged
+
+################################################################################
+    def engage(self, unit: DMFighter) -> None:
+
+        self._engaged = True
+        self.game.battle_mgr.engage(unit, self)
+
+################################################################################
+    def disengage(self) -> None:
+
+        self._engaged = False
+
+################################################################################
     def increase_stat_flat(self, stat: str, amount: int) -> None:
 
         if not isinstance(amount, int):
@@ -247,6 +289,7 @@ class DMFighter(DMLevelable):
 ################################################################################
     def update(self, dt: float) -> None:
 
+        self._action_timer -= dt
         self.graphics.update(dt)
 
 ################################################################################
@@ -279,9 +322,6 @@ class DMFighter(DMLevelable):
         statuses: List[:class:`DMStatus`]
             An initial list of status conditions afflicting the fighter.
 
-        position: :class:`DMVector`
-            The new position of the fighter. `None` if not passed.
-
         Returns:
         --------
         :class:`DMFighter`
@@ -293,25 +333,28 @@ class DMFighter(DMLevelable):
 
         new_obj.stats = self.stats._copy()
 
-        new_obj.level = kwargs.pop("level", self.level)
-        new_obj.experience = kwargs.pop("experience", None) or kwargs.pop("exp", 0)
-        new_obj.upgrades = kwargs.pop("upgrades", 0)
+        new_obj._level = kwargs.pop("level", 1)
+        new_obj._exp = kwargs.pop("experience", None) or kwargs.pop("exp", 0)
+        new_obj._upgrades = kwargs.pop("upgrades", 0)
 
-        new_obj.skills = kwargs.pop("skills", self.skills.copy())
-        new_obj.equipment = kwargs.pop("equipment", None)
+        new_obj._skills = kwargs.pop("skills", self._skills.copy())
+        new_obj._equip = kwargs.pop("equipment", None)
 
-        new_obj.graphics = self.graphics._copy()
+        new_obj._room = kwargs.pop("room", None)
+        new_obj._graphics = self._graphics._copy()
 
-        new_obj.position = kwargs.pop("position", None)
-        new_obj.statuses = kwargs.pop("statuses", None) or []
-        new_obj.action_delay = 1.0
+        new_obj._statuses = kwargs.pop("statuses", None) or []
+        new_obj._action_timer = 1.0
+        new_obj._move_penalty = 0.0
+
+        new_obj._engaged = False
 
         return new_obj
 
 ################################################################################
     def get_status(self, name: str) -> Optional[DMStatus]:
 
-        for status in self.statuses:
+        for status in self._statuses:
             if status.name == name:
                 return status
 
@@ -326,8 +369,11 @@ class DMFighter(DMLevelable):
         self.stats.damage(int(amount))
 
 ################################################################################
-    def immobilize(self, time: float) -> None:
+    def immobilize(self, duration: float) -> None:
+        """Adds `duration` amount of time to the unit's move_penalty. Duration is
+        a float representing the total duration of a second. (1.0 = 100%)
+        """
 
-        self._move_penalty += time
+        self._move_penalty += duration
 
 ################################################################################

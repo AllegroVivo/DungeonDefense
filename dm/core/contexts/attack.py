@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing     import (
     TYPE_CHECKING,
     Callable,
+    List,
     Optional,
     Type,
     TypeVar,
@@ -13,11 +14,7 @@ from .context  import Context
 from utilities  import *
 
 if TYPE_CHECKING:
-    from ..battle    import DMEncounter
-    from ..objects.fighter   import DMFighter
-    from ..game      import DMGame
-    from ..objects.room      import DMRoom
-    # from ..t_room    import DMTrapRoom
+    from dm.core    import DMEncounter, DMFighter, DMGame, DMRoom, DMStatus
 ################################################################################
 
 __all__ = ("AttackContext", )
@@ -105,22 +102,20 @@ class DamageComponent:
 class AttackContext(Context):
 
     __slots__ = (
-        "type",
-        "attacker",
-        "defender",
+        "_type",
+        "_attacker",
+        "_defender",
         "_damage",
-        "hit_chance",
+        "_hit_chance",
         "_fail",
         "_skill",
-        "room",
-        "running",
+        "_running",
     )
 
 ################################################################################
     def __init__(
         self,
         state: DMGame,
-        room: DMRoom,
         attacker: Union[DMFighter],  # DMTrapRoom],
         defender: DMFighter,
         attack_type: AttackType = AttackType.Attack,
@@ -143,20 +138,18 @@ class AttackContext(Context):
                 )
             )
 
-        self.room: DMRoom = room
-
-        self.attacker: Union[DMFighter]  = attacker  # , DMTrapRoom] = attacker
-        self.defender: DMFighter = defender
+        self._attacker: Union[DMFighter] = attacker  # , DMTrapRoom] = attacker
+        self._defender: DMFighter = defender
 
         self._damage: DamageComponent = DamageComponent(attacker.attack)
         # self._skill: DMSkill = skill
 
-        self.hit_chance: float = 1.0
+        self._hit_chance: float = 1.0
         self._fail: bool = False
 
-        self.running = True
+        self._running = True
 
-        self.type: AttackType = attack_type
+        self._type: AttackType = attack_type
 
 ################################################################################
     def __eq__(self, other: AttackContext) -> bool:
@@ -181,33 +174,58 @@ class AttackContext(Context):
         return self._damage.calculate()
 
 ################################################################################
+    @property
+    def room(self) -> DMRoom:
+
+        return self._state.get_room_at(self._attacker._room)
+
+################################################################################
+    @property
+    def attacker(self) -> DMFighter:
+
+        return self._attacker
+
+################################################################################
+    @property
+    def defender(self) -> DMFighter:
+
+        return self._defender
+
+################################################################################
     def execute(self) -> None:
 
-        # Maybe make event manager call here for something like on_before_attack?
+        # Publish before attack event
+        self._state.dispatch_event("before_attack", ctx=self)
 
-        # Apply defensive buffs and debuffs first to give advantage ♥
-        def_buffs = [s for s in self.defender.statuses if s.type is DMStatusType.Buff]
-        def_debuffs = [s for s in self.attacker.statuses if s.type is DMStatusType.Debuff]
-
-        for status in def_buffs + def_debuffs:
-            status.activate(self)
-
-        # Then offensive buffs and debuffs :(
-        off_buffs = [s for s in self.attacker.statuses if s.type is DMStatusType.Buff]
-        off_debuffs = [s for s in self.defender.statuses if s.type is DMStatusType.Debuff]
-
-        for status in off_buffs + off_debuffs:
-            status.activate(self)
+        # Handle status conditions
+        # # Apply defensive buffs and debuffs first to give advantage ♥
+        # defender_statuses = [s for s in self._defender.statuses if s.type is DMStatusType.Buff]
+        # defender_statuses.extend([s for s in self._defender.statuses if s.type is DMStatusType.Debuff])
+        #
+        # for status in defender_statuses:
+        #     status.activate(self)
+        #
+        # # Then offensive buffs and debuffs :(
+        # attacker_statuses = [s for s in self._attacker.statuses if s.type is DMStatusType.Buff]
+        # attacker_statuses.extend([s for s in self._attacker.statuses if s.type is DMStatusType.Debuff])
+        #
+        # for status in attacker_statuses:
+        #     status.activate(self)
 
         # Relics here?
 
-        self.defender.stats._life -= self._damage.calculate()
+        # Finalize the damage.
+        self.defender.damage(self._damage.calculate())
 
         # Run any post-execution callbacks:
         for callback in self._post_execution_callbacks:
             callback(self)
 
-        self.running = False
+        # Publish after attack event
+        self._state.dispatch_event("after_attack", ctx=self)
+
+        # End this attack
+        self._running = False
 
 ################################################################################
     def mitigate_flat(self, value: int) -> None:
@@ -218,7 +236,7 @@ class AttackContext(Context):
 
         Example:
         --------
-        `ctx.mitigate_flat(25000)` == 25,000 removed from damage total
+        `ctx.mitigate_flat(25000)` == -25,000 removed from damage total
 
         Note:
         -----
@@ -243,7 +261,7 @@ class AttackContext(Context):
 
         Example:
         --------
-        `ctx.mitigate_pct(0.25)` == 25% less damage overall
+        `ctx.mitigate_pct(0.25)` == -25% less damage overall
 
         Note:
         -----
@@ -267,7 +285,7 @@ class AttackContext(Context):
 
         Example:
         --------
-        `ctx.amplify_flat(25000)` == 25,000 additional damage added to total
+        `ctx.amplify_flat(25000)` == +25,000 additional damage added to total
 
         Note:
         -----
@@ -292,7 +310,7 @@ class AttackContext(Context):
 
         Example:
         --------
-        `ctx.amplify_pct(0.25)` == 25% additional damage overall
+        `ctx.amplify_pct(0.25)` == +25% additional damage overall
 
         Note:
         -----

@@ -10,6 +10,8 @@ LOG_AREA_WIDTH = SCREEN_WIDTH * 0.25
 
 FPS = 30
 
+EPSILON = 0.01
+
 ################################################################################
 # Colors
 
@@ -38,7 +40,7 @@ DUNGEON_WIDTH = 3
 DUNGEON_HEIGHT = 3
 ROOM_SIZE = 150
 
-HERO_SPEED = 100
+HERO_SPEED = 75
 SCROLL_SPEED = 10
 
 ################################################################################

@@ -67,6 +67,11 @@ class DMDungeonMap:
         self.boss_tile._init_dark_lord()
 
 ################################################################################
+    def __len__(self) -> int:
+
+        return len(self.grid)
+
+################################################################################
     def __getitem__(self, index) -> List[Optional[DMRoom]]:
 
         return self.grid[index]

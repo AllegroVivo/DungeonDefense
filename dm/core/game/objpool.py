@@ -6,7 +6,7 @@ from typing     import TYPE_CHECKING, List, Optional, Type, Union
 
 # Bulk type Imports
 from dm.fates       import ALL_FATES, SPAWNABLE_FATES
-# from ..heroes       import ALL_HEROES
+from dm.heroes       import ALL_HEROES
 from dm.monsters    import ALL_MONSTERS
 # from ..relics       import ALL_RELICS
 from dm.rooms       import ALL_ROOMS
@@ -53,14 +53,14 @@ class DMObjectPool:
         self._state: DMGame = state
 
         self.__monster_types: List[Type[DMMonster]] = ALL_MONSTERS.copy()
-        # self.__hero_types: List[Type[DMHero]] = ALL_HEROES.copy()
+        self.__hero_types: List[Type[DMHero]] = ALL_HEROES.copy()
         self.__room_types: List[Type[DMRoom]] = ALL_ROOMS.copy()
         # self.__status_types: List[Type[DMStatus]] = ALL_STATUSES.copy()
         # self.__relic_types: List[Type[DMRelic]] = ALL_RELICS.copy()
         self.__fate_types: List[Type[DMFateCard]] = SPAWNABLE_FATES.copy()
 
         self.__monsters: List[DMMonster] = [m(self._state) for m in self.__monster_types]  # type: ignore
-        # self.__heroes: List[DMHero] = [h(self._state) for h in self.__hero_types]  # type: ignore
+        self.__heroes: List[DMHero] = [h(self._state) for h in self.__hero_types]  # type: ignore
         self.__rooms: List[DMRoom] = [r(self._state, 0, 0) for r in self.__room_types]  # type: ignore
         # self.__statuses: List[DMStatus] = [s(self._state, None, 0) for s in self.__status_types]  # type: ignore
         # self.__relics: List[DMRelic] = [relic(self._state) for relic in self.__relic_types]  # type: ignore
@@ -69,9 +69,9 @@ class DMObjectPool:
         self.__master: List[DMObject] = (
             self.__rooms.copy() +
             self.__monsters.copy() +   # type: ignore
+            self.__heroes.copy() +
             [f(self._state, 0, 0) for f in ALL_FATES].copy()  # type: ignore
         )
-        #     self.__heroes.copy() +
         #     self.__rooms.copy() +
         #     self.__statuses.copy() +
         #     self.__relics.copy() +

@@ -8,7 +8,7 @@ __all__ = ("ALL_FATES", "SPAWNABLE_FATES")
 
 ################################################################################
 # Packages
-# from .dng_options       import *
+# from .dungeon         import *
 
 # Modules
 from .battle            import BattleFate

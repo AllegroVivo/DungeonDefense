@@ -3,13 +3,14 @@ from __future__ import annotations
 import random
 
 from pygame         import Surface, Vector2
-from typing         import TYPE_CHECKING, List, Optional, Type, Union
+from typing         import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 
 from .map           import DMDungeonMap
 from utilities      import *
 
 if TYPE_CHECKING:
     from dm.core    import DMGame, DMHero, DMMonster, DMRoom
+    from dm.rooms   import EntranceRoom
 ################################################################################
 
 __all__ = ("DMDungeon",)
@@ -20,7 +21,8 @@ class DMDungeon:
     __slots__ = (
         "game",
         "heroes",
-        "map"
+        "map",
+        "spawned"
     )
 
 ################################################################################
@@ -29,6 +31,8 @@ class DMDungeon:
         self.game: DMGame = game
         self.heroes: List[DMHero] = []
         self.map = DMDungeonMap(self)
+
+        self.spawned = False
 
 ################################################################################
     def __getitem__(self, index: int) -> List[Optional[DMRoom]]:
@@ -74,9 +78,9 @@ class DMDungeon:
         self.game.dark_lord.update(dt)
 
 ###############################################################################
-    def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Union[Vector2, Tuple[int, int]]) -> Optional[DMRoom]:
 
-        return self.map.get_room_at(pos)
+        return self.map.get_room_at(Vector2(pos))
 
 ################################################################################
     def all_rooms(self, entry: bool = False, boss: bool = False, empty: bool = False) -> List[DMRoom]:
@@ -178,5 +182,29 @@ class DMDungeon:
         choice.upgrade()
 
         return choice
+
+################################################################################
+    def spawn_hero(self) -> DMHero:
+
+        if not self.spawned:
+            hero = self.game.spawn(
+                spawn_type=SpawnType.Hero,
+                end_rank=1
+            )(self.game, self.game.dungeon.entrance)
+            self.heroes.append(hero)  # type: ignore
+            self.spawned = True
+
+            return hero  # type: ignore
+
+################################################################################
+    @property
+    def entrance(self) -> EntranceRoom:
+
+        return self.map[len(self.map) // 2][len(self.map[0]) - 1]  # type: ignore
+
+################################################################################
+    def get_heroes_by_room(self, pos: Vector2) -> List[DMHero]:
+
+        return self.get_room_at(pos).heroes
 
 ################################################################################
