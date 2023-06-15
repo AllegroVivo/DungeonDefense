@@ -99,7 +99,6 @@ class StatComponent:
             self._flat_additional += amount
         elif isinstance(amount, float):
             if amount > 4.0:
-                print(f"error amt: {amount}")
                 raise ValueError(f"Amount exceeding 400% -{amount}- was passed to StatComponent.mutate().")
             self._scalar += amount
         else:
@@ -220,7 +219,6 @@ class BaseStats:
     @property
     def dex(self) -> float:
 
-        print(f"type: {type(self._dex)}")
         return self._dex.calculate()
 
 ################################################################################

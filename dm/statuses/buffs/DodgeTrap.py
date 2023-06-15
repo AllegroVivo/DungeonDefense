@@ -29,7 +29,10 @@ class DodgeTrap(DMStatus):
             parent,
             _id="BUF-107",
             name="Dodge Trap",
-            description="UrMom",
+            description=(
+                "Dodges an attack by a trap. Stacks are reduced by 1 upon "
+                "activation."
+            ),
             stacks=stacks,
             status_type=DMStatusType.Buff
         )
@@ -39,10 +42,13 @@ class DodgeTrap(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        # Pretty self-explanatory.
+        # If we're defending
         if ctx.defender == self.owner:
+            # And being attacked by a trap
             if isinstance(ctx.attacker, DMTrapRoom):
+                # The attack will fail.
                 ctx.will_fail = True
+                # Reduce stacks.
                 self.reduce_stacks_by_one()
 
 ################################################################################

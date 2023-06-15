@@ -29,8 +29,8 @@ class Dodge(DMStatus):
             _id="BUF-106",
             name="Dodge",
             description=(
-                "Evades the next attack. Stat decreases by 1 and you gain 1 "
-                "Dodge Resist per evasion."
+                "Evades the next attack. Stat is decreased by 1 and unit gains 1 "
+                "Dodge Resist upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -45,7 +45,7 @@ class Dodge(DMStatus):
             # Check against the resist first.
             resist = self.owner.get_status("Dodge Resist")
             if resist is not None:
-                if resist.stacks >= self.stacks:
+                if resist >= self:
                     return
 
             # Basically a dodge.
@@ -53,6 +53,6 @@ class Dodge(DMStatus):
 
             # Reduce stacks and apply the antibuff
             self.reduce_stacks_by_one()
-            self._parent += self.game.spawn("Dodge Resist", parent=self.owner)
+            self.owner.add_status("Dodge Resist")
 
 ################################################################################

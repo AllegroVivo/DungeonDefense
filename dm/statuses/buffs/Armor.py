@@ -29,9 +29,9 @@ class Armor(DMStatus):
             _id="BUF-103",
             name="Armor",
             description=(
-                "Reduces damage received from the enemy equal to this stat. Stat "
-                "decreases by the amount of damage reduced and you gain Armor "
-                "Fragment equal to that amount. "
+                "Reduces damage received from the enemy equal to stacks of Armor "
+                "possessed. Stat decreases by the amount of damage reduced and "
+                "unit gains Armor Fragment equal to that amount. "
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -58,6 +58,6 @@ class Armor(DMStatus):
 
             # Avoid adding an empty antibuff to the unit.
             if effect_value != 0:
-                self._parent += self.game.spawn("Armor Fragment", parent=self.owner, stacks=effect_value)
+                self.owner.add_status("Armor Fragment", stacks=effect_value)
 
 ################################################################################

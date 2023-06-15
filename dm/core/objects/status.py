@@ -81,6 +81,26 @@ class DMStatus(DMObject):
         return self
 
 ################################################################################
+    def __lt__(self, other: DMStatus) -> bool:
+
+        return self.stacks < other.stacks
+
+################################################################################
+    def __gt__(self, other: DMStatus) -> bool:
+
+        return self.stacks > other.stacks
+
+################################################################################
+    def __le__(self, other: DMStatus) -> bool:
+
+        return self.stacks <= other.stacks
+
+################################################################################
+    def __ge__(self, other: DMStatus) -> bool:
+
+        return self.stacks >= other.stacks
+
+################################################################################
     def __repr__(self) -> str:
 
         return (

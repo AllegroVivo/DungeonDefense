@@ -44,7 +44,11 @@ class Fury(DMStatus):
         if ctx.attacker == self.owner:
             # Add damage equal to stacks
             ctx.amplify_flat(self.stacks)
-            # Reduce
-            self.reduce_stacks_by_half()
+            # Reduce if not under the effect of Merciless (prevents Fury reduction)
+            merciless = self.owner.get_status("Merciless")
+            if merciless is not None:
+                merciless -= 1
+            else:
+                self.reduce_stacks_by_half()
 
 ################################################################################

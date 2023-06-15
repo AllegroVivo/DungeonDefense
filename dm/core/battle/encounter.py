@@ -69,11 +69,7 @@ class DMEncounter:
 ################################################################################
     def run_turn(self, dt: float) -> None:
 
-        # Reset and calculate stats for this turn
-        self.attacker.refresh_stats()
-        self.defender.refresh_stats()
-
-        print("=== Attacker Turn ===")
+        print("=== Monster Turn ===")
         # Monster attack
         if self.attacker.action_timer >= 1 / self.attacker.dex:
             # Create and log the CTX
@@ -88,17 +84,17 @@ class DMEncounter:
 
         # Check battle over?
 
-        print("=== Defender Turn ===")
+        print("=== Hero Turn ===")
         # Hero attack
-        # if self.defender.action_timer >= 1 / self.defender.dex:
-        #     ctx = AttackContext(self.game, self.defender, self.attacker)
-        #     self._attacks.append(ctx)
-        #
-        #     # Probably need to notify some events before execution.
-        #     ctx.execute()
-        #
-        #     # Reset action_timer after attack
-        #     self.defender.reset_action_timer()
+        if self.defender.action_timer >= 1 / self.defender.dex:
+            ctx = AttackContext(self.game, self.defender, self.attacker)
+            self._attacks.append(ctx)
+
+            # Probably need to notify some events before execution.
+            ctx.execute()
+
+            # Reset action_timer after attack
+            self.defender.reset_action_timer()
 
         # Check battle over?
 

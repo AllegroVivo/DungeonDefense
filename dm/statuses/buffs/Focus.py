@@ -29,7 +29,7 @@ class Focus(DMStatus):
             _id="BUF-110",
             name="Focus",
             description=(
-                "The next attack inflicts 50% extra damage, and effect increases "
+                "The next attack inflicts 50% additional damage, and effect increases "
                 "depending on the Focus possessed. Stat is halved with each action."
             ),
             stacks=stacks,
@@ -51,14 +51,15 @@ class Focus(DMStatus):
 
         Breakdown:
         ----------
-        F = (0.5 * (1 + a * n)) / 2
+        **% = (n * a) + x**
 
         In this function:
 
+        - x is the base adjustment.
         - n is the number of Focus stacks.
         - a is the additional effectiveness per stack.
         """
 
-        return (0.5 * (1 + 0.01 * self.stacks)) / 2
+        return (self.stacks * 0.001) + 0.50
 
 ################################################################################

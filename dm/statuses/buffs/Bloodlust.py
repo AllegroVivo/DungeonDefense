@@ -29,28 +29,25 @@ class Bloodlust(DMStatus):
             _id="STAT-104",
             name="Bloodlust",
             description=(
-                "DEX and ATK increase by 10% when possessing Vampire, and "
-                "effect increases depending on Bloodlust possessed. Stat is "
-                "halved with each action."
+                "When under the effect of Vampire, DEX and ATK are increased by "
+                "10%, with increasing effectiveness dependant upon the number of "
+                "Bloodlust stacks possessed. Stat is halved upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically upon the status's acquisition by the unit."""
-
-        # Initial effect
-        self.stat_adjust()
-
-################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        # Stat halved with each action
-        if ctx.attacker == self.owner:
+        # Check for Vampire
+        vampire = self.owner.get_status("Vampire")
+        if vampire is not None:
+            # If it's present, perform the adjustment
+            self.stat_adjust()
+            # And reduce stacks
             self.reduce_stacks_by_half()
 
 ################################################################################
@@ -76,6 +73,7 @@ class Bloodlust(DMStatus):
         - a is the additional effectiveness per stack.
         """
 
+        # Might split this into two functions if the attack increase isn't significant enough.
         return (self.stacks * 0.005) + 0.10
 
 ################################################################################

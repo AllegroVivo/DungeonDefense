@@ -8,7 +8,7 @@ from typing     import TYPE_CHECKING, List, Optional, Type, Union
 from ...fates       import ALL_FATES, SPAWNABLE_FATES
 from ...heroes      import ALL_HEROES
 from ...monsters    import ALL_MONSTERS
-# from ..relics       import ALL_RELICS
+from ...relics      import ALL_RELICS
 from ...rooms       import ALL_ROOMS
 from ...statuses    import ALL_STATUSES
 
@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from dm.core.fates.fatecard import DMFateCard
     from dm.core.objects.object import DMObject
     from dm.core.objects.hero import DMHero
+    from dm.core.objects.relic import DMRelic
 ################################################################################
 
 __all__ = ("DMObjectPool",)
@@ -56,24 +57,24 @@ class DMObjectPool:
         self.__hero_types: List[Type[DMHero]] = ALL_HEROES.copy()
         self.__room_types: List[Type[DMRoom]] = ALL_ROOMS.copy()
         self.__status_types: List[Type[DMStatus]] = ALL_STATUSES.copy()
-        # self.__relic_types: List[Type[DMRelic]] = ALL_RELICS.copy()
+        self.__relic_types: List[Type[DMRelic]] = ALL_RELICS.copy()
         self.__fate_types: List[Type[DMFateCard]] = SPAWNABLE_FATES.copy()
 
         self.__monsters: List[DMMonster] = [m(self._state) for m in self.__monster_types]  # type: ignore
         self.__heroes: List[DMHero] = [h(self._state) for h in self.__hero_types]  # type: ignore
         self.__rooms: List[DMRoom] = [r(self._state) for r in self.__room_types]  # type: ignore
         self.__statuses: List[DMStatus] = [s(self._state, None, 0) for s in self.__status_types]  # type: ignore
-        # self.__relics: List[DMRelic] = [relic(self._state) for relic in self.__relic_types]  # type: ignore
+        self.__relics: List[DMRelic] = [relic(self._state) for relic in self.__relic_types]  # type: ignore
         self.__fates: List[DMFateCard] = [f(self._state, 0, 0) for f in self.__fate_types]  # type: ignore
 
         self.__master: List[DMObject] = (
             self.__rooms.copy() +
             self.__monsters.copy() +   # type: ignore
             self.__heroes.copy() +
+            self.__relics.copy() +
             self.__statuses.copy() +
             [f(self._state, 0, 0) for f in ALL_FATES].copy()  # type: ignore
         )
-        #     self.__relics.copy() +
 
 ################################################################################
     def spawn(

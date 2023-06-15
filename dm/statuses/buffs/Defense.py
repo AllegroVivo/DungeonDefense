@@ -29,9 +29,9 @@ class Defense(DMStatus):
             _id="BUF-105",
             name="Defense",
             description=(
-                "Damage received is decreased by 50%, and effect increases "
-                "depending on the Defense possessed. Stat is halved when "
-                "receiving damage."
+                "Damage received is decreased by 50%, with increasing "
+                "effectiveness dependent on the number of Defense stacks "
+                "possessed. Stat is halved upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -44,10 +44,13 @@ class Defense(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
+        # If we're defending
         if ctx.defender == self.owner:
+            # Cache a reference to the damage so we can use it in the calculation.
             self.damage = ctx.damage
-            print(f"effect value: {self.effect_value()}")
+            # Adjust CTX damage.
             ctx.mitigate_pct(self.effect_value())
+            # And reduce stacks.
             self.reduce_stacks_by_half()
 
 ################################################################################

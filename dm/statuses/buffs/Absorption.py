@@ -30,8 +30,8 @@ class Absorption(DMStatus):
             name="Absorption",
             description=(
                 "Only take damage equal to 10% of your Maximum LIFE should the "
-                "damage be greater than 10% of your Maximum LIFE. Reduce "
-                "Absorption by 1 each time it is activated."
+                "damage exceed that amount. Absorption stacks are reduced by 1 "
+                "upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

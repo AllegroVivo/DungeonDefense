@@ -29,20 +29,13 @@ class Acceleration(DMStatus):
             _id="BUF-102",
             name="Acceleration",
             description=(
-                "DEX is increased by 50% and effectiveness increases depending "
-                "on the number of Acceleration stacks possessed. Stat is halved "
-                "with each action."
+                "DEX is increased by 50%, with increasing effectiveness depending "
+                "upon the number of Acceleration stacks possessed. Stacks are halved "
+                "upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
         )
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically upon the status's acquisition by the unit."""
-
-        # Initial activation.
-        self.stat_adjust()
 
 ################################################################################
     def stat_adjust(self) -> None:

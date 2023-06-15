@@ -30,7 +30,7 @@ class Elasticity(DMStatus):
             name="Elasticity",
             description=(
                 "Cancels the next damage to be received by up to 10% of max LIFE. "
-                "The stat is reduced by 1 each time damage is received."
+                "The stat is reduced by 1 upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -44,9 +44,14 @@ class Elasticity(DMStatus):
         if ctx.defender == self.owner:
             # Effective for up to 10% of max LIFE.
             effect_value = min(ctx.damage, int(self.owner.max_life * 0.10))
-            ctx.mitigate_flat(effect_value)
+            # If we're mitigating the full amount of the attack, just fail it to exit the loop.
+            if effect_value == ctx.damage:
+                ctx.will_fail = True
+            # Otherwise just perform the adjustment
+            else:
+                ctx.mitigate_flat(effect_value)
 
-            # Reduce stat
+            # And reduce the stat
             self.reduce_stacks_by_one()
 
 ################################################################################

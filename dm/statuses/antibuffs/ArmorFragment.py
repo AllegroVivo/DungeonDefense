@@ -35,4 +35,6 @@ class ArmorFragment(DMStatus):
             status_type=DMStatusType.AntiBuff
         )
 
+        # Implemented in the Armor status calculation
+
 ################################################################################

@@ -51,7 +51,9 @@ class _DebugState(DMState):
         defender = self.game.battle_mgr._encounters[0]._defender
 
         # if self.count == 1:
-        attacker += self.game.spawn("Acceleration", parent=attacker)
+        # attacker += self.game.spawn("Immortality", parent=attacker, stacks=2)
+        defender += self.game.spawn("Fury", parent=defender, stacks=10)
+        defender += self.game.spawn("Merciless", parent=defender)
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
@@ -79,6 +81,7 @@ class _DebugState(DMState):
         def_statuses = [
             f"{s.name}: {s.stacks}" for s in self.game.battle_mgr._encounters[0]._defender.statuses
         ]
+
         total_height = len(def_statuses) * 40
         start_y = ((SCREEN_HEIGHT - total_height) / 2)
         font = Font("assets/fonts/raleway.ttf", 40)

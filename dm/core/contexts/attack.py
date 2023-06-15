@@ -4,7 +4,6 @@ from typing     import (
     TYPE_CHECKING,
     Callable,
     Optional,
-    Type,
     TypeVar,
     Union
 )
@@ -16,8 +15,6 @@ if TYPE_CHECKING:
     from ...core.game.game  import DMGame
     from ...core.objects.unit import DMUnit
     from ...core.objects.room import DMRoom
-    from ...core.objects.status import DMStatus
-    from...core.battle.encounter import DMEncounter
 ################################################################################
 
 __all__ = ("AttackContext", )
@@ -231,9 +228,7 @@ class AttackContext(Context):
         # Publish before attack event
         self._state.dispatch_event("before_attack", ctx=self)
 
-        print(f"dex before: {self.defender.dex}")
         # Reset stats so statuses can do their newly scaled effects (after stack removal last turn)
-        # Then make the reset stats event calls to do base calculations before statuses adjust further.
         self._attacker.reset_stats()
         self._defender.reset_stats()
 
@@ -249,7 +244,6 @@ class AttackContext(Context):
             # we can stop applying statuses.
             if self.will_fail:
                 break
-        print(f"dex after: {self.defender.dex}")
 
         # Avoid status processing if we've already marked the attack as failed.
         if not self.will_fail:
@@ -262,6 +256,10 @@ class AttackContext(Context):
                 # Might as well break here too if a status nullifies the attack.
                 if self.will_fail:
                     break
+
+        # Factor in relic effects
+        for relic in self._state.relics:
+            relic.handle(self)
 
         # Finalize the damage.
         self.defender.damage(self.damage)
@@ -378,7 +376,7 @@ class AttackContext(Context):
     @property
     def will_fail(self) -> bool:
 
-        return self.damage != 0
+        return self.damage == 0
 
 ################################################################################
     @will_fail.setter

@@ -47,6 +47,7 @@ class Immortality(DMStatus):
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
+        print("Executing callback")
         if not ctx.defender.is_alive:
             # Survive death with 1 LIFE
             self.owner.heal(1)
@@ -55,6 +56,6 @@ class Immortality(DMStatus):
             self.reduce_stacks_by_one()
 
             # Apply additional effect
-            self._parent += self.game.spawn("Immortal Rage", parent=self._parent)
+            self.owner.add_status("Immortal Rage")
 
 ################################################################################

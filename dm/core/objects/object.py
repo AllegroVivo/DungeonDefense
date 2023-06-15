@@ -6,7 +6,7 @@ from typing     import TYPE_CHECKING, Optional, Type, TypeVar
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core.game import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("DMObject", )

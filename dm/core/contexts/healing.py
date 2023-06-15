@@ -19,6 +19,7 @@ class HealingContext(Context):
     __slots__ = (
         "_base",
         "_scalar",
+        "_flat_additional",
         "target"
     )
 
@@ -30,11 +31,12 @@ class HealingContext(Context):
         self.target: DMUnit = target
         self._base: int = amount
         self._scalar: float = 1.0
+        self._flat_additional: int = 0
 
 ################################################################################
     def calculate(self) -> int:
 
-        return math.ceil(self._base * self._scalar)
+        return math.ceil((self._base * self._scalar) + self._flat_additional)
 
 ################################################################################
     def execute(self) -> None:
@@ -42,17 +44,26 @@ class HealingContext(Context):
         self.target.heal(self.calculate())
 
 ################################################################################
-    def scale(self, amount: Union[int, float]) -> None:
+    def modify_flat(self, amount: int) -> None:
 
-        if not isinstance(amount, (int, float)):
+        if not isinstance(amount, int):
+            raise ArgumentTypeError(
+                "HealingContext.modify_flat()",
+                type(amount),
+                type(int)
+            )
+
+        self._flat_additional += amount
+
+################################################################################
+    def scale(self, amount: float) -> None:
+
+        if not isinstance(amount, float):
             raise ArgumentTypeError(
                 "HealingContext.scale()",
                 type(amount),
-                type(int), type(float)
+                type(float)
             )
-
-        if isinstance(amount, int):
-            amount /= 100
 
         self._scalar += amount
 

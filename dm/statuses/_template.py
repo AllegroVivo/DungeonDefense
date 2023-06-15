@@ -26,11 +26,11 @@ class Template(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="STAT-101",
+            _id="DBF-101",
             name="UrMom",
             description="UrMom",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -66,7 +66,7 @@ class Template(DMStatus):
 
         Breakdown:
         ----------
-        D = (D0 * 0.5 * (1 + a * n)) / 2
+        **effect = (D0 * 0.5 * (1 + a * n)) / 2**
 
         In this function:
 

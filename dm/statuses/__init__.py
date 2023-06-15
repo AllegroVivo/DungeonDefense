@@ -7,16 +7,31 @@ if TYPE_CHECKING:
 __all__ = ("ALL_STATUSES", )
 
 ################################################################################
-from .antibuffs import *
-from .buffs     import *
+from .antibuffs     import *
+from .antidebuffs   import *
+from .buffs         import *
+from .debuffs       import *
+from .heroes        import *
 ################################################################################
 # All Monsters
 ALL_STATUSES: List[Type["DMStatus"]] = [
     # Buffs
     Absorption, Acceleration, Armor, Bloodlust, Defense, Dodge, DodgeTrap,
-    Ecstacy, Elasticity, Focus, Fury, Grudge, Hatred, Immortality,
+    Ecstasy, Elasticity, Focus, Fury, Grudge, Hatred, Immortality, ImmortalRage,
+    Immune, Merciless, Mirror, NaturesPower, Phantom, Pleasure, Quick,
+    Rampage, Rebound, Regeneration, Revenge, Seed, Shield, Taunt, Thorn,
+    Vampire,
+
+    # Debuffs
+
 
     # Antibuffs
-    ArmorFragment, DodgeResist,
+    ArmorFragment, DodgeResist, ImmuneResist,
+
+    # Antidebuffs
+
+
+    # Hero-only
+
 ]
 ################################################################################

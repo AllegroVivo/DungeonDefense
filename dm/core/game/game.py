@@ -9,10 +9,11 @@ from typing     import TYPE_CHECKING, Callable, List, Optional, Type, Union
 from ..battle.system        import DMBattleManager
 from .darklord              import DMDarkLord
 from .dungeon               import DMDungeon
-from .event_mgr         import DMEventManager
+from .event_mgr             import DMEventManager
 from ..fates.fateboard      import DMFateBoard
 from .inventory             import DMInventory
 from .objpool               import DMObjectPool
+from .relic_mgr             import DMRelicManager
 from ..states.state_manager import DMStateMachine
 from utilities              import *
 
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
     from dm.core.game.map import DMDungeonMap
     from dm.core.objects.monster import DMMonster
     from dm.core.objects.object import DMObject
+    from dm.core.objects.relic import DMRelic
     from dm.core.objects.room import DMRoom
     from dm.core.states.state import DMState
 ################################################################################
@@ -64,7 +66,7 @@ class DMGame:
         self.dungeon: DMDungeon = DMDungeon(self)
         self.inventory: DMInventory = DMInventory(self)
         self.state_machine: DMStateMachine = DMStateMachine(self)
-        # self.relics: RelicManager = RelicManager(self)
+        self.relics: DMRelicManager = DMRelicManager(self)
         self.battle_mgr: DMBattleManager = DMBattleManager(self)
 
 ################################################################################
@@ -236,4 +238,10 @@ class DMGame:
 
         return self.objpool.generate_type(raw_type)
 
+################################################################################
+    def get_relic(self, relic: Union[str, DMRelic]) -> Optional[DMRelic]:
+
+        self.relics.get_relic(relic)
+
+################################################################################
 ################################################################################

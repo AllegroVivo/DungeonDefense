@@ -49,9 +49,7 @@ class Grudge(DMStatus):
             self.reduce_stacks_by_one()
 
             # Apply Pleasure buff
-            self._parent += self.game.spawn(
-                "Pleasure", parent=self.owner, stacks=self.owner.attack // 2
-            )
+            self.owner.add_status("Pleasure", stacks=self.owner.attack // 2)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -59,7 +57,7 @@ class Grudge(DMStatus):
 
         Breakdown:
         ----------
-        G = 0.15 * n
+        **% = 0.15 * n**
 
         In this function:
 

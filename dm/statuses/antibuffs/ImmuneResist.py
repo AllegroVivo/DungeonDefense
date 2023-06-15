@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Ecstacy",)
+__all__ = ("ImmuneResist",)
 
 ################################################################################
-class Ecstacy(DMStatus):
+class ImmuneResist(DMStatus):
 
     def __init__(
         self,
@@ -26,13 +26,16 @@ class Ecstacy(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-109",
-            name="Ecstacy",
-            description="Prevents Pleasure stack from decreasing 1 time.",
+            _id="ABF-103",
+            name="Immune Resist",
+            description=(
+                "Immune cost gradually increases depending on the Immune Resist "
+                "owned."
+            ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.AntiBuff
         )
 
-        # Implemented in the Pleasure status effect calculation
+        # Implemented in Immune status class
 
 ################################################################################
