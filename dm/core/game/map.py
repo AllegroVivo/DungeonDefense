@@ -164,7 +164,6 @@ class DMDungeonMap:
             for col in reversed(range(len(self.grid))):
                 for row in range(len(self.grid[0])):
                     room = self.grid[col][row]
-
                     if room is not None:
                         # Try to deploy a monster here if it's a battle room.
                         if room.room_type is DMRoomType.Battle:

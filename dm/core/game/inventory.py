@@ -66,8 +66,11 @@ class DMInventory:
 ################################################################################
     def _init_starter_monsters(self):
 
+        # self.monsters = [self._game.spawn(
+        #     spawn_type=SpawnType.Monster, end_rank=3)(self._game) for _ in range(10)
+        # ]
         self.monsters = [self._game.spawn(
-            spawn_type=SpawnType.Monster, end_rank=3)(self._game) for _ in range(10)
+            obj_id="MON-XXX")(self._game) for _ in range(10)
         ]
 
 ################################################################################

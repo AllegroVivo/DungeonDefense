@@ -63,26 +63,7 @@ class DMHero(DMUnit):
     def update(self, dt: float) -> None:
 
         super().update(dt)
-
-################################################################################
-    def move(self, dt: float) -> None:
-
-        if self._direction is None:
-            return
-
-        if self._direction.x != 0:
-            self._screen_pos.x += self._direction.x * HERO_SPEED * dt
-        elif self._direction.y != 0:
-            self._screen_pos.y += self._direction.y * HERO_SPEED * dt
-
-        if self.arrived_at_target():
-            self.cancel_movement()
-            self.arrived_in_cell()
-
-################################################################################
-    def arrived_at_target(self) -> bool:
-
-        return (self.screen_position - self.target_room.center).length() < EPSILON
+        self.graphics.update(dt)
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
@@ -91,97 +72,18 @@ class DMHero(DMUnit):
         self.graphics.draw(screen)
 
 ################################################################################
-    @property
-    def target_room(self) -> Optional[DMRoom]:
-
-        if self._direction is None:
-            return
-
-        if self._target_room is not None:
-            return self._target_room
-
-        self.calculate_target_room()
-
-        return self._target_room
-
-################################################################################
-    def calculate_target_room(self) -> None:
-
-        room = None
-        while room is None:
-            room = self.game.get_room_at(self.room.position + self._direction, debug=True)
-            if room is None or room.name == "Entrance" or room.__class__.__name__ == "BossRoom" or room.center.y < 0:
-                room = None
-                self.choose_direction()
-
-        self._target_room = room
-
-################################################################################
-    @property
-    def direction(self) -> Optional[Vector2]:
-
-        return self._direction
-
-################################################################################
-    @property
-    def room(self) -> DMRoom:
-
-        return self.game.get_room_at(pixel_to_grid(self._screen_pos))
-
-################################################################################
-    @property
-    def screen_position(self) -> Vector2:
-
-        return self._screen_pos
-
-################################################################################
-    @property
-    def target_position(self) -> Optional[Vector2]:
-
-        if self.target_room is None:
-            return
-
-        return self.target_room.center
-
-################################################################################
-    @property
-    def is_moving(self) -> bool:
-
-        return self._moving
-
-################################################################################
-    def choose_direction(self) -> None:
-
-        self._direction = Vector2(random.choice([(0, -1), (0, 1), (-1, 0), (1, 0)]))
-
-################################################################################
-    def start_movement(self) -> None:
-
-        # Pick a direction
-        self.choose_direction()
-
-        # Start movement.
-        self._moving = True
-
-################################################################################
-    def cancel_movement(self) -> None:
-
-        self._moving = False
-        self._direction = None
-        self._target_room = None
-
-################################################################################
     def engage(self, unit: DMUnit) -> None:
 
-        self.cancel_movement()
         super().engage(unit)
 
 ################################################################################
     def arrived_in_cell(self) -> None:
 
-        print("Arrived!")
-
-        # self._engaged = self.room.try_engage_monster(self)
+        self._mover.cancel_movement()
+        print(self._room)
+        self._engaged = self.room.try_engage_monster(self)
+        if self._engaged:
+            print("Monster engaged!")
 
         # Publish event
         # self.game.dispatch_event("on_room_change")

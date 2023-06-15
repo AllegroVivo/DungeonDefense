@@ -26,7 +26,7 @@ class BattleFate(DMFateCard):
             "A band of heroes is approaching.",
             Vector2(x, y),
             1,
-            "battle"
+            "debug_mode"
         )
 
 ################################################################################

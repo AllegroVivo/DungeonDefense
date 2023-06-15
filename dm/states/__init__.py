@@ -9,12 +9,12 @@ __all__ = ("STATE_MAPPINGS", )
 ################################################################################
 # Public States
 # Packages
+from .battle        import *
 from .deployment    import *
 from .fates         import *
 from .menus         import *
 
 # Modules
-# from .battle            import BattleState
 from ._debug                import _DebugState
 # from .dng_rest          import RestFateState
 # from .dng_upgrade       import UpgradeFateState
@@ -34,7 +34,8 @@ STATE_MAPPINGS: Dict[str, Type["DMState"]] = {
     "manual_deploy_a" : ManualDeployStateA,
     "manual_deploy_b" : ManualDeployStateB,
     "fate_board_view" : FateBoardViewState,
-    "fate_select" : FateCardSelectState
+    "fate_select" : FateCardSelectState,
+    "battle" : BattleState
 }
 
 ################################################################################

@@ -6,7 +6,7 @@ from typing     import TYPE_CHECKING, Callable, List
 from uuid       import UUID, uuid4
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame
+    from dm.core.game.game    import DMGame
 ################################################################################
 
 __all__ = ("Context", )

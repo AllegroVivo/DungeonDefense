@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing     import (
     TYPE_CHECKING,
     Callable,
-    List,
     Optional,
     Type,
     TypeVar,
@@ -14,7 +13,11 @@ from .context  import Context
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMEncounter, DMUnit, DMGame, DMRoom, DMStatus
+    from ...core.game.game  import DMGame
+    from ...core.objects.unit import DMUnit
+    from ...core.objects.room import DMRoom
+    from ...core.objects.status import DMStatus
+    from...core.battle.encounter import DMEncounter
 ################################################################################
 
 __all__ = ("AttackContext", )
@@ -26,19 +29,28 @@ class DamageComponent:
 
     __slots__ = (
         "_base",
-        "_mitigation",
+        "_scalar",
         "_flat_reduction",
-        "final"
+        "_damage_override",
+        "_final"
     )
 
 ################################################################################
     def __init__(self, damage: int):
 
         self._base: int = damage
-        self._mitigation: float = 1.0
+        self._scalar: float = 0.0
         self._flat_reduction: int = 0
 
-        self.final: int = 0
+        self._damage_override: Optional[int] = None
+
+        self._final: int = 0
+
+################################################################################
+    @property
+    def final(self) -> int:
+
+        return self._final
 
 ################################################################################
     def mitigate_flat(self, value: int) -> None:
@@ -64,7 +76,7 @@ class DamageComponent:
             raise ArgumentTypeError("DamageComponent.mitigate_flat()", type(value), type(int))
 
         # Can't go below 0 or that would heal the unit.
-        self._flat_reduction = max(self._flat_reduction - int(value), 0)
+        self._flat_reduction = min(self._flat_reduction + int(value), self.calculate())
 
 ################################################################################
     def mitigate_pct(self, value: float) -> None:
@@ -90,13 +102,29 @@ class DamageComponent:
         if not isinstance(value, float):
             raise ArgumentTypeError("DamageComponent.mitigate_pct()", type(value), type(float))
 
-        self._mitigation -= value
+        self._scalar += value
+
+################################################################################
+    def override(self, amount: Union[int, float]) -> None:
+
+        if not isinstance(amount, (int, float)):
+            raise ArgumentTypeError(
+                "AttackContext.override_damage()",
+                type(amount),
+                type(int)
+            )
+
+        self._damage_override = int(amount)
 
 ################################################################################
     def calculate(self) -> int:
 
-        self.final = int(self._base * self._mitigation + self._flat_reduction)
-        return self.final
+        if self._damage_override is not None:
+            self._final = self._damage_override
+        else:
+            self._final = (self._base * (1 - self._scalar)) - self._flat_reduction
+
+        return max(int(self._final), 0)
 
 ################################################################################
 class AttackContext(Context):
@@ -152,24 +180,25 @@ class AttackContext(Context):
         self._type: AttackType = attack_type
 
 ################################################################################
+    def __repr__(self) -> str:
+
+        return(
+            "<AttackContext:\n"
+            f"attacker: {self.attacker}, defender: {self.defender}\n"
+            f"cur dmg: {self.damage}>"
+        )
+
+################################################################################
     def __eq__(self, other: AttackContext) -> bool:
 
         return self._id == other._id
 
 ################################################################################
-    @classmethod
-    def new(cls: Type[CTX], encounter: DMEncounter) -> CTX:
-
-        return cls(
-            encounter.game,
-            encounter.room,
-            encounter.attacker,
-            encounter.defender
-        )
-
-################################################################################
     @property
     def damage(self) -> int:
+
+        if self._fail or self._hit_chance <= 0:
+            return 0
 
         return self._damage.calculate()
 
@@ -192,30 +221,50 @@ class AttackContext(Context):
         return self._defender
 
 ################################################################################
+    def override_damage(self, amount: Union[int, float]) -> None:
+
+        self._damage.override(amount)
+
+################################################################################
     def execute(self) -> None:
 
         # Publish before attack event
         self._state.dispatch_event("before_attack", ctx=self)
 
-        # Handle status conditions
-        # # Apply defensive buffs and debuffs first to give advantage ♥
-        # defender_statuses = [s for s in self._defender.statuses if s.type is DMStatusType.Buff]
-        # defender_statuses.extend([s for s in self._defender.statuses if s.type is DMStatusType.Debuff])
-        #
-        # for status in defender_statuses:
-        #     status.activate(self)
-        #
-        # # Then offensive buffs and debuffs :(
-        # attacker_statuses = [s for s in self._attacker.statuses if s.type is DMStatusType.Buff]
-        # attacker_statuses.extend([s for s in self._attacker.statuses if s.type is DMStatusType.Debuff])
-        #
-        # for status in attacker_statuses:
-        #     status.activate(self)
+        print(f"dex before: {self.defender.dex}")
+        # Reset stats so statuses can do their newly scaled effects (after stack removal last turn)
+        # Then make the reset stats event calls to do base calculations before statuses adjust further.
+        self._attacker.reset_stats()
+        self._defender.reset_stats()
 
-        # Relics here?
+        # Handle status conditions
+        # Apply defensive buffs and debuffs first to give advantage ♥
+        defender_statuses = [s for s in self._defender.statuses if s.type is DMStatusType.Buff]
+        defender_statuses.extend([s for s in self._defender.statuses if s.type is DMStatusType.Debuff])
+
+        # `status.handle()` specifically applies any mid-battle effects.
+        for status in defender_statuses:
+            status.handle(self)
+            # As soon as the attack is marked as a fail for whatever reason,
+            # we can stop applying statuses.
+            if self.will_fail:
+                break
+        print(f"dex after: {self.defender.dex}")
+
+        # Avoid status processing if we've already marked the attack as failed.
+        if not self.will_fail:
+            # Then offensive buffs and debuffs :(
+            attacker_statuses = [s for s in self._attacker.statuses if s.type is DMStatusType.Buff]
+            attacker_statuses.extend([s for s in self._attacker.statuses if s.type is DMStatusType.Debuff])
+
+            for status in attacker_statuses:
+                status.handle(self)
+                # Might as well break here too if a status nullifies the attack.
+                if self.will_fail:
+                    break
 
         # Finalize the damage.
-        self.defender.damage(self._damage.calculate())
+        self.defender.damage(self.damage)
 
         # Run any post-execution callbacks:
         for callback in self._post_execution_callbacks:
@@ -329,7 +378,7 @@ class AttackContext(Context):
     @property
     def will_fail(self) -> bool:
 
-        return not self._fail and self.hit_chance != 0 and self.damage != 0
+        return self.damage != 0
 
 ################################################################################
     @will_fail.setter

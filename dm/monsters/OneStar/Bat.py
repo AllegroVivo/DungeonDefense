@@ -23,8 +23,8 @@ class Bat(DMMonster):
             description="A big ol' scary bat! [y]OH SHIT kill it!",
             life=40,
             attack=6,
-            defense=2,
-            dex=10,
+            defense=2.0,
+            dex=1.0,
             rank=1,
             idle_frames=6
         )

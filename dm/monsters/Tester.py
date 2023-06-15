@@ -8,23 +8,25 @@ if TYPE_CHECKING:
     from dm.core    import DMGame
 ################################################################################
 
-__all__ = ("Goblin", )
+__all__ = ("Tester",)
 
 ################################################################################
-class Goblin(DMMonster):
+class Tester(DMMonster):
 
     def __init__(self, game: DMGame, level: int = 1):
 
         super().__init__(
             game,
             level,
-            _id="MON-103",
-            name="Goblin",
-            life=50,
-            attack=4,
+            _id="MON-XXX",
+            name="Tester",
+            description="A Snorsblat is coming.",
+            life=100,
+            attack=50,
             defense=1.0,
             dex=1.0,
-            rank=1
+            rank=1,
+            idle_frames=6
         )
 
 ################################################################################

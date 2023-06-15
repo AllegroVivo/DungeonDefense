@@ -71,7 +71,7 @@ class HeroGraphical(AnimatableComponent):
     @property
     def position(self) -> Vector2:
 
-        return self.parent.screen_position  # type: ignore
+        return self.parent.screen_pos  # type: ignore
 
 ################################################################################
     @property

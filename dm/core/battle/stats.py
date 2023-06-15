@@ -9,6 +9,7 @@ __all__ = ("StatComponent", "BaseStats")
 
 ################################################################################
 class StatComponent:
+
     __slots__ = (
         "_base",
         "_flat_additional",
@@ -89,7 +90,7 @@ class StatComponent:
         elif self.type is StatComponentType.NumAttacks:
             return self._base + self._flat_additional
 
-        return self._base * self._scalar + self._flat_additional
+        return (self._base * self._scalar) + self._flat_additional
 
 ################################################################################
     def mutate(self, amount: Union[int, float]) -> None:
@@ -98,7 +99,8 @@ class StatComponent:
             self._flat_additional += amount
         elif isinstance(amount, float):
             if amount > 4.0:
-                raise ValueError("Amount exceeding 400% was passed to StatComponent.mutate().")
+                print(f"error amt: {amount}")
+                raise ValueError(f"Amount exceeding 400% -{amount}- was passed to StatComponent.mutate().")
             self._scalar += amount
         else:
             raise ValueError("Invalid type was passed to StatComponent.mutate().")
@@ -109,9 +111,9 @@ class StatComponent:
         self._scalar = 1.0
         self._flat_additional = 0
 
-
 ################################################################################
 class LifeComponent(StatComponent):
+
     __slots__ = (
         "current",
     )
@@ -162,9 +164,9 @@ class LifeComponent(StatComponent):
         # Restore however much LIFE was increased by.
         self.current += current - previous
 
-
 ################################################################################
 class BaseStats:
+
     __slots__ = (
         "_life",
         "_attack",
@@ -218,6 +220,7 @@ class BaseStats:
     @property
     def dex(self) -> float:
 
+        print(f"type: {type(self._dex)}")
         return self._dex.calculate()
 
 ################################################################################

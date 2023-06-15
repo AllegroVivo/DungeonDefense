@@ -8,7 +8,9 @@ from typing     import TYPE_CHECKING, Optional, TypeVar
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMRoom, DMUnit
+    from .game  import DMGame
+    from ..objects.room  import DMRoom
+    from ..objects.unit  import DMUnit
 ################################################################################
 
 __all__ = ("MovementComponent",)
@@ -51,16 +53,21 @@ class MovementComponent:
 
         if self._moving:
             self.move(dt)
-        else:
-            if self.counter % 100 == 0:
-                self.start_movement()
+        # else:
+        #     if self.counter % 100 == 0:
+        #         self.start_movement()
 
 ################################################################################
     def move(self, dt: float) -> None:
 
+        if self._parent._engaged:
+            self.cancel_movement()
+
+        if self.screen_position is None:
+            self._parent._screen_pos = self.game.dungeon.entrance.center
+
         if self._direction is None:
             return
-
         if self._direction.x != 0:
             self._parent._screen_pos.x += self._direction.x * HERO_SPEED * dt
         elif self._direction.y != 0:
@@ -159,7 +166,7 @@ class MovementComponent:
     def arrived_in_cell(self) -> None:
 
         self._start_pos = self.room.center
-        print("Arrived!")
+        self._parent.entered_room()
 
 ################################################################################
     def _copy(self, parent: DMUnit) -> MovementComponent:

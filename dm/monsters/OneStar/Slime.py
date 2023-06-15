@@ -22,8 +22,8 @@ class Slime(DMMonster):
             name="Slime",
             life=50,
             attack=5,
-            defense=2,
-            dex=10,
+            defense=2.0,
+            dex=1.0,
             rank=1,
             idle_frames=6
         )

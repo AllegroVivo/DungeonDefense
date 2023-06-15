@@ -10,11 +10,11 @@ from typing     import (
     Union
 )
 
-from dm.core.game.movement import MovementComponent
-from dm.core.graphics._graphical import GraphicalComponent
-from dm.core.objects.levelable import DMLevelable
-from dm.core.battle.stats import BaseStats
-from dm.core.objects.status import DMStatus
+from ..game.movement import MovementComponent
+from ..graphics._graphical import GraphicalComponent
+from ...core.objects.levelable import DMLevelable
+from ...core.battle.stats import BaseStats
+from ...core.objects.status import DMStatus
 from utilities              import *
 
 if TYPE_CHECKING:
@@ -30,7 +30,7 @@ U = TypeVar("U", bound="DMUnit")
 class DMUnit(DMLevelable):
 
     __slots__ = (
-        "stats",
+        "_stats",
         "_skills",
         "_equip",
         "_graphics",
@@ -40,7 +40,8 @@ class DMUnit(DMLevelable):
         "_move_penalty",
         "_engaged",
         "_screen_pos",
-        "_mover"
+        "_mover",
+        "_moving",
     )
 
 ################################################################################
@@ -64,7 +65,7 @@ class DMUnit(DMLevelable):
 
         super().__init__(state, _id, name, description, level, rank, unlock=unlock)
 
-        self.stats = BaseStats(life, attack, defense, dex)
+        self._stats = BaseStats(life, attack, defense, dex)
 
         self._room: Optional[Vector2] = start_cell
 
@@ -72,14 +73,18 @@ class DMUnit(DMLevelable):
         self._equip = None
 
         self._statuses: List[DMStatus] = []
-        self._action_timer: float = 1.0
+        self._action_timer: float = 1.0  # Change this back after removing the counter.
         self._move_penalty: float = 0.0  # this needs to be factored in as a flat amount of seconds that the unit is immobilized for.
 
         self._graphics: GraphicalComponent = graphics
         self._screen_pos: Optional[Vector2] = None
         self._mover: MovementComponent = MovementComponent(self)
 
+        self._moving: bool = False
         self._engaged: bool = False
+
+        # Subscribe to stat recalculation events.
+        self.game.subscribe_event("reset_stats", self.reset_stats)
 
 ################################################################################
     def __iadd__(self, other: DMStatus) -> DMUnit:
@@ -87,7 +92,7 @@ class DMUnit(DMLevelable):
         if isinstance(other, DMStatus):
             self._add_status(other)
         else:
-            raise ValueError("Unexpected type passed to DMFighter.__iadd__().")
+            raise ValueError(f"Unexpected type {type(other)} passed to DMFighter.__iadd__().")
 
         return self
 
@@ -125,6 +130,11 @@ class DMUnit(DMLevelable):
         return self._action_timer
 
 ################################################################################
+    def update_action_timer(self, dt: float) -> None:
+
+        self._action_timer += dt
+
+################################################################################
     def reset_action_timer(self) -> None:
 
         self._action_timer = 0.0
@@ -141,15 +151,7 @@ class DMUnit(DMLevelable):
         # Only apply Curse for buffs.
         if status.type == DMStatusType.Buff:
             # Before adding a status, check for Curse and resist
-            curse = self.get_status("Curse")
-            if curse is not None:
-                resist = self.get_status("Curse Resist")
-                if resist is not None:
-                    # If curse stacks exceed resist stacks
-                    if resist < curse:
-                        curse -= 1  # Remove a stack due to activation
-                        status = self.game.spawn(
-                            _n="Curse Resist")  # Just swap the buff for Curse Resist so the flow can continue.
+            status = self.handle_curse(status)
 
         found = False
         for s in self._statuses:
@@ -161,6 +163,33 @@ class DMUnit(DMLevelable):
         # Append the status if it wasn't already there.
         if not found:
             self._statuses.append(status)
+
+        # Trigger any immediate effects
+        status.on_acquire()
+
+        self.game.dispatch_event("status_applied", status=status)
+
+################################################################################
+    def handle_curse(self, status: DMStatus) -> DMStatus:
+
+        curse = self.get_status("Curse")
+        if curse is not None:
+            resist = self.get_status("Curse Resist")
+            if resist is not None:
+                # If curse stacks exceed resist stacks
+                if resist < curse:
+                    curse -= 1  # Remove a stack due to activation
+                    # Just swap the buff for Curse Resist so the flow can continue.
+                    status = self.game.spawn(
+                        _n="Curse Resist", init_obj=True, parent=self)
+
+        return status
+
+################################################################################
+    @property
+    def statuses(self) -> List[DMStatus]:
+
+        return self._statuses
 
 ################################################################################
     @property
@@ -224,9 +253,37 @@ class DMUnit(DMLevelable):
 
 ################################################################################
     @property
+    def stats(self) -> BaseStats:
+
+        return self._stats
+
+################################################################################
+    def reset_stats(self) -> None:
+
+        self._stats.reset()
+
+################################################################################
+    def refresh_stats(self) -> None:
+
+        self.reset_stats()
+        for status in self.statuses:
+            status.stat_adjust()
+
+################################################################################
+    @property
     def stat_score(self) -> float:
 
         return (self.life + self.attack + self.defense) * self.level + self.experience
+
+################################################################################
+    def enable_movement(self) -> None:
+
+        self._moving = True
+
+################################################################################
+    def disable_movement(self) -> None:
+
+        self._moving = False
 
 ################################################################################
     @property
@@ -238,7 +295,6 @@ class DMUnit(DMLevelable):
     def engage(self, unit: DMUnit) -> None:
 
         self._engaged = True
-        print("Engaging Monster")
         self.game.battle_mgr.engage(unit, self)
 
 ################################################################################
@@ -261,7 +317,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def increase_stat_pct(self, stat: str, amount: float) -> None:
 
-        if not isinstance(amount, int):
+        if not isinstance(amount, float):
             raise ArgumentTypeError(
                 "Invalid type passed to DMFighter.increase_stat_pct().",
                 type(amount),
@@ -303,16 +359,20 @@ class DMUnit(DMLevelable):
     def update(self, dt: float) -> None:
 
         self._action_timer -= dt
-        if self._mover is not None:
+        if self._moving:
             self._mover.update(dt)
         self.graphics.update(dt)
 
 ################################################################################
     def entered_room(self) -> None:
 
+        print("Entered room.")
         engaged = self.room.try_engage_monster(self)
         if not engaged:
-            self._mover.start_movement()
+            print("Did not engage.")
+            # self._mover.start_movement()
+        else:
+            print("Engaged Monster!")
 
 ################################################################################
     def _copy(self, **kwargs) -> DMUnit:
@@ -371,6 +431,7 @@ class DMUnit(DMLevelable):
         new_obj._move_penalty = 0.0
 
         new_obj._engaged = False
+        new_obj._moving = False
 
         return new_obj
 
@@ -389,6 +450,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def damage(self, amount: Union[int, float]) -> None:
 
+        print(f"Damaging unit for {amount}")
         self.stats.damage(int(amount))
 
 ################################################################################
@@ -398,5 +460,17 @@ class DMUnit(DMLevelable):
         """
 
         self._move_penalty += duration
+
+################################################################################
+    def purge_status(self, status: DMStatus) -> None:
+
+        self._statuses.remove(status)
+
+################################################################################
+    def purge_depleted_statuses(self) -> None:
+
+        for i, status in enumerate(self._statuses):
+            if status.stacks <= 0:
+                self._statuses.pop(i)
 
 ################################################################################

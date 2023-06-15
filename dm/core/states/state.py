@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from abc        import ABC, abstractmethod
+from abc        import abstractmethod
 from typing     import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from dm.core.game import DMGame
+    from dm.core.game.game import DMGame
     from pygame         import Surface
     from pygame.event   import Event
 ################################################################################

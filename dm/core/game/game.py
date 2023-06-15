@@ -4,12 +4,12 @@ import pygame
 import sys
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Callable, Optional, Type, Union
+from typing     import TYPE_CHECKING, Callable, List, Optional, Type, Union
 
 from ..battle.system        import DMBattleManager
 from .darklord              import DMDarkLord
 from .dungeon               import DMDungeon
-from .event_manager         import DMEventManager
+from .event_mgr         import DMEventManager
 from ..fates.fateboard      import DMFateBoard
 from .inventory             import DMInventory
 from .objpool               import DMObjectPool
@@ -17,9 +17,11 @@ from ..states.state_manager import DMStateMachine
 from utilities              import *
 
 if TYPE_CHECKING:
-    from pygame.event   import Event
-
-    from dm.core    import DMDungeonMap, DMObject, DMRoom, DMState
+    from dm.core.game.map import DMDungeonMap
+    from dm.core.objects.monster import DMMonster
+    from dm.core.objects.object import DMObject
+    from dm.core.objects.room import DMRoom
+    from dm.core.states.state import DMState
 ################################################################################
 
 __all__ = ("DMGame",)
@@ -114,6 +116,12 @@ class DMGame:
 
         pygame.quit()
         sys.exit()
+
+################################################################################
+    @property
+    def deployed_monsters(self) -> List[DMMonster]:
+
+        return self.dungeon.deployed_monsters
 
 ################################################################################
     def spawn(

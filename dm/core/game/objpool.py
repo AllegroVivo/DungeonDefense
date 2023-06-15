@@ -5,24 +5,24 @@ import random
 from typing     import TYPE_CHECKING, List, Optional, Type, Union
 
 # Bulk type Imports
-from dm.fates       import ALL_FATES, SPAWNABLE_FATES
-from dm.heroes       import ALL_HEROES
-from dm.monsters    import ALL_MONSTERS
+from ...fates       import ALL_FATES, SPAWNABLE_FATES
+from ...heroes      import ALL_HEROES
+from ...monsters    import ALL_MONSTERS
 # from ..relics       import ALL_RELICS
-from dm.rooms       import ALL_ROOMS
-# from ..statuses     import ALL_STATUSES
+from ...rooms       import ALL_ROOMS
+from ...statuses    import ALL_STATUSES
 
 # Smaller individual imports
 from ..objects.monster  import DMMonster
 from ..objects.room     import DMRoom
+from ..objects.status   import DMStatus
 from utilities      import SpawnType
 
 if TYPE_CHECKING:
-    from dm.core    import (
-        DMFateCard,
-        DMGame,
-        DMObject,
-    )
+    from dm.core.game.game import DMGame
+    from dm.core.fates.fatecard import DMFateCard
+    from dm.core.objects.object import DMObject
+    from dm.core.objects.hero import DMHero
 ################################################################################
 
 __all__ = ("DMObjectPool",)
@@ -55,14 +55,14 @@ class DMObjectPool:
         self.__monster_types: List[Type[DMMonster]] = ALL_MONSTERS.copy()
         self.__hero_types: List[Type[DMHero]] = ALL_HEROES.copy()
         self.__room_types: List[Type[DMRoom]] = ALL_ROOMS.copy()
-        # self.__status_types: List[Type[DMStatus]] = ALL_STATUSES.copy()
+        self.__status_types: List[Type[DMStatus]] = ALL_STATUSES.copy()
         # self.__relic_types: List[Type[DMRelic]] = ALL_RELICS.copy()
         self.__fate_types: List[Type[DMFateCard]] = SPAWNABLE_FATES.copy()
 
         self.__monsters: List[DMMonster] = [m(self._state) for m in self.__monster_types]  # type: ignore
         self.__heroes: List[DMHero] = [h(self._state) for h in self.__hero_types]  # type: ignore
         self.__rooms: List[DMRoom] = [r(self._state) for r in self.__room_types]  # type: ignore
-        # self.__statuses: List[DMStatus] = [s(self._state, None, 0) for s in self.__status_types]  # type: ignore
+        self.__statuses: List[DMStatus] = [s(self._state, None, 0) for s in self.__status_types]  # type: ignore
         # self.__relics: List[DMRelic] = [relic(self._state) for relic in self.__relic_types]  # type: ignore
         self.__fates: List[DMFateCard] = [f(self._state, 0, 0) for f in self.__fate_types]  # type: ignore
 
@@ -70,13 +70,10 @@ class DMObjectPool:
             self.__rooms.copy() +
             self.__monsters.copy() +   # type: ignore
             self.__heroes.copy() +
+            self.__statuses.copy() +
             [f(self._state, 0, 0) for f in ALL_FATES].copy()  # type: ignore
         )
-        #     self.__rooms.copy() +
-        #     self.__statuses.copy() +
         #     self.__relics.copy() +
-        #       # type: ignore
-        # )
 
 ################################################################################
     def spawn(
@@ -142,24 +139,22 @@ class DMObjectPool:
             except IndexError:
                 raise ValueError(f"Invalid status effect name |{_n}| provided to ObjectPool.spawn().")
 
-            if not init_obj:
-                return type(obj)
-            else:
-                # if type(obj) in self.__monster_types + self.__hero_types:  # type: ignore
-                #     obj._load_sprites()
-
+            if isinstance(obj, DMStatus) or init_obj:
                 return obj._copy(**kwargs)
+            else:
+                return type(obj)
 
         # If spawning a specific object, do that.
         if obj_id is not None:
-            result = [obj for obj in self.__master if obj._id == obj_id]
-            if not result:
+            results = [obj for obj in self.__master if obj._id == obj_id]
+            if not results:
                 raise ValueError(f"Invalid object ID |{obj_id}| provided to ObjectPool.spawn().")
             else:
-                if init_obj:
-                    return result[0]._copy(**kwargs)
+                result = results[0]
+                if isinstance(result, DMStatus) or init_obj:
+                    return result._copy(**kwargs)
                 else:
-                    return type(result[0])
+                    return type(result)
 
         # Otherwise it's a random spawn.
         if spawn_type is None:

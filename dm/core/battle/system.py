@@ -22,6 +22,7 @@ class DMBattleManager:
         "_encounters",
         "_spawn_interval",
         "_spawn_elapsed",
+        "counter"
     )
 
 ################################################################################
@@ -34,6 +35,8 @@ class DMBattleManager:
 
         self._spawn_interval: float = 2.0
         self._spawn_elapsed: float = 0
+
+        self.counter = 20
 
 ################################################################################
     @property
@@ -50,12 +53,18 @@ class DMBattleManager:
 ################################################################################
     def update(self, dt: float) -> None:
 
+        # self.counter += 1
+        # if self.counter % 20 != 0:
+        #     return
+        # else:
+        #     self.counter = 0
+
         # Before battle event fires
-        self.game.dispatch_event("stat_calculation")
         self.game.dispatch_event("before_battle")
 
         # Check for battle over
 
+        # Update dungeon components
         self.game.dungeon.update(dt)
 
         # Auto spawns a hero at the entrance tile after the appropriate
@@ -72,11 +81,11 @@ class DMBattleManager:
 
         # Run encounters
         for encounter in self._encounters:
-            encounter.run_turn()
+            encounter.run_turn(dt)
 
         # After battle event fires
         self.game.dispatch_event("after_battle")
-        self.game.dispatch_event("stats_reset")
+        self.game.dispatch_event("reset_stats")
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
@@ -116,8 +125,9 @@ class DMBattleManager:
 
         # Check if it's time to spawn a new hero
         if self._spawn_elapsed > self._spawn_interval:
-            self.game.dungeon.spawn_hero()
-            self._spawn_elapsed = 0
+            print("Spawning hero")
+            # self.game.dungeon.spawn_hero()
+            # self._spawn_elapsed = 0
 
 ################################################################################
     def engage(self, attacker: DMUnit, defender: DMUnit) -> None:

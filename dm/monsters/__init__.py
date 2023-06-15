@@ -10,11 +10,13 @@ __all__ = ("ALL_MONSTERS", )
 from .OneStar       import Bat
 from .TwoStar       import DarkSlime
 from .ThreeStar     import Cerberus
+
+from .Tester        import Tester
 ################################################################################
 # All Monsters
 ALL_MONSTERS: List[Type["DMMonster"]] = [
     # 1-Star
-    Bat, #Goblin, Imp, Slime,
+    Bat, Tester, #Goblin, Imp, Slime,
 
     # 2-Star
     DarkSlime, #Gargoyle, Harpy, HellHound, Lizardman, Mimic, Orc, Sahuagin,
