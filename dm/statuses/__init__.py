@@ -26,10 +26,12 @@ ALL_STATUSES: List[Type["DMStatus"]] = [
     Betray, Blind, Burn, Chained, Charm,
 
     # Antibuffs
-    ArmorFragment, DodgeResist, ImmuneResist,
+    ArmorFragment, Calmness, DodgeResist, ImmuneResist, Inattention,
+    MirrorFragment, RegeneratedBody, RegeneratedSkin,
 
     # Antidebuffs
-
+    BlindResist, ChainedResist, CharmResist, CurseResist, FearResist,
+    HazeResist, RigidityResist, StunResist,
 
     # Hero-only
 

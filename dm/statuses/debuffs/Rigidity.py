@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("NaturesPower",)
+__all__ = ("Rigidity",)
 
 ################################################################################
-class NaturesPower(DMStatus):
+class Rigidity(DMStatus):
 
     def __init__(
         self,
@@ -26,40 +26,44 @@ class NaturesPower(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-119",
-            name="Nature's Power",
+            _id="DBF-123",
+            name="Rigidity",
             description=(
-                "When damaging the next enemy, deals extra damage equal to "
-                "Regeneration possessed."
+                "Cannot take action for 1 second per Rigidity. Gains Rigidity "
+                "Resist each time Rigidity is given."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def on_acquire(self) -> None:
+        """Called automatically upon the status's acquisition by the unit."""
 
-        if ctx.attacker == self.owner:
-            regeneration = self.owner.get_status("Regeneration")
-            if regeneration is not None:
-                ctx.amplify_flat(int(regeneration.stacks * self.effect_value()))
+        self.game.subscribe_event("status_acquired", self.notify)
+
+################################################################################
+    def notify(self, status: DMStatus) -> None:
+        """A general event response function."""
+
+        if status.owner == self.owner:
+            if type(status) == type(self):
+                self.owner.add_status("Rigidity Resist")
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = 1 + (n * a)**
+        **effect = a * n**
 
         In this function:
 
-        - n is the number of Nature's Power stacks.
-        - a is the additional effectiveness per stack.
+        - n is the number of Rigidity stacks.
+        - a is the action delay per stack.
         """
 
-        return 1 + (self.stacks * 0.005)
+        return 1.0 * self.stacks
 
 ################################################################################

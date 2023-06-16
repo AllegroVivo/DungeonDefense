@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Shock",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Shock(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +26,14 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-124",
+            name="Shock",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "Receive additional damage as much as Shock stat when receiving "
+                "damage. The stat is reduced by half each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +41,18 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
-            if resist is not None:
-                if resist >= self:
-                    return
+        # If we're defending
+        if self.owner == ctx.defender:
+            # Add damage
+            ctx.amplify_flat(self.stacks)
 
-            # Negate the attack
-            ctx.will_fail = True
-            # Reduce stacks
-            self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+            # Check for Recharge before reducing stacks
+            recharge = self.owner.get_status("Recharge")
+            if recharge is not None:
+                # If present, reduce it instead.
+                recharge.reduce_stacks_by_one()
+            else:
+                # Reduce if Recharge didn't block it.
+                self.reduce_stacks_by_half()
 
 ################################################################################

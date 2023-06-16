@@ -13,6 +13,9 @@ EVENT_REGISTRY = {
     "battle_start" : [  # [None]
         IronPlate,
     ],
+    "before_attack" : [  # [None]
+        Poison,
+    ],
     "boss_room_entered" : [  # [DMUnit]
         CurseOfTheSkull
     ],
@@ -35,10 +38,13 @@ EVENT_REGISTRY = {
         AdvancedIncubator
     ],
     "on_death" : [  # [AttackContext]
-        GhostAmulet, LifePotion, UndeadGrip
+        GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore
     ],
     "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit
+    ],
+    "status_acquired" : [  # [DMStatus]
+        Regeneration, Despair
     ],
     "trap_activated" : [  # [AttackContext] (maybe?)
         InsigniaOfTerror

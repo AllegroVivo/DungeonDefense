@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("NaturesPower",)
+__all__ = ("Obey",)
 
 ################################################################################
-class NaturesPower(DMStatus):
+class Obey(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +26,21 @@ class NaturesPower(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-119",
-            name="Nature's Power",
+            _id="DBF-117",
+            name="Obey",
+            # description=(  # Original text
+            #     "Damage received is increased by 15% per Obey. This stat decreased "
+            #     "by 1 every time the enemy receives damage, and the enemy that "
+            #     "inflicted damage gets Pleasure as much as its ATK."
+            # ),
             description=(
-                "When damaging the next enemy, deals extra damage equal to "
-                "Regeneration possessed."
+                "Damage received is increased 15% per stack of Obey. This stat "
+                "is reduced by 1 every time the unit receives damage, and the "
+                "opponent that inflicted that damage gets Pleasure as much as "
+                "its ATK."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,25 +48,30 @@ class NaturesPower(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.attacker == self.owner:
-            regeneration = self.owner.get_status("Regeneration")
-            if regeneration is not None:
-                ctx.amplify_flat(int(regeneration.stacks * self.effect_value()))
+        # If we're defending
+        if self.owner == ctx.defender:
+            ctx.amplify_pct(self.effect_value())
+
+            # Reduce stacks
+            self.reduce_stacks_by_one()
+
+            # Apply buff to opponent
+            ctx.attacker.add_status("Pleasure", stacks=ctx.attacker.attack)
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = 1 + (n * a)**
+        **effect = a * n**
 
         In this function:
 
-        - n is the number of Nature's Power stacks.
-        - a is the additional effectiveness per stack.
+        - n is the number of Obey stacks.
+        - a is the effectiveness per stack.
         """
 
-        return 1 + (self.stacks * 0.005)
+        return 0.15 * self.stacks
 
 ################################################################################

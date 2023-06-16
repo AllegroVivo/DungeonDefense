@@ -139,6 +139,19 @@ class DMUnit(DMLevelable):
 
         self._action_timer = 0.0
 
+        # Adjust based on Rigidity stacks (1 second penalty per stack)
+        rigidity = self.get_status("Rigidity")
+        if rigidity is not None:
+            resist = self.get_status("Rigidity Resist")
+            if resist is not None:
+                if resist >= rigidity:
+                    return
+
+            # Apply action penalty
+            self._action_timer -= rigidity.effect_value()
+
+            #
+
 ################################################################################
     @property
     def graphics(self) -> GraphicalComponent:

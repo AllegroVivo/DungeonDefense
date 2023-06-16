@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Web",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Web(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +26,14 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-130",
+            name="Web",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "Receives 10% extra damage per Web. When Web stacks 10 or more "
+                "times, Web is removed and gets 1 Rigidity."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +41,30 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
-            if resist is not None:
-                if resist >= self:
-                    return
+        # If we're defending
+        if self.owner == ctx.defender:
+            ctx.amplify_pct(self.effect_value())
 
-            # Negate the attack
-            ctx.will_fail = True
-            # Reduce stacks
-            self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+            # Then check for 10+ stacks
+            if self.stacks >= 10:
+                # If present, remove and give debuff
+                self.reduce_stacks_flat(10)
+                self.owner.add_status("Rigidity")
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this status's effect.
+
+        Breakdown:
+        ----------
+        **effect = e * s**
+
+        In this function:
+
+        - e is the base effectiveness.
+        - s is the number of Web stacks.
+        """
+
+        return 0.10 * self.stacks
 
 ################################################################################

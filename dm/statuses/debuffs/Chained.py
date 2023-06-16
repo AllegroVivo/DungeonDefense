@@ -44,7 +44,13 @@ class Chained(DMStatus):
         # If we're attacking (since this is a debuff)
         if self.owner == ctx.attacker:
             # If we haven't used a skill
-            if ctx._type == AttackType.Attack:
+            if ctx.type == AttackType.Attack:
+                # First check resistance
+                resist = self.owner.get_status("Chained Resist")
+                if resist is not None:
+                    if resist >= self:
+                        return
+
                 # The attack will fail.
                 ctx.will_fail = True
 

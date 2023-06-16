@@ -10,66 +10,66 @@ __all__ = ("_EVENT_REFERENCE",)
 # ===========================================================================
 _EVENT_REFERENCE: List[str] = [
     # Battle-Related
-    "after_attack",                 # [AttackContext: "ctx"]
+    "after_attack",                 # [AttackContext]
     "after_battle",                 # [None]
-    "attacking_boss",               # [BossAttackContext: "ctx"]
-    "before_attack",                # [AttackContext: "ctx"]
-    "before_battle",                # [AttackContext: "ctx"]  # Do I need the ctx here?
-    "boss_room_entered",            # [DMFighter: "unit"]
-    "boss_skill_used",              # [BossSkillContext: "ctx"]
-    "damage_applied",               # [DamageComponent: "damage"]
-    "hero_spawn",                   # [DMHero: "hero"]
-    "on_attack",                    # [AttackContext: "ctx"]
-    "on_death",                     # [AttackContext: "ctx"]
-    "on_heal",                      # [HealingContext: "ctx"]
-    "on_room_enter",                # [DMRoom: "room"][DMFighter: "unit"]
-    "on_room_exit",                 # [DMRoom: "room"][DMFighter: "unit"]
-    "trap_activation",              # [AttackContext: "ctx"]
+    "attacking_boss",               # [BossAttackContext]
+    "before_attack",                # [AttackContext]
+    "before_battle",                # [None]
+    "boss_room_entered",            # [DMFighter]
+    "boss_skill_used",              # [BossSkillContext]
+    "damage_applied",               # [DamageComponent]
+    "hero_spawn",                   # [DMHero]
+    "on_attack",                    # [AttackContext]
+    "on_death",                     # [AttackContext]
+    "healing_applied",              # [HealingContext]
+    "on_room_enter",                # [DMRoom][DMFighter]
+    "on_room_exit",                 # [DMRoom][DMFighter]
+    "trap_activation",              # [AttackContext]
 
     # Boss Skill-Related
-    "boss_skill_blood_lord",        # [BossSkillContext: "ctx"]
-    "boss_skill_bite",              # [BossSkillContext: "ctx"]
-    "boss_skill_climax",            # [BossSkillContext: "ctx"]
-    "boss_skill_forbidden_love",    # [BossSkillContext: "ctx"]
-    "boss_skill_frost_arrow",       # [BossSkillContext: "ctx"]
-    "boss_skill_fury_explosion",    # [BossSkillContext: "ctx"]
-    "boss_skill_harvest",           # [BossSkillContext: "ctx"]
-    "boss_skill_hemokinesis",       # [BossSkillContext: "ctx"]
-    "boss_skill_infection",         # [BossSkillContext: "ctx"]
-    "boss_skill_petrifying_gaze",   # [BossSkillContext: "ctx"]
-    "boss_skill_rallying_cry",      # [BossSkillContext: "ctx"]
-    "boss_skill_snake_trap",        # [BossSkillContext: "ctx"]
-    "boss_skill_split",             # [BossSkillContext: "ctx"]
-    "boss_skill_vampiric_impulse",  # [BossSkillContext: "ctx"]
-    "boss_skill_venom_fang",        # [BossSkillContext: "ctx"]
-    "boss_skill_whip",              # [BossSkillContext: "ctx"]
+    "boss_skill_blood_lord",        # [BossSkillContext]
+    "boss_skill_bite",              # [BossSkillContext]
+    "boss_skill_climax",            # [BossSkillContext]
+    "boss_skill_forbidden_love",    # [BossSkillContext]
+    "boss_skill_frost_arrow",       # [BossSkillContext]
+    "boss_skill_fury_explosion",    # [BossSkillContext]
+    "boss_skill_harvest",           # [BossSkillContext]
+    "boss_skill_hemokinesis",       # [BossSkillContext]
+    "boss_skill_infection",         # [BossSkillContext]
+    "boss_skill_petrifying_gaze",   # [BossSkillContext]
+    "boss_skill_rallying_cry",      # [BossSkillContext]
+    "boss_skill_snake_trap",        # [BossSkillContext]
+    "boss_skill_split",             # [BossSkillContext]
+    "boss_skill_vampiric_impulse",  # [BossSkillContext]
+    "boss_skill_venom_fang",        # [BossSkillContext]
+    "boss_skill_whip",              # [BossSkillContext]
 
     # General Status-Related
-    "status_applied",               # [DMStatus: "status"][Optional[AttackContext]: "ctx"]
-    "status_execute",               # [DMStatus: "status"]
+    "status_applied",               # [DMStatus][Optional[AttackContext]]
+    "status_execute",               # [DMStatus]
 
     # Specific Status-Related
-    "recovery_canceled_by_burn",    # [int: "amount"]
+    "recovery_canceled_by_burn",    # [???]
 
     # Item Generation-Related
-    "egg_hatch",                    # [EggHatchContext: "ctx"]
-    "room_spawn",                   # [RoomSpawnContext: "ctx"]
+    "egg_hatch",                    # [EggHatchContext]
+    "room_spawn",                   # [RoomSpawnContext]
 
     # Fate-Related
-    "event_fate",                   # [DMEvent: "event"]
+    "event_fate",                   # [DMEvent]
     "dungeon_fate",                 # [None]
 
     # Enhancement-Related
-    "experience_awarded",           # [ExperienceContext: "ctx"]
-    "room_enhance",                 # [ExperienceContext: "ctx"]
+    "experience_awarded",           # [ExperienceContext]
+    "room_enhance",                 # [ExperienceContext]
 
     # Inventory-Related
-    "gold_acquired",                # [GoldSoulContext: "ctx"]
-    "relic_acquired",               # [DMRelic: "relic"]
-    "soul_acquired",                # [GoldSoulContext: "ctx"]
-    "book_acquired",                # [DMBook: "book"]
-    "book_complete",                # [DMBook: "book"]
-    "on_purchase",                  # [PurchaseContext: "ctx"]
+    "gold_acquired",                # [GoldSoulContext]
+    "relic_acquired",               # [DMRelic]
+    "soul_acquired",                # [GoldSoulContext]
+    "book_acquired",                # [DMBook]
+    "book_complete",                # [DMBook]
+    "on_purchase",                  # [PurchaseContext]
 
     # Stats-Related
     "stat_calculation",             # [None]
@@ -77,8 +77,8 @@ _EVENT_REFERENCE: List[str] = [
 
     # Dungeon-Related
     "day_advance",                  # [None]
-    "room_placed",                  # [DMRoom: "room"]
-    "room_removed",                 # [DMRoom: "room"]
-    "room_swap",                    # [DMRoom: "room"]
+    "room_placed",                  # [DMRoom]
+    "room_removed",                 # [DMRoom]
+    "room_swap",                    # [DMRoom]
 ]
 ################################################################################

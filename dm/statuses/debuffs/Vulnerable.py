@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Vulnerable",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Vulnerable(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +26,15 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-128",
+            name="Vulnerable",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "Damage received is increased by 50%, and effect increases "
+                "depending on the Vulnerable possessed. Stat is halved when "
+                "receiving damage. "
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +42,29 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
-            if resist is not None:
-                if resist >= self:
-                    return
+        # If we're defending
+        if self.owner == ctx.defender:
+            # Increase damage
+            ctx.amplify_pct(self.effect_value())
 
-            # Negate the attack
-            ctx.will_fail = True
             # Reduce stacks
-            self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+            self.reduce_stacks_by_half()
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this status's effect.
+
+        Breakdown:
+        ----------
+        **effect = b + (a * s)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - n is the number of Vulnerable stacks.
+        - a is the additional effectiveness per stack.
+        """
+
+        return 0.50 + (0.001 * self.stacks)
 
 ################################################################################

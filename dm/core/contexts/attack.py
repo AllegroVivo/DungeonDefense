@@ -219,6 +219,12 @@ class AttackContext(Context):
         return self._defender
 
 ################################################################################
+    @property
+    def type(self) -> AttackType:
+
+        return self._type
+
+################################################################################
     def override_damage(self, amount: Union[int, float]) -> None:
 
         self._damage.override(amount)
@@ -228,10 +234,9 @@ class AttackContext(Context):
 
         # Publish before attack event
         self._state.dispatch_event("before_attack", ctx=self)
-
         # Reset stats so statuses can do their newly scaled effects (after stack removal last turn)
-        self._attacker.reset_stats()
-        self._defender.reset_stats()
+        self._attacker.refresh_stats()
+        self._defender.refresh_stats()
 
         # Factor in relic effects
         for relic in self._state.relics:

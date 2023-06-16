@@ -234,6 +234,12 @@ class DMStatus(DMObject):
         pass
 
 ################################################################################
+    def notify(self, *args) -> None:
+        """A general event response function."""
+
+        pass
+
+################################################################################
     def stat_adjust(self) -> None:
         """This function is called automatically when a stat refresh is initiated.
         A refresh can be initiated manually or by the global listener."""

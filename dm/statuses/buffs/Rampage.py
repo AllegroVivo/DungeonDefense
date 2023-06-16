@@ -46,6 +46,8 @@ class Rampage(DMStatus):
         else:
             ctx.amplify_pct(self.effect_value() / 2)
 
+        # Does not reduce.
+
 ################################################################################
     def effect_value(self) -> float:
         """The value of this status's effect. For example:

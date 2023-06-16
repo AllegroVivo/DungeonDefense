@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Blind",)
+__all__ = ("Peace",)
 
 ################################################################################
-class Blind(DMStatus):
+class Peace(DMStatus):
 
     def __init__(
         self,
@@ -26,33 +26,28 @@ class Blind(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="DBF-102",
-            name="Blind",
+            _id="DBF-121",
+            name="Peace",
             description=(
-                "The next attack will always miss. Stat decreases by 1 and you "
-                "gain 1 Blind Resist upon activation."
+                "Receive damage as much as this stat at the beginning of action, "
+                "and then the stat is reduced to half."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def on_acquire(self) -> None:
+        """Called automatically upon the status's acquisition by the unit."""
 
-        if self.owner == ctx.attacker:
-            # Check against resist first and return if it exceeds self.stacks.
-            resist = self.owner.get_status("Blind Resist")
-            if resist is not None:
-                if resist >= self:
-                    return
+        self.game.subscribe_event("before_attack", self.notify)
 
-            # Attack fails (misses)
-            ctx.will_fail = True
+################################################################################
+    def notify(self, ctx: AttackContext) -> None:
+        """A general event response function."""
 
-            # Reduce stacks and apply antidebuff.
-            self.reduce_stacks_by_one()
-            self.owner.add_status("Blind Resist")
+        # Appears to apply on any action - attacking or defending
+        self.owner.damage(self.stacks)
+        self.reduce_stacks_by_half()
 
 ################################################################################

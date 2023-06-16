@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.game.game import DMGame
     from dm.core.objects.hero import DMHero
+    from dm.core.objects.monster import DMMonster
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
@@ -33,6 +34,7 @@ class DMRoom(DMLevelable):
 
     __slots__ = (
         "_position",
+        "_monsters",
         "graphics",
     )
 
@@ -100,6 +102,12 @@ class DMRoom(DMLevelable):
     def heroes(self) -> List[DMHero]:
 
         return [hero for hero in self.game.dungeon.heroes if hero.room == self]
+
+################################################################################
+    @property
+    def monsters(self) -> List[DMMonster]:
+
+        return self._monsters
 
 ################################################################################
     @property

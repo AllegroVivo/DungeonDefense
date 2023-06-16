@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("NaturesPower",)
+__all__ = ("Slow",)
 
 ################################################################################
-class NaturesPower(DMStatus):
+class Slow(DMStatus):
 
     def __init__(
         self,
@@ -26,25 +26,25 @@ class NaturesPower(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-119",
-            name="Nature's Power",
+            _id="DBF-125",
+            name="Slow",
             description=(
-                "When damaging the next enemy, deals extra damage equal to "
-                "Regeneration possessed."
+                "DEX is decreased by 50% and effect increases depending on the "
+                "Slow possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def stat_adjust(self) -> None:
+        """This function is called automatically when a stat refresh is initiated.
+        A refresh can be initiated manually or by the global listener."""
 
-        if ctx.attacker == self.owner:
-            regeneration = self.owner.get_status("Regeneration")
-            if regeneration is not None:
-                ctx.amplify_flat(int(regeneration.stacks * self.effect_value()))
+        # Apply debuff to DEX
+        self.owner.reduce_stat_pct("dex", self.effect_value())
+        # Reduce stacks
+        self.reduce_stacks_by_half()
 
 ################################################################################
     def effect_value(self) -> float:
@@ -52,14 +52,18 @@ class NaturesPower(DMStatus):
 
         Breakdown:
         ----------
-        **effect = 1 + (n * a)**
+        **effect = b + (a * n)**
 
         In this function:
 
-        - n is the number of Nature's Power stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base effect amount.
+        - n is the number of Slow stacks.
+        - a is the additional effectiveness per stack of Slow.
         """
 
-        return 1 + (self.stacks * 0.005)
+        slow = self.owner.get_status("Slow")
+        scalar = 0 if slow is None else slow.stacks
+
+        return 0.50 + (0.001 * scalar)
 
 ################################################################################

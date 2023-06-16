@@ -20,7 +20,7 @@ class Tester(DMMonster):
             level,
             _id="MON-XXX",
             name="Tester",
-            description="A Snorsblat is coming.",
+            description="A Snarfblat is upon you!",
             life=1000,
             attack=100,
             defense=1.0,

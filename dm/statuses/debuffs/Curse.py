@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Regeneration",)
+__all__ = ("Curse",)
 
 ################################################################################
-class Regeneration(DMStatus):
+class Curse(DMStatus):
 
     def __init__(
         self,
@@ -26,11 +26,12 @@ class Regeneration(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-125",
-            name="Regeneration",
+            _id="DBF-109",
+            name="Curse",
             description=(
-                "Recover LIFE equal to Regeneration stats at the start of each action. "
-                "Stat is halved with each activation. Cancels Burn, and vice versa."
+                "Negates the next buff you receive. Stat decreases by 1 and you "
+                "gain 1 Curse Resist per buff negation. Cancels Immune, and "
+                "vice versa."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -40,31 +41,34 @@ class Regeneration(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("status_applied", self.try_negate_debuff)
+        self.game.subscribe_event("status_acquired", self.try_negate_buff)
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def try_negate_buff(self, status: DMStatus) -> None:
 
-        self.owner.heal(self.stacks)
-        self.reduce_stacks_by_half()
+        if status.type is DMStatusType.Buff:
+            # Grab the resist info
+            resist = self.owner.get_status("Curse Resist")
+            if resist >= self:
+                return
 
-################################################################################
-    def try_negate_debuff(self, status: DMStatus) -> None:
-
-        if status.owner != self.owner:
-            return
-
-        if status.name == "Burn":
-            # If Burn, we negate at a 1:1 ratio.
-            negation = min(self.stacks, status.stacks)
+            # For Immune, we negate at a 1:1 ratio.
+            if status.name == "Immune":
+                negation = min(self.stacks, status.stacks)
+                # Since we'll be reducing self.stacks by more than 1 unit, we need
+                # to see if the resist will need to be factored in.
+                if resist is not None:
+                    negation -= resist.stacks
+                reduction = negation
+            else:
+                negation = status.stacks
+                reduction = 1
 
             # Otherwise negate at a 1:All ratio.
             status.reduce_stacks_flat(negation)
-            self.reduce_stacks_flat(negation)
+            self.reduce_stacks_flat(reduction)
 
             # Reduce and apply resist
-            self.owner.add_status("Immune Resist")
+            self.owner.add_status("Curse Resist")
 
 ################################################################################

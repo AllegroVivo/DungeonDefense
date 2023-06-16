@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Stun",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Stun(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +26,14 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-127",
+            name="Stun",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "Unable to take action for 1 turn. Stat decreases by 1 and you "
+                "gain 1 Stun Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +41,19 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
+        # If we're attacking
+        if self.owner == ctx.attacker:
+            # Check resistance first
+            resist = self.owner.get_status("Stun Resist")
             if resist is not None:
                 if resist >= self:
                     return
 
-            # Negate the attack
+            # Unable to act
             ctx.will_fail = True
-            # Reduce stacks
+
+            # Reduce stacks and apply resist.
             self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+            self.owner.add_status("Stun Resist")
 
 ################################################################################

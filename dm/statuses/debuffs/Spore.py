@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING, Optional
 
+from dm.core.objects.hero import DMHero
 from dm.core.objects.status import DMStatus
 from utilities          import *
 
@@ -11,10 +12,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Rebound",)
+__all__ = ("Spore",)
 
 ################################################################################
-class Rebound(DMStatus):
+class Spore(DMStatus):
 
     def __init__(
         self,
@@ -26,50 +27,54 @@ class Rebound(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-124",
-            name="Rebound",
+            _id="DBF-126",
+            name="Spore",
             description=(
-                "Get Fury equal to 10% of LIFE when you next receive damage, with "
-                "increasing effect depending on the Rebound stat possessed. Stat "
-                "is halved when receiving damage."
+                "At the time of death, applies 10% of Poison stacks per Spore as "
+                "damage to nearby allies."  # Previous text said "enemies".
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def on_acquire(self) -> None:
+        """Called automatically upon the status's acquisition by the unit."""
 
-        ctx.register_after_execute(self.callback)
+        self.game.subscribe_event("on_death", self.notify)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
+        """A general event response function."""
 
         if self.owner == ctx.defender:
-            # If the status owner is going to take damage
-            if ctx.damage > 0:
-                # Add Fury.
-                self.owner.add_status("Fury", stacks=self.effect_value())
-                # Reduce stacks
-                self.reduce_stacks_by_half()
+            if isinstance(self.owner, DMHero):
+                units = self.owner.room.heroes
+            else:
+                units = self.owner.room.monsters
+
+            for unit in units:
+                unit.damage(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = (L * 0.10) + (n * a)**
+        **effect = (p * b) + s**
 
         In this function:
 
-        - L is the defender's base max LIFE.
-        - n is the number of Rebound stacks.
-        - a is the additional effectiveness per stack.
+        - s is the number of Spore stacks.
+        - b is the base effectiveness per Spore stack
+        - p is the number of Poison stacks.
         """
 
-        return (self.owner.max_life * 0.10) + (self.stacks * 0.01)
+        poison = self.owner.get_status("Poison")
+        if poison is None:
+            return 0
+
+        return (poison.stacks * 0.10) * self.stacks
 
 ################################################################################

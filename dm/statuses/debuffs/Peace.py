@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Rebound",)
+__all__ = ("Peace",)
 
 ################################################################################
-class Rebound(DMStatus):
+class Peace(DMStatus):
 
     def __init__(
         self,
@@ -26,34 +26,47 @@ class Rebound(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-124",
-            name="Rebound",
-            description=(
-                "Get Fury equal to 10% of LIFE when you next receive damage, with "
-                "increasing effect depending on the Rebound stat possessed. Stat "
-                "is halved when receiving damage."
-            ),
+            _id="DBF-120",
+            name="Peace",
+            description="ATK is fixed at 1 until next action.",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
+
+        # Not sure what to do with it. Probably Goddess Blessing-specific
+
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically upon the status's acquisition by the unit."""
+
+        pass
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        ctx.register_after_execute(self.callback)
+        pass
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, *args) -> None:
+        """A general event response function."""
 
-        if self.owner == ctx.defender:
-            # If the status owner is going to take damage
-            if ctx.damage > 0:
-                # Add Fury.
-                self.owner.add_status("Fury", stacks=self.effect_value())
-                # Reduce stacks
-                self.reduce_stacks_by_half()
+        pass
+
+################################################################################
+    def activate(self) -> None:
+        """For use in a no-arguments-required situation. This is not automatically
+        called."""
+
+        pass
+
+################################################################################
+    def stat_adjust(self) -> None:
+        """This function is called automatically when a stat refresh is initiated.
+        A refresh can be initiated manually or by the global listener."""
+
+        pass
 
 ################################################################################
     def effect_value(self) -> float:
@@ -61,15 +74,15 @@ class Rebound(DMStatus):
 
         Breakdown:
         ----------
-        **effect = (L * 0.10) + (n * a)**
+        **effect = (D0 * 0.5 * (1 + a * n)) / 2**
 
         In this function:
 
-        - L is the defender's base max LIFE.
-        - n is the number of Rebound stacks.
+        - D0 is the original dexterity.
+        - n is the number of Acceleration stacks.
         - a is the additional effectiveness per stack.
         """
 
-        return (self.owner.max_life * 0.10) + (self.stacks * 0.01)
+        pass
 
 ################################################################################

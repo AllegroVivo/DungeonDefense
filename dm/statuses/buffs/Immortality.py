@@ -48,6 +48,12 @@ class Immortality(DMStatus):
     def callback(self, ctx: AttackContext) -> None:
 
         if not ctx.defender.is_alive:
+            # Check resistance
+            resist = self.owner.get_status("Regenerated Body")
+            if resist is not None:
+                if resist >= self:
+                    return
+
             # Survive death with 1 LIFE
             self.owner.heal(1)
 
@@ -56,5 +62,7 @@ class Immortality(DMStatus):
 
             # Apply additional effect
             self.owner.add_status("Immortal Rage")
+            # And resistance
+            self.owner.add_status("Regenerated Body")
 
 ################################################################################

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing     import TYPE_CHECKING, Optional
 
 from dm.core.objects.status import DMStatus
+from ...rooms.traproom import DMTrapRoom
 from utilities          import *
 
 if TYPE_CHECKING:
@@ -11,10 +12,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Dull",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Dull(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +27,14 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-111",
+            name="Dull",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "Damage received from traps is increased by 100%. The stat is "
+                "reduced by 1 each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +42,13 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
-            if resist is not None:
-                if resist >= self:
-                    return
-
-            # Negate the attack
-            ctx.will_fail = True
-            # Reduce stacks
-            self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+        # If we're defending
+        if self.owner == ctx.defender:
+            # And a trap is attacking
+            if isinstance(ctx.attacker, DMTrapRoom):
+                # Increase damage by 100%
+                ctx.amplify_pct(1.00)
+                # Reduce by one
+                self.reduce_stacks_by_one()
 
 ################################################################################

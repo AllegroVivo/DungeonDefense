@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("Despair",)
 
 ################################################################################
-class Template(DMStatus):
+class Despair(DMStatus):
 
     def __init__(
         self,
@@ -26,9 +26,9 @@ class Template(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="DBF-101",
-            name="UrMom",
-            description="UrMom",
+            _id="DBF-110",
+            name="Despair",
+            description="Maximum LIFE and buff you gain decrease by half.",
             stacks=stacks,
             status_type=DMStatusType.Debuff
         )
@@ -37,50 +37,20 @@ class Template(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        pass
+        self.game.subscribe_event("status_acquired", self.notify)
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, status: DMStatus) -> None:
         """A general event response function."""
 
-        pass
-
-################################################################################
-    def activate(self) -> None:
-        """For use in a no-arguments-required situation. This is not automatically
-        called."""
-
-        pass
+        if self.owner == status.owner:
+            status.reduce_stacks_pct(0.50)
 
 ################################################################################
     def stat_adjust(self) -> None:
         """This function is called automatically when a stat refresh is initiated.
         A refresh can be initiated manually or by the global listener."""
 
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this status's effect. For example:
-
-        Breakdown:
-        ----------
-        **effect = (D0 * 0.5 * (1 + a * n)) / 2**
-
-        In this function:
-
-        - D0 is the original dexterity.
-        - n is the number of Acceleration stacks.
-        - a is the additional effectiveness per stack.
-        """
-
-        pass
+        self.owner.reduce_stat_pct("life", 0.50)
 
 ################################################################################

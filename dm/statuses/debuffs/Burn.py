@@ -23,7 +23,6 @@ class Burn(DMStatus):
         stacks: Optional[int] = 1
     ):
 
-
         super().__init__(
             game,
             parent,
@@ -51,7 +50,7 @@ class Burn(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("unit_healed", self.callback)
+        self.game.subscribe_event("healing_applied", self.callback)
 
 ################################################################################
     def callback(self, ctx: HealingContext) -> None:

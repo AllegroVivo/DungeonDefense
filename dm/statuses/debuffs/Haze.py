@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 from typing     import TYPE_CHECKING, Optional
 
 from dm.core.objects.status import DMStatus
@@ -11,10 +13,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Revenge",)
+__all__ = ("Haze",)
 
 ################################################################################
-class Revenge(DMStatus):
+class Haze(DMStatus):
 
     def __init__(
         self,
@@ -26,14 +28,14 @@ class Revenge(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-126",
-            name="Revenge",
+            _id="DBF-115",
+            name="Haze",
             description=(
-                "When about to receive damage, negates the damage once and grants "
-                "Thorn equal to ATK."
+                "The next action is executed towards a random target. Stat "
+                "decreases by 1 and you gain 1 Haze Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
@@ -41,20 +43,23 @@ class Revenge(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
-        if ctx.defender == self.owner:
-            # Check against the owner's resist first
-            resist = self.owner.get_status("Calmness")
+        # If we're attacking
+        if self.owner == ctx.attacker:
+            # Check resist
+            resist = self.owner.get_status("Haze Resist")
             if resist is not None:
                 if resist >= self:
                     return
 
-            # Negate the attack
-            ctx.will_fail = True
-            # Reduce stacks
+            # Get target sources
+            monsters = self.owner.room.monsters
+            heroes = self.owner.room.heroes
+
+            # Hard set the new attack target
+            ctx._defender = random.choice(monsters + heroes)  # type: ignore
+
+            # Reduce stacks and apply resist.
             self.reduce_stacks_by_one()
-            # Apply resulting buff
-            self.owner.add_status("Thorn", stacks=self.owner.attack)
-            # And resist
-            self.owner.add_status("Calmness")
+            self.owner.add_status("Haze Resist")
 
 ################################################################################

@@ -20,8 +20,7 @@ R = TypeVar("R")
 class DMBattleRoom(DMRoom):
 
     __slots__ = (
-        "_monsters",
-        "monster_cap"
+        "monster_cap",
     )
 
 ################################################################################
@@ -40,7 +39,6 @@ class DMBattleRoom(DMRoom):
 
         super().__init__(state, position, _id, name, description, rank, level, unlock)
 
-        self._monsters: List[DMMonster] = []
         self.monster_cap: int = monster_cap
 
 ################################################################################

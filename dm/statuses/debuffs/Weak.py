@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("NaturesPower",)
+__all__ = ("Weak",)
 
 ################################################################################
-class NaturesPower(DMStatus):
+class Weak(DMStatus):
 
     def __init__(
         self,
@@ -26,40 +26,38 @@ class NaturesPower(DMStatus):
         super().__init__(
             game,
             parent,
-            _id="BUF-119",
-            name="Nature's Power",
+            _id="DBF-129",
+            name="Weak",
             description=(
-                "When damaging the next enemy, deals extra damage equal to "
-                "Regeneration possessed."
+                "ATK decreased by 50%, and effect increases depending on the "
+                "amount of Weak possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Debuff
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+    def stat_adjust(self) -> None:
+        """This function is called automatically when a stat refresh is initiated.
+        A refresh can be initiated manually or by the global listener."""
 
-        if ctx.attacker == self.owner:
-            regeneration = self.owner.get_status("Regeneration")
-            if regeneration is not None:
-                ctx.amplify_flat(int(regeneration.stacks * self.effect_value()))
+        self.owner.reduce_stat_pct("attack", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = 1 + (n * a)**
+        **effect = b + (a * s)**
 
         In this function:
 
-        - n is the number of Nature's Power stacks.
+        - b is the base effectiveness.
+        - n is the number of Weak stacks.
         - a is the additional effectiveness per stack.
         """
 
-        return 1 + (self.stacks * 0.005)
+        return 0.50 + (0.001 * self.stacks)
 
 ################################################################################
