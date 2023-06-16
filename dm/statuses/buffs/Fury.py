@@ -29,8 +29,8 @@ class Fury(DMStatus):
             _id="BUF-111",
             name="Fury",
             description=(
-                "Adds additional damage to an attack or skill equal to Fury "
-                "stats. Fury stats are halved each time it is activated."
+                "The next attack or skill deals additional damage equal to amount "
+                "of Fury possessed. The stat is halved upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

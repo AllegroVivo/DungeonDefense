@@ -29,7 +29,7 @@ class Rampage(DMStatus):
             _id="BUF-123",
             name="Rampage",
             description=(
-                "Damage to enemy is increased by 2% and damage to self is increased "
+                "Damage to enemy is increased by 2%, and damage to self is increased "
                 "by 1% per stack."
             ),
             stacks=stacks,

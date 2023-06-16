@@ -46,7 +46,7 @@ class DMFateBoardRow:
             ]
         elif self._position != 20:
             self._cards = [
-                self.game.spawn(spawn_type=SpawnType.Fate)(self.game, x=x, y=self._position)
+                self.game.spawn(spawn_type=DMSpawnType.Fate)(self.game, x=x, y=self._position)
                 for x in range(FATE_BOARD_WIDTH)
             ]
         else:

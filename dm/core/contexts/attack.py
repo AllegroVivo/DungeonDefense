@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from ...core.game.game  import DMGame
     from ...core.objects.unit import DMUnit
     from ...core.objects.room import DMRoom
+    from ...rooms.traproom import DMTrapRoom
 ################################################################################
 
 __all__ = ("AttackContext", )
@@ -207,7 +208,7 @@ class AttackContext(Context):
 
 ################################################################################
     @property
-    def attacker(self) -> DMUnit:
+    def attacker(self) -> Union[DMUnit, DMTrapRoom]:
 
         return self._attacker
 
@@ -231,6 +232,10 @@ class AttackContext(Context):
         # Reset stats so statuses can do their newly scaled effects (after stack removal last turn)
         self._attacker.reset_stats()
         self._defender.reset_stats()
+
+        # Factor in relic effects
+        for relic in self._state.relics:
+            relic.handle(self)
 
         # Handle status conditions
         # Apply defensive buffs and debuffs first to give advantage ♥
@@ -256,10 +261,6 @@ class AttackContext(Context):
                 # Might as well break here too if a status nullifies the attack.
                 if self.will_fail:
                     break
-
-        # Factor in relic effects
-        for relic in self._state.relics:
-            relic.handle(self)
 
         # Finalize the damage.
         self.defender.damage(self.damage)

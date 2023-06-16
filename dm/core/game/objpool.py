@@ -16,7 +16,7 @@ from ...statuses    import ALL_STATUSES
 from ..objects.monster  import DMMonster
 from ..objects.room     import DMRoom
 from ..objects.status   import DMStatus
-from utilities      import SpawnType
+from utilities      import DMSpawnType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -82,7 +82,7 @@ class DMObjectPool:
         *,
         _n: Optional[str],
         obj_id: Optional[str],
-        spawn_type: Optional[SpawnType],
+        spawn_type: Optional[DMSpawnType],
         start_rank: int,
         end_rank: int,
         weighted: bool,
@@ -162,13 +162,13 @@ class DMObjectPool:
             raise ValueError("spawn_type cannot be None for ObjectPool.spawn() if no obj_id is provided.")
 
         match spawn_type:
-            case SpawnType.Monster:
+            case DMSpawnType.Monster:
                 source = self.__monsters
-            case SpawnType.Hero:
+            case DMSpawnType.Hero:
                 source = self.__heroes
-            case SpawnType.Relic:
+            case DMSpawnType.Relic:
                 source = self.__relics
-            case SpawnType.Fate:
+            case DMSpawnType.Fate:
                 source = self.__fates
             case _:
                 source = self.__rooms
@@ -185,7 +185,7 @@ class DMObjectPool:
 
         eligible_weights = None
         if weighted:
-            if spawn_type is not SpawnType.Fate:
+            if spawn_type is not DMSpawnType.Fate:
                 weights = {rank: 0.5 ** (rank - 1) for rank in range(1, 6)}
             else:
                 # Fates are weighted differently

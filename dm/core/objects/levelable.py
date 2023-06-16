@@ -6,7 +6,7 @@ from dm.core.objects.object import DMObject
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core.game import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("DMLevelable",)
@@ -77,6 +77,6 @@ class DMLevelable(DMObject):
     def level_up(self, num_levels: int = 1) -> None:
 
         self._level += num_levels
-        self.exp = 0
+        self._exp = 0
 
 ################################################################################

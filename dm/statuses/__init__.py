@@ -23,7 +23,7 @@ ALL_STATUSES: List[Type["DMStatus"]] = [
     Vampire,
 
     # Debuffs
-
+    Betray, Blind, Burn, Chained, Charm,
 
     # Antibuffs
     ArmorFragment, DodgeResist, ImmuneResist,

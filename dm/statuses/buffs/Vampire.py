@@ -29,8 +29,8 @@ class Vampire(DMStatus):
             _id="BUF-131",
             name="Vampire",
             description=(
-                "Recovers LIFE as much as Vampire stat when attacking enemy. "
-                "The stat is reduced by half each time it is activated."
+                "Recover LIFE as much as Vampire stat possessed when attacking "
+                "enemy. Stacks are reduced by half upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

@@ -19,6 +19,7 @@ from utilities              import *
 
 if TYPE_CHECKING:
     from dm.core.game.map import DMDungeonMap
+    from dm.core.objects.hero import DMHero
     from dm.core.objects.monster import DMMonster
     from dm.core.objects.object import DMObject
     from dm.core.objects.relic import DMRelic
@@ -126,12 +127,24 @@ class DMGame:
         return self.dungeon.deployed_monsters
 
 ################################################################################
+    @property
+    def all_monsters(self) -> List[DMMonster]:
+
+        return self.dungeon.deployed_monsters + self.inventory.monsters
+
+################################################################################
+    @property
+    def all_heroes(self) -> List[DMHero]:
+
+        return self.dungeon.heroes
+
+################################################################################
     def spawn(
         self,
         _n: Optional[str] = None,
         *,
         obj_id: Optional[str] = None,
-        spawn_type: Optional[SpawnType] = None,
+        spawn_type: Optional[DMSpawnType] = None,
         start_rank: int = 1,
         end_rank: int = 5,
         weighted: bool = True,
@@ -206,12 +219,6 @@ class DMGame:
 
         self.state_machine.current_state.set_title(title)  # type: ignore
         self.state_machine.current_state.set_text(text)  # type: ignore
-
-################################################################################
-    # @property
-    # def all_monsters(self) -> List[DMMonster]:
-    #
-    #     return self.dungeon.deployed_monsters() + self.inventory.monsters
 
 ################################################################################
     def advance_day(self) -> None:

@@ -5,7 +5,7 @@ __all__ = (
     "DMType",
     "DMRoomType",
     "UnlockPack",
-    "SpawnType",
+    "DMSpawnType",
     "HeroState",
     "DMFateType",
     "StatComponentType",
@@ -51,7 +51,7 @@ class UnlockPack(Enum):
     Abyss = 9
 
 ################################################################################
-class SpawnType(Enum):
+class DMSpawnType(Enum):
 
     Monster = 1
     Hero = 2

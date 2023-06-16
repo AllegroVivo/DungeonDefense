@@ -57,8 +57,9 @@ class DMEventManager:
 ################################################################################
     def dispatch(self, event_type: str, **payload) -> None:
 
+        # Might just make this a pass depending on if I go crazy making event types
         if event_type not in self.subscribers:
-            raise TypeError(f"Invalid event name `{event_type}` passed to EventManager.publish().")
+            raise TypeError(f"Invalid event name `{event_type}` passed to EventManager.dispatch().")
 
         for callback in self.subscribers[event_type]:
             callback(**payload)

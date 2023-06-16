@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING, List, Optional, TypeVar
 
 from dm.core.objects.room import DMRoom
@@ -19,15 +20,14 @@ R = TypeVar("R")
 class DMTrapRoom(DMRoom):
 
     __slots__ = (
-
+        "_activated_first_time",
     )
 
 ################################################################################
     def __init__(
         self,
         state: DMGame,
-        row: int,
-        col: int,
+        position: Vector2,
         _id: str,
         name: str,
         description: str,
@@ -36,13 +36,21 @@ class DMTrapRoom(DMRoom):
         unlock: Optional[UnlockPack] = None,
     ):
 
-        super().__init__(state, row, col, _id, name, description, rank, level, unlock)
+        super().__init__(state, position, _id, name, description, rank, level, unlock)
+
+        self._activated_first_time: bool = False
 
 ################################################################################
     @property
     def room_type(self) -> DMRoomType:
 
         return DMRoomType.Trap
+
+################################################################################
+    @property
+    def activated_for_the_first_time(self) -> bool:
+
+        return self._activated_first_time
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

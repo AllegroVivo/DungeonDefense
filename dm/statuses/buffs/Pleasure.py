@@ -30,7 +30,7 @@ class Pleasure(DMStatus):
             name="Pleasure",
             description=(
                 "Changes to Fury when attacking an enemy, and to Regeneration "
-                "when receiving damage. Stat is halved upon use."
+                "when receiving damage. Stat is halved upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

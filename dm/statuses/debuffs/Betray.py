@@ -31,8 +31,8 @@ class Betray(DMStatus):
             _id="DBF-101",
             name="Betray",
             description=(
-                "The next attack on ally deals double damage. Stat decreases by "
-                "1 per each time ally is damaged."
+                "The next attack against an ally deals double damage. Stat "
+                "decreases by 1 each time an ally is damaged."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
@@ -43,14 +43,20 @@ class Betray(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
+        # Statuses can't be held by trap rooms, so that eliminates traps from this equation.
         if self.owner == ctx.attacker:
+            # If we're not a hero fighting a hero, return.
             if isinstance(self, DMHero):
                 if not isinstance(ctx.defender, DMHero):
                     return
+            # Or monster fighting monster
             elif not isinstance(ctx.defender, DMMonster):
                 return
 
-            ctx.amplify_pct(1.00)  # Double damage
+            # If we passed the checks, double the damage
+            ctx.amplify_pct(1.00)
+
+            # And reduce
             self.reduce_stacks_by_one()
 
 ################################################################################

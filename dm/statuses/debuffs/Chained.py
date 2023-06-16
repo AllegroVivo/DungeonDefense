@@ -29,8 +29,8 @@ class Chained(DMStatus):
             _id="DBF-104",
             name="Chained",
             description=(
-                "Disables normal attack for the next action. Stat is reduced by "
-                "1 and you gain 1 Chained Resist per every action."
+                "The next normal attack will fail. Stat is reduced by 1 and "
+                "unit gains 1 Chained Resist upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
@@ -41,9 +41,14 @@ class Chained(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
+        # If we're attacking (since this is a debuff)
         if self.owner == ctx.attacker:
+            # If we haven't used a skill
             if ctx._type == AttackType.Attack:
+                # The attack will fail.
                 ctx.will_fail = True
+
+                # Reduce stacks and add resist.
                 self.reduce_stacks_by_one()
                 self.owner.add_status("Chained Resist")
 

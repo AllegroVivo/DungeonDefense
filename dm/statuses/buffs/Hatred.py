@@ -29,8 +29,8 @@ class Hatred(DMStatus):
             _id="BUF-113",
             name="Hatred",
             description=(
-                "Damage to enemies increases by 1% per stat. No effect can "
-                "reduce or remove this. "
+                "Outbound damage increases by 1% for each stack of Hatred possessed. "
+                "No effect can reduce or remove this. "
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

@@ -29,7 +29,7 @@ class Regeneration(DMStatus):
             _id="BUF-125",
             name="Regeneration",
             description=(
-                "Recover LIFE equal to Regeneration stats at the start of action. "
+                "Recover LIFE equal to Regeneration stats at the start of each action. "
                 "Stat is halved with each activation. Cancels Burn, and vice versa."
             ),
             stacks=stacks,

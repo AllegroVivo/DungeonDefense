@@ -29,8 +29,9 @@ class Grudge(DMStatus):
             _id="BUF-112",
             name="Grudge",
             description=(
-                "The next attack's damage increases 15% per Grudge. This stat "
-                "decreases by 1 per attack, but Pleasure equal to self ATK is gained."
+                "The next attack's damage is increased by 15% per stack of Grudge. "
+                "This stat is decreased by 1 upon activation, but Pleasure equal "
+                "to unit's ATK is gained."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

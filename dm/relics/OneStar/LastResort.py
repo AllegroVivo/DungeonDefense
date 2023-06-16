@@ -1,0 +1,37 @@
+from __future__ import annotations
+
+from typing     import TYPE_CHECKING
+from ...core.objects.relic import DMRelic
+
+if TYPE_CHECKING:
+    from dm.core.contexts   import AttackContext
+    from dm.core.game.game import DMGame
+################################################################################
+
+__all__ = ("LastResort",)
+
+################################################################################
+class LastResort(DMRelic):
+
+    def __init__(self, state: DMGame):
+
+        super().__init__(
+            state,
+            _id="REL-116",
+            name="Last Resort",
+            description=(
+                "Decreases the damage received by the Dark Lord by 30 % when there "
+                "are no monsters in the Dark Lord's Room except the Dark Lord."
+            ),
+            rank=1
+        )
+
+################################################################################
+    def handle(self, ctx: AttackContext) -> None:
+        """Automatically called as part of all battle loops."""
+
+        if ctx.defender == self.game.dark_lord:
+            if len(self.game.dungeon.map.boss_tile.monsters) == 1:  # Remember, Dark Lord counts:
+                ctx.mitigate_pct(0.30)
+
+################################################################################

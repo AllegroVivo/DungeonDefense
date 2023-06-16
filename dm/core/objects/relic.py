@@ -16,13 +16,6 @@ R = TypeVar("R", bound="DMRelic")
 ################################################################################
 class DMRelic(DMObject):
 
-    __slots__ = (
-        "_uses",
-        "_count",
-        "_repeatable",
-    )
-
-################################################################################
     def __init__(
         self,
         state: DMGame,
@@ -30,47 +23,38 @@ class DMRelic(DMObject):
         name: str,
         description: Optional[str],
         rank: int = 0,
-        unlock: Optional[UnlockPack] = None,
-        uses: int = 1
+        unlock: Optional[UnlockPack] = None
     ):
 
         super().__init__(state, _id, name, description, rank, unlock)
 
-        self._uses: int = uses
-        self._repeatable: bool = self._uses > 1
-        self._count = 1
-
-################################################################################
-    def __iadd__(self, other: int) -> DMRelic:
-
-        if not isinstance(other, int):
-            raise ArgumentTypeError(
-                "RelicManager.add_relic().",
-                type(other),
-                type(int)
-            )
-
-        self._count += other
-
-        return self
-
 ################################################################################
     def on_acquire(self) -> None:
-
-        pass
-
-################################################################################
-    def activate(self) -> None:
+        """Called automatically when a relic is added to the player's inventory."""
 
         pass
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
+        """Automatically called as part of all battle loops."""
+
+        pass
+
+################################################################################
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
         pass
 
 ################################################################################
     def effect_value(self) -> float:
+        """The value of the effect corresponding to this relic."""
+
+        pass
+
+################################################################################
+    def notify(self, *args) -> None:
+        """A general event response function."""
 
         pass
 
@@ -86,10 +70,6 @@ class DMRelic(DMObject):
         """
 
         new_obj: Type[R] = super()._copy()  # type: ignore
-
-        new_obj._uses = self._uses
-        new_obj._repeatable = self._repeatable
-        new_obj._count = 1
 
         return new_obj  # type: ignore
 

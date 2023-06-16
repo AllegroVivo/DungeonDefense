@@ -165,7 +165,7 @@ class DMDungeon:
 
         if not self.spawned:
             hero = self.game.spawn(
-                spawn_type=SpawnType.Hero,
+                spawn_type=DMSpawnType.Hero,
                 end_rank=1
             )(self.game, self.game.dungeon.entrance)
             self.heroes.append(hero)  # type: ignore
@@ -183,5 +183,14 @@ class DMDungeon:
     def get_heroes_by_room(self, pos: Vector2) -> List[DMHero]:
 
         return self.get_room_at(pos).heroes
+
+################################################################################
+    def get_monsters_by_room(self, pos: Vector2) -> List[DMHero]:
+
+        room = self.get_room_at(pos)
+        if room.room_type is not DMRoomType.Battle:
+            return []
+
+        return room.monsters  # type: ignore
 
 ################################################################################

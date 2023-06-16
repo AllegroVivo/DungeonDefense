@@ -29,8 +29,8 @@ class Thorn(DMStatus):
             _id="BUF-130",
             name="Thorn",
             description=(
-                "Inflicts damage as much as Thorn stat to enemy who inflicted "
-                "damage. The stat is reduced to half each time it is activated."
+                "Inflicts damage as much as Thorn stat to the enemy who inflicted "
+                "damage. The stat is reduced by half upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

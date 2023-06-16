@@ -1,17 +1,47 @@
 ################################################################################
-# This dictionary of lists denotes all subscribers to all registered events.
-# The comment column provided next to the initial dictionary key provides
-# the signature for that event and the associated preset method, for convenience.
+# This dictionary denotes all subscribers to all registered events. The comment
+# column provided next to the initial dictionary key provides the signature of
+# that event, for convenience.
 ################################################################################
 EVENT_REGISTRY = {
-    "on_attack" : [  # [AttackContext: "ctx"] (handle())
-        Acceleration
+    "battle_end" : [  # [None]
+        LifePotion, RegenerationOrb
     ],
-    "recalculate_stats" : [  # [Optional[DMUnit]: "unit"] (stat_calc())
-        Acceleration
+    "battle_exp_assigned" : [  # [ExperienceContext]
+        TokenOfFriendship
     ],
-    "reset_stats" : [  # [Optional[DMUnit]: "unit"]
+    "battle_start" : [  # [None]
+        IronPlate,
+    ],
+    "boss_room_entered" : [  # [DMUnit]
+        CurseOfTheSkull
+    ],
+    "boss_skill_bite" : [  # [BossSkillContext]
+        VampiricMonster
+    ],
+    "boss_skill_blood_lord" : [  # [BossSkillContext]
+        BloodStaff, BloodyMeteorite
+    ],
+    "boss_skill_venom_fang" : [  # [BossSkillContext]
+        DeadlySting
+    ],
+    "burn_activated" : [  # [???]
+        CateyeStone
+    ],
+    "dull_applied" : [  # [DMStatus]
+        Hammer
+    ],
+    "egg_hatch" : [  # [EggHatchContext]
+        AdvancedIncubator
+    ],
+    "on_death" : [  # [AttackContext]
+        GhostAmulet, LifePotion, UndeadGrip
+    ],
+    "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit
     ],
+    "trap_activated" : [  # [AttackContext] (maybe?)
+        InsigniaOfTerror
+    ]
 }
 ################################################################################

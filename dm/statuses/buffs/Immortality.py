@@ -29,8 +29,8 @@ class Immortality(DMStatus):
             _id="BUF-114",
             name="Immortality",
             description=(
-                "Survive fatal attack with 1 LIFE. Stat decreases by 1 and "
-                "you gain 1 Immortal Rage per effect activation."
+                "Survive critical damage with 1 LIFE. Stat decreases by 1 and "
+                "you gain 1 Immortal Rage upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -47,7 +47,6 @@ class Immortality(DMStatus):
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
-        print("Executing callback")
         if not ctx.defender.is_alive:
             # Survive death with 1 LIFE
             self.owner.heal(1)

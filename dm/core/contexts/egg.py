@@ -5,7 +5,8 @@ from typing     import TYPE_CHECKING, List
 from .context  import Context
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, DMMonster
+    from dm.core.game.game import DMGame
+    from dm.core.objects.monster import DMMonster
 ################################################################################
 
 __all__ = ("EggHatchContext",)
@@ -14,7 +15,7 @@ __all__ = ("EggHatchContext",)
 class EggHatchContext(Context):
 
     __slots__ = (
-        "options",
+        "_options",
     )
 
 ################################################################################
@@ -22,17 +23,17 @@ class EggHatchContext(Context):
 
         super().__init__(state)
 
-        self.options: List[DMMonster] = options
+        self._options: List[DMMonster] = options
 
 ################################################################################
     def set_options(self, *options: DMMonster) -> None:
 
-        self.options = [m for m in options]
+        self._options = [m for m in options]
 
 ################################################################################
     def execute(self) -> None:
 
-        for m in self.options:
+        for m in self._options:
             self._state.inventory.add_monster(m)
 
 ################################################################################

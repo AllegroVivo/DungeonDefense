@@ -30,7 +30,7 @@ class Blind(DMStatus):
             name="Blind",
             description=(
                 "The next attack will always miss. Stat decreases by 1 and you "
-                "gain 1 Blind Resist per action."
+                "gain 1 Blind Resist upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff

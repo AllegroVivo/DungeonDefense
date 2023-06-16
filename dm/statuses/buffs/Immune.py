@@ -30,8 +30,8 @@ class Immune(DMStatus):
             name="Immune",
             description=(
                 "Negates the next debuff you receive. Stat decreases by 1 and "
-                "you gain 1 Immune Resist per debuff negation. Cancels Curse, "
-                "and vice versa."
+                "you gain 1 Immune Resist upon activation. Cancels Curse, and "
+                "vice versa."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

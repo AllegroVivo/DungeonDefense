@@ -29,8 +29,8 @@ class Revenge(DMStatus):
             _id="BUF-126",
             name="Revenge",
             description=(
-                "When about to receive damage, negates the damage once and "
-                "Thorn equal to self ATK is gained."
+                "When about to receive damage, negates the damage once and grants "
+                "Thorn equal to ATK."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

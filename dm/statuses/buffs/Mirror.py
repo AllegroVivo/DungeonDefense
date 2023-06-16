@@ -30,9 +30,9 @@ class Mirror(DMStatus):
             _id="BUF-118",
             name="Mirror",
             description=(
-                "Forces the next enemy attempting to attack you to attack itself. "
-                "Stat decreases by 1 and you gain 1 Mirror Fragment per effect "
-                "activation."
+                "Forces the next enemy attempting to attack this status's owner "
+                "to attack itself. Stat decreases by 1 and you gain 1 Mirror "
+                "Fragment upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

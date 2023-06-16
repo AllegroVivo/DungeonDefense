@@ -38,25 +38,16 @@ class Bloodlust(DMStatus):
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
-
-        # Check for Vampire
-        vampire = self.owner.get_status("Vampire")
-        if vampire is not None:
-            # If it's present, perform the adjustment
-            self.stat_adjust()
-            # And reduce stacks
-            self.reduce_stacks_by_half()
-
-################################################################################
     def stat_adjust(self) -> None:
         """For use in a no-arguments-required situation. This is not automatically
         called."""
 
-        self.owner.increase_stat_pct("dex", self.effect_value())
-        self.owner.increase_stat_pct("attack", self.effect_value())
+        vampire = self.owner.get_status("Vampire")
+        if vampire is not None:
+            self.owner.increase_stat_pct("dex", self.effect_value())
+            self.owner.increase_stat_pct("attack", self.effect_value())
+            # Reduce stacks if activated
+            self.reduce_stacks_by_half()
 
 ################################################################################
     def effect_value(self) -> float:

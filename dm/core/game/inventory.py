@@ -50,6 +50,7 @@ class DMInventory:
     __slots__ = (
         "_game",
         "_gold",
+        "_soul",
         "monsters",
     )
 
@@ -60,6 +61,7 @@ class DMInventory:
 
         self.monsters: List[DMMonster] = []
         self._gold: int = 250
+        self._soul: int = 0
 
         self._init_starter_monsters()
 
@@ -108,8 +110,21 @@ class DMInventory:
                 type(int), type(float)
             )
 
-        self._gold += amount
+        self._gold += int(amount)
         # self._game.publish_event("gold_acquired", amount=amount)
+
+################################################################################
+    def add_soul(self, amount: int) -> None:
+
+        if not isinstance(amount, (int, float)):
+            raise ArgumentTypeError(
+                "DMInventory.add_soul()",
+                type(amount),
+                type(int), type(float)
+            )
+
+        self._soul += int(amount)
+        # self._game.publish_event("soul_acquired", amount=amount)
 
 ################################################################################
     def add_monster(self, monster: DMMonster) -> None:

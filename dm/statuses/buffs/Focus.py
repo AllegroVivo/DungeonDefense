@@ -29,8 +29,9 @@ class Focus(DMStatus):
             _id="BUF-110",
             name="Focus",
             description=(
-                "The next attack inflicts 50% additional damage, and effect increases "
-                "depending on the Focus possessed. Stat is halved with each action."
+                "The next attack inflicts 50% additional damage, with increasing "
+                "effectiveness depending upon the stacks of Focus possessed. "
+                "Stat is halved upon activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -41,8 +42,11 @@ class Focus(DMStatus):
         """For use in an AttackContext-based situation. Is always called in
         every battle loop."""
 
+        # If we're attacking
         if ctx.attacker == self.owner:
+            # Boost that damage
             ctx.amplify_pct(self.effect_value())
+            # And reduce stacks
             self.reduce_stacks_by_half()
 
 ################################################################################

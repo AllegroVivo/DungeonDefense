@@ -28,7 +28,9 @@ class Merciless(DMStatus):
             parent,
             _id="BUF-117",
             name="Merciless",
-            description="UrMom",
+            description=(
+                "Prevents reduction of Fury stat 1 time when attacking an enemy."
+            ),
             stacks=stacks,
             status_type=DMStatusType.Buff
         )

@@ -29,8 +29,8 @@ class Rebound(DMStatus):
             _id="BUF-124",
             name="Rebound",
             description=(
-                "Get Fury equal to 10% of LIFE when you next receive damage, and "
-                "effect increases depending on the Rebound stat possessed. Stat "
+                "Get Fury equal to 10% of LIFE when you next receive damage, with "
+                "increasing effect depending on the Rebound stat possessed. Stat "
                 "is halved when receiving damage."
             ),
             stacks=stacks,

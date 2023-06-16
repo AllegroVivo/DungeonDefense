@@ -30,7 +30,7 @@ class ImmortalRage(DMStatus):
             name="Immortal Rage",
             description=(
                 "The next attack deals 5% extra damage per Immortality stat "
-                "possessed, and effect increases depending on the Immortal Rage "
+                "possessed, with increasing effect depending on the Immortal Rage "
                 "stat possessed. Stat is halved with each attack."
             ),
             stacks=stacks,

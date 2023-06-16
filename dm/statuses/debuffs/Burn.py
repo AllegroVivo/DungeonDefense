@@ -23,22 +23,29 @@ class Burn(DMStatus):
         stacks: Optional[int] = 1
     ):
 
+
         super().__init__(
             game,
             parent,
             _id="DBF-103",
             name="Burn",
+            # description=(  # Original description
+            #     "Negates LIFE recovery effect equal to the next LIFE recovery "
+            #     "stat. LIFE recovery stat decreases as much as the negation. It "
+            #     "cancels Regeneration and vice versa."
+            # ),
+
+            # I've redefined this to negate any LIFE recovery and reduce self.stacks
+            # on activation. (Basically the Regeneration effect but for all healing)
+            # because I wasn't clear on the meaning of the original description. (Above)
             description=(
-                "Negates LIFE recovery effect equal to the next LIFE recovery "
-                "stat. LIFE recovery stat decreases as much as the negation. It "
-                "cancels Regeneration and vice versa."
+                "Negates LIFE recovery effect equal to the incoming recovery amount. "
+                "Burn stat decreases as much as the negation. It cancels Regeneration "
+                "and vice versa."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
         )
-
-        # I'm redefining this to negate any LIFE recovery and reduce self.stacks on activate.
-        # (Basically the Regeneration effect but for all healing)
 
 ################################################################################
     def on_acquire(self) -> None:

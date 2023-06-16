@@ -30,7 +30,7 @@ class NaturesPower(DMStatus):
             name="Nature's Power",
             description=(
                 "When damaging the next enemy, deals extra damage equal to "
-                "Regeneration owned by self."
+                "Regeneration possessed."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff

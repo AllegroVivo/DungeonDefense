@@ -18,7 +18,10 @@ from ..graphics import RoomGraphical
 from .levelable import DMLevelable
 
 if TYPE_CHECKING:
-    from dm.core    import DMUnit, DMGame, DMHero
+    from dm.core.game.game import DMGame
+    from dm.core.game.game import DMGame
+    from dm.core.objects.hero import DMHero
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("DMRoom",)
