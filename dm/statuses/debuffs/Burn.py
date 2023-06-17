@@ -50,10 +50,10 @@ class Burn(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("healing_applied", self.callback)
+        self.game.subscribe_event("healing_applied", self.notify)
 
 ################################################################################
-    def callback(self, ctx: HealingContext) -> None:
+    def notify(self, ctx: HealingContext) -> None:
 
         if ctx.target == self.owner:
             heals_blocked = min(self.stacks, ctx.calculate())

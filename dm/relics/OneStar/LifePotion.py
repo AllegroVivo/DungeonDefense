@@ -44,8 +44,14 @@ class LifePotion(DMRelic):
             # Make sure the effect hasn't already been triggered.
             if not self._used:
                 # Set the stat directly to avoid triggering a healing event. Just in case.
-                self.game.dark_lord._stats._life.current = self.game.dark_lord.max_life * 0.25
+                self.game.dark_lord._stats._life.current = self.game.dark_lord.max_life * self.effect_value()
                 self._used = True
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.25
 
 ################################################################################
     def reset(self) -> None:

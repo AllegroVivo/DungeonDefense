@@ -32,7 +32,7 @@ class Hammer(DMRelic):
 
 ################################################################################
     def notify(self, status: DMStatus) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         status.increase_stacks_flat(1)
 

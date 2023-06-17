@@ -35,13 +35,15 @@ class Betray(DMStatus):
                 "decreases by 1 each time an ally is damaged."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=1.00
         )
+
+        # This status is deprecated and doesn't appear in the game. Whoops!
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # Statuses can't be held by trap rooms, so that eliminates traps from this equation.
         if self.owner == ctx.attacker:
@@ -54,7 +56,7 @@ class Betray(DMStatus):
                 return
 
             # If we passed the checks, double the damage
-            ctx.amplify_pct(1.00)
+            ctx.amplify_pct(self.base_effect)
 
             # And reduce
             self.reduce_stacks_by_one()

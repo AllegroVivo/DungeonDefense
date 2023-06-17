@@ -33,13 +33,13 @@ class Corruption(DMStatus):
                 "or remove this."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.01
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're defending
         if self.owner == ctx.defender:
@@ -52,14 +52,14 @@ class Corruption(DMStatus):
 
         Breakdown:
         ----------
-        **effect = n * a**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Corruption stacks.
-        - a is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Corruption stacks.
         """
 
-        return self.stacks * 0.01
+        return self.base_effect * self.stacks
 
 ################################################################################

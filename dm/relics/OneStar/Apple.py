@@ -24,10 +24,15 @@ class Apple(DMRelic):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
-        for monster in self.game.all_monsters:
-            monster.increase_stat_pct("life", 0.20)
+        for monster in self.game.deployed_monsters:
+            monster.increase_stat_pct("life", self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.20
 
 ################################################################################

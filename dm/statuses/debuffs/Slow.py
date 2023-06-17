@@ -33,18 +33,31 @@ class Slow(DMStatus):
                 "Slow possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.50
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         # Apply debuff to DEX
         self.owner.reduce_stat_pct("dex", self.effect_value())
         # Reduce stacks
         self.reduce_stacks_by_half()
+
+################################################################################
+    @property
+    def base_effect(self) -> float:
+
+        base = self._base_effect
+
+        # Check for the associated relic.
+        relic = self.game.get_relic("Net")
+        if relic is not None:
+            base += 0.10  # Relic increases effectiveness to 60%
+
+        return base * self._base_scalar
 
 ################################################################################
     def effect_value(self) -> float:
@@ -64,13 +77,6 @@ class Slow(DMStatus):
         slow = self.owner.get_status("Slow")
         scalar = 0 if slow is None else slow.stacks
 
-        base = 0.50  # 50% base effectiveness
-
-        # Check for the associated relic.
-        relic = self.game.get_relic("Net")
-        if relic is not None:
-            base += 0.10  # Relic increases effectiveness to 60%
-
-        return base + (0.001 * scalar)
+        return self.base_effect + (0.001 * scalar)
 
 ################################################################################

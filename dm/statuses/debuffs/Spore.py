@@ -30,8 +30,8 @@ class Spore(DMStatus):
             _id="DBF-126",
             name="Spore",
             description=(
-                "At the time of death, applies 10% of Poison stacks per Spore as "
-                "damage to nearby allies."  # Previous text said "enemies".
+                "At the time of death, applies 10% of Poison stacks per Spore "
+                "stack as damage to nearby enemies."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff

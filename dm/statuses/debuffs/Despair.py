@@ -6,7 +6,6 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -48,8 +47,7 @@ class Despair(DMStatus):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         self.owner.reduce_stat_pct("life", 0.50)
 

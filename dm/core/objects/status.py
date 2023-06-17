@@ -153,7 +153,7 @@ class DMStatus(DMObject):
 
 ################################################################################
     @property
-    def base_effect(self) -> Optional[float]:
+    def base_effect(self) -> float:
 
         return self._base_effect * self._base_scalar
 
@@ -259,23 +259,13 @@ class DMStatus(DMObject):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically upon the status's initial acquisition by the unit.
-        (When it's added to their status list, but not when stacks are added to
-        the instance.)"""
+        """Called automatically upon the status's acquisition by the unit."""
 
         pass
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
-
-        pass
-
-################################################################################
-    def activate(self) -> None:
-        """For use in a no-arguments-required situation. This is not automatically
-        called."""
+        """Called in every battle loop iteration."""
 
         pass
 
@@ -287,24 +277,22 @@ class DMStatus(DMObject):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         pass
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        D = (D0 * 0.5 * (1 + a * n)) / 2
+        **effect = b * s**
 
         In this function:
 
-        - D0 is the original dexterity.
-        - n is the number of Acceleration stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Obey stacks.
         """
 
         pass

@@ -24,8 +24,6 @@ class SealedSoulJar(DMRelic):
             rank=1
         )
 
-        self.count = 1
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""

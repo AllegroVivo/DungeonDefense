@@ -33,7 +33,8 @@ class Rigidity(DMStatus):
                 "Resist each time Rigidity is given."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=1.0
         )
 
 ################################################################################
@@ -56,14 +57,20 @@ class Rigidity(DMStatus):
 
         Breakdown:
         ----------
-        **effect = a * n**
+        **effect = (b * s) - r**
 
         In this function:
 
-        - n is the number of Rigidity stacks.
-        - a is the action delay per stack.
+        - b is the base adjustment.
+        - s is the number of Rigidity stacks.
+        - r is the number of Rigidity Resist stacks
         """
 
-        return 1.0 * self.stacks
+        mitigation = 0
+        resist = self.owner.get_status("Rigidity Resist")
+        if resist is not None:
+            mitigation = resist.stacks
+
+        return (self.base_effect * self.stacks) - mitigation
 
 ################################################################################

@@ -40,13 +40,13 @@ class Obey(DMStatus):
                 "its ATK."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.15
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're defending
         if self.owner == ctx.defender:
@@ -64,14 +64,14 @@ class Obey(DMStatus):
 
         Breakdown:
         ----------
-        **effect = a * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Obey stacks.
-        - a is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Obey stacks.
         """
 
-        return 0.15 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

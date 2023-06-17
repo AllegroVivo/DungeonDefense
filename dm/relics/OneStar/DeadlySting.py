@@ -34,7 +34,7 @@ class DeadlySting(DMRelic):
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         # Need to implement skill before I can implement this.
         pass

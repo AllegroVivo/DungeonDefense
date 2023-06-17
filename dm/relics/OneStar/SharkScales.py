@@ -35,6 +35,12 @@ class SharkScales(DMRelic):
         if isinstance(ctx.defender, DMHero):
             stun = ctx.defender.get_status("Stun")
             if stun is not None:
-                ctx.amplify_pct(0.50)
+                ctx.amplify_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.50
 
 ################################################################################

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Optional, Type, TypeVar
+from typing     import TYPE_CHECKING, Optional, Type, TypeVar, Union
 from .object    import DMObject
 from utilities  import *
 
@@ -16,6 +16,11 @@ R = TypeVar("R", bound="DMRelic")
 ################################################################################
 class DMRelic(DMObject):
 
+    __slots__ = (
+        "_count",
+    )
+
+################################################################################
     def __init__(
         self,
         state: DMGame,
@@ -28,11 +33,34 @@ class DMRelic(DMObject):
 
         super().__init__(state, _id, name, description, rank, unlock)
 
+        self._count: int = 1
+
+################################################################################~
+    def __iadd__(self, other: Union[int, DMRelic]) -> DMRelic:
+
+        if not isinstance(other, (int, DMRelic)):
+            raise ArgumentTypeError(
+                "DMRelic.__iadd__().",
+                type(other),
+                type(int), type(DMRelic)
+            )
+
+        if isinstance(other, int):
+            self._count += other
+        else:
+            self._count += other._count
+
 ################################################################################
     @property
     def type(self) -> DMType:
 
         return DMType.Relic
+
+################################################################################
+    @property
+    def number_owned(self) -> int:
+
+        return self._count
 
 ################################################################################
     def on_acquire(self) -> None:

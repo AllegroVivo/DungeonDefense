@@ -6,7 +6,6 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -33,29 +32,29 @@ class Weak(DMStatus):
                 "amount of Weak possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.50
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         self.owner.reduce_stat_pct("attack", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect.
+        """The value of this status's effect. For example:
 
         Breakdown:
         ----------
-        **effect = b + (a * s)**
+        **effect = b + (a * n)**
 
         In this function:
 
-        - b is the base effectiveness.
+        - b is the base effect amount.
         - n is the number of Weak stacks.
-        - a is the additional effectiveness per stack.
+        - a is the additional effectiveness per stack of Weak.
         """
 
         return 0.50 + (0.001 * self.stacks)

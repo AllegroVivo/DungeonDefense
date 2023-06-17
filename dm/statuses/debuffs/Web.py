@@ -33,13 +33,13 @@ class Web(DMStatus):
                 "times, Web is removed and gets 1 Rigidity."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.10
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're defending
         if self.owner == ctx.defender:
@@ -57,14 +57,14 @@ class Web(DMStatus):
 
         Breakdown:
         ----------
-        **effect = e * s**
+        **effect = b * n**
 
         In this function:
 
-        - e is the base effectiveness.
-        - s is the number of Web stacks.
+        - b is the base effectiveness.
+        - n is the number of Web stacks.
         """
 
-        return 0.10 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

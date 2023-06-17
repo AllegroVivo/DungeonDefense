@@ -34,13 +34,13 @@ class Vulnerable(DMStatus):
                 "receiving damage. "
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.50
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're defending
         if self.owner == ctx.defender:
@@ -52,19 +52,19 @@ class Vulnerable(DMStatus):
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect.
+        """The value of this status's effect. For example:
 
         Breakdown:
         ----------
-        **effect = b + (a * s)**
+        **effect = b + (a * n)**
 
         In this function:
 
-        - b is the base effectiveness.
+        - b is the base effect amount.
         - n is the number of Vulnerable stacks.
-        - a is the additional effectiveness per stack.
+        - a is the additional effectiveness per stack of Vulnerable.
         """
 
-        return 0.50 + (0.001 * self.stacks)
+        return self.base_effect + (0.001 * self.stacks)
 
 ################################################################################

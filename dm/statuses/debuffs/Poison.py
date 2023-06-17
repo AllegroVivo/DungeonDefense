@@ -11,10 +11,10 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Peace",)
+__all__ = ("Poison",)
 
 ################################################################################
-class Peace(DMStatus):
+class Poison(DMStatus):
 
     def __init__(
         self,
@@ -30,7 +30,7 @@ class Peace(DMStatus):
             name="Peace",
             description=(
                 "Receive damage as much as this stat at the beginning of action, "
-                "and then the stat is reduced to half."
+                "and then the stat is reduced by half."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff

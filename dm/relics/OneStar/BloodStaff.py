@@ -31,7 +31,7 @@ class BloodStaff(DMRelic):
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         ctx.reduce_mana_cost(1)
 

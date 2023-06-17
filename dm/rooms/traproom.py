@@ -20,7 +20,7 @@ R = TypeVar("R")
 class DMTrapRoom(DMRoom):
 
     __slots__ = (
-        "_activated_first_time",
+        "_activated_before",
     )
 
 ################################################################################
@@ -38,7 +38,7 @@ class DMTrapRoom(DMRoom):
 
         super().__init__(state, position, _id, name, description, rank, level, unlock)
 
-        self._activated_first_time: bool = False
+        self._activated_before: bool = False
 
 ################################################################################
     @property
@@ -48,9 +48,14 @@ class DMTrapRoom(DMRoom):
 
 ################################################################################
     @property
-    def activated_for_the_first_time(self) -> bool:
+    def activated_before(self) -> bool:
 
-        return self._activated_first_time
+        return self._activated_before
+
+################################################################################
+    def activate_first_time(self) -> None:
+
+        self._activated_before = True
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

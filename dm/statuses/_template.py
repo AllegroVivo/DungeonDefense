@@ -41,8 +41,7 @@ class Template(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         pass
 
@@ -53,32 +52,23 @@ class Template(DMStatus):
         pass
 
 ################################################################################
-    def activate(self) -> None:
-        """For use in a no-arguments-required situation. This is not automatically
-        called."""
-
-        pass
-
-################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         pass
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = (D0 * 0.5 * (1 + a * n)) / 2**
+        **effect = b * s**
 
         In this function:
 
-        - D0 is the original dexterity.
-        - n is the number of Acceleration stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Obey stacks.
         """
 
         pass

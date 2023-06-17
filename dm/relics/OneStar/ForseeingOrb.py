@@ -52,7 +52,7 @@ class ForseeingOrb(DMRelic):
 
 ################################################################################
     def notify(self, *args) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         pass
 

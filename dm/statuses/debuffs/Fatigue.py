@@ -6,7 +6,6 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -32,13 +31,13 @@ class Fatigue(DMStatus):
                 "DEX is delayed by 1%. No buff or debuff can reduce or remove this."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.01
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         self.owner.reduce_stat_pct("dex", self.effect_value())
 
@@ -48,14 +47,14 @@ class Fatigue(DMStatus):
 
         Breakdown:
         ----------
-        **effect = a * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Fatigue stacks.
-        - a is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Fatigue stacks.
         """
 
-        return 0.01 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

@@ -30,7 +30,7 @@ class Blind(DMStatus):
             name="Blind",
             description=(
                 "The next attack will always miss. Stat decreases by 1 and you "
-                "gain 1 Blind Resist upon activation."
+                "gain 1 Blind Resist per action."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
@@ -38,8 +38,7 @@ class Blind(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         if self.owner == ctx.attacker:
             # Check against resist first and return if it exceeds self.stacks.

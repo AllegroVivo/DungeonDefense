@@ -33,7 +33,7 @@ class Charm(DMStatus):
             name="Charm",
             description=(
                 "The next attack will target an ally. Stat decreases by 1 and "
-                "you gain 1 Charm Resist per activation."
+                "you gain 1 Charm Resist per action."
             ),
             stacks=stacks,
             status_type=DMStatusType.Debuff
@@ -41,8 +41,7 @@ class Charm(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're attacking
         if self.owner == ctx.attacker:
@@ -57,7 +56,7 @@ class Charm(DMStatus):
                 options = self.game.dungeon.get_heroes_by_room(self.owner.room.position)
             else:
                 options = self.game.dungeon.get_monsters_by_room(self.owner.room.position)
-            ctx._defender = random.choice(options)
+            ctx.reassign_defender(random.choice(options))
 
             # Reduce stacks and apply resist.
             self.reduce_stacks_by_one()

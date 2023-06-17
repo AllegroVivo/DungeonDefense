@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.hero import DMHero
+from ...core.objects.monster import DMMonster
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
@@ -32,9 +33,10 @@ class GhostAmulet(DMRelic):
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         if isinstance(ctx.attacker, DMHero):
-            ctx.attacker.add_status("Panic", 3)
+            if isinstance(ctx.defender, DMMonster):
+                ctx.attacker.add_status("Panic", 3)
 
 ################################################################################

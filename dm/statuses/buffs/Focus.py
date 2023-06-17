@@ -50,7 +50,7 @@ class Focus(DMStatus):
 
 ################################################################################
     @property
-    def base_effect(self) -> Optional[float]:
+    def base_effect(self) -> float:
 
         # After much deliberation, I've decided that the scaled percentage should
         # be the base for the effectiveness increase below, so the scalar is

@@ -36,3 +36,9 @@ class TokenOfFriendship(DMRelic):
         pass
 
 ################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.10
+
+################################################################################

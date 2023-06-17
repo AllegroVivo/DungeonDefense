@@ -43,7 +43,18 @@ class Template(DMRelic):
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of the effect corresponding to this relic."""
+        """The value of this relic's effect.
+
+        Breakdown:
+        ----------
+        **effect = b + (e * s)**
+
+        In this function:
+
+        - b is the base adjustment.
+        - e is the additional effectiveness per stack.
+        - s is the number of Acceleration stacks.
+        """
 
         pass
 

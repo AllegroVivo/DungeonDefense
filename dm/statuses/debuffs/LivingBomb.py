@@ -39,8 +39,7 @@ class LivingBomb(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         ctx.register_after_execute(self.notify)
 

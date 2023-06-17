@@ -35,6 +35,12 @@ class RegenerationOrb(DMRelic):
     def notify(self) -> None:
         """A general event response function."""
 
-        self.game.dark_lord.heal(self.game.dark_lord.max_life * 0.04)
+        self.game.dark_lord.heal(self.game.dark_lord.max_life * self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.04
 
 ################################################################################

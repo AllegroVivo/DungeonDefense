@@ -32,6 +32,12 @@ class GravityBracelet(DMRelic):
 
         # If a hero is taking the hit, increase damage by 25%
         if isinstance(ctx.defender, DMHero):
-            ctx.amplify_pct(0.25)
+            ctx.amplify_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.25
 
 ################################################################################

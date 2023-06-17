@@ -35,6 +35,12 @@ class IronPlate(DMRelic):
     def notify(self, *args) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Armor", stacks=monster.max_life * 0.10)
+            monster.add_status("Armor", stacks=monster.max_life * self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.20
 
 ################################################################################

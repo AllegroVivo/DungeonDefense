@@ -41,10 +41,10 @@ class Curse(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("status_acquired", self.try_negate_buff)
+        self.game.subscribe_event("status_acquired", self.notify)
 
 ################################################################################
-    def try_negate_buff(self, status: DMStatus) -> None:
+    def notify(self, status: DMStatus) -> None:
 
         if status.type is DMStatusType.Buff:
             # Grab the resist info

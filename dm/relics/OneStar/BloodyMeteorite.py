@@ -34,7 +34,7 @@ class BloodyMeteorite(DMRelic):
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
         # Need to implement specifics for the skill first I think.
         pass

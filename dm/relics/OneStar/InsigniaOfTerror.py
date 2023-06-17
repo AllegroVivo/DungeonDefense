@@ -35,12 +35,17 @@ class InsigniaOfTerror(DMRelic):
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
-        if isinstance(ctx.attacker, DMTrapRoom):
-            if isinstance(ctx.defender, DMHero):
-                if not ctx.attacker.activated_for_the_first_time:
+        # If we're a hero
+        if isinstance(ctx.defender, DMHero):
+            # And we're being attacked by a trap
+            if isinstance(ctx.attacker, DMTrapRoom):
+                #  And the trap hasn't been activated before
+                if not ctx.attacker.activated_before:
+                    # Add status effect
                     ctx.defender.add_status("Panic")
-                    ctx.attacker._activated_first_time = True
+                    # Remember to mark the trap as activated.
+                    ctx.attacker.activate_first_time()
 
 ################################################################################

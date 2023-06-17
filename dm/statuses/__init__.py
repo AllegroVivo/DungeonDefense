@@ -23,7 +23,10 @@ ALL_STATUSES: List[Type["DMStatus"]] = [
     Vampire,
 
     # Debuffs
-    Betray, Blind, Burn, Chained, Charm,
+    Betray, Blind, Burn, Chained, Charm, Coagulation, CorpseExplosion, Curse,
+    Despair, Dull, ElectricalShort, Fatigue, Frostbite, Haze, LivingBomb,
+    Obey, Overweight, Panic, Peace, Poison, Recharge, Rigidity, Shock, Slow,
+    Spore, Stun, Vulnerable, Weak, Web,
 
     # Antibuffs
     ArmorFragment, Calmness, DodgeResist, ImmuneResist, Inattention,

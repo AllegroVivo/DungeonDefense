@@ -37,7 +37,7 @@ class UndeadGrip(DMRelic):
 
         # If a hero was killed
         if isinstance(ctx.defender, DMHero):
-            # By a monsters
+            # By a monster
             if isinstance(ctx.attacker, DMMonster):
                 # Then assign all monsters the buff.
                 for monster in self.game.deployed_monsters:

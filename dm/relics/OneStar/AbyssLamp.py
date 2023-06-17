@@ -22,12 +22,6 @@ class AbyssLamp(DMRelic):
             state,
             _id="REL-101",
             name="Abyss Lamp",
-            # description=(  # Original
-            #     "Has a 10 % chance to attack an enemy, even in Blind status."
-            # ),
-
-            # I reworded this because the original version was unclear.
-            # I'm fairly sure it was supposed to be "ally" not "enemy".
             description=(
                 "Enemies have a 10 % chance to attack another enemy, even if "
                 "under the effect of Blind."
@@ -45,8 +39,8 @@ class AbyssLamp(DMRelic):
             chance = random.random()
             if chance <= 0.10:
                 # Reassign the target to another hero in the same room.
-                ctx._defender = random.choice(
+                ctx.reassign_defender(random.choice(
                     self.game.dungeon.get_heroes_by_room(ctx.attacker.room.position)
-                )
+                ))
 
 ################################################################################

@@ -34,10 +34,9 @@ class ElectricalShort(DMStatus):
                 "per Electrical Short to nearby allies."  # Originally said "enemies".
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.10
         )
-
-        self._shock: int = 0
 
 ################################################################################
     def on_acquire(self) -> None:
@@ -51,21 +50,26 @@ class ElectricalShort(DMStatus):
 
         # If owner was the one killed
         if self.owner == ctx.defender:
-            # Check for presence of Shock
-            shock = self.owner.get_status("Shock")
-            if shock is not None:
-                # Set the attribute we need for the effect value.
-                self._shock = shock.stacks
+            # Get proper units depending on type.
+            if isinstance(self.owner, DMHero):
+                units = self.owner.room.heroes
+            else:
+                units = self.owner.room.monsters  # type: ignore
 
-                # Get proper units depending on type.
-                if isinstance(self.owner, DMHero):
-                    units = self.owner.room.heroes
-                else:
-                    units = self.owner.room.monsters  # type: ignore
+            # Damage each unit in the group.
+            for unit in units:
+                unit.damage(self.effect_value())
 
-                # Damage each unit in the group.
-                for unit in units:
-                    unit.damage(self.effect_value())
+################################################################################
+    @property
+    def base_effect(self) -> float:
+
+        # Check for presence of Shock
+        shock = self.owner.get_status("Shock")
+        if shock is None:
+            return 0
+
+        return (self._base_effect * self._base_scalar) * shock.stacks
 
 ################################################################################
     def effect_value(self) -> float:
@@ -73,14 +77,14 @@ class ElectricalShort(DMStatus):
 
         Breakdown:
         ----------
-        **effect = a * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Shock stacks possessed at death.
-        - a is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Electrical Short stacks.
         """
 
-        return 0.10 * self._shock
+        return self.base_effect * self.stacks
 
 ################################################################################

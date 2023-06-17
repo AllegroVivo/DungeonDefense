@@ -34,9 +34,9 @@ class CurseOfTheSkull(DMRelic):
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
-        """A general receptor function for any argument-emitting events."""
+        """A general event response function."""
 
-        for hero in unit.game.all_monsters:
+        for hero in unit.game.all_heroes:
             hero.add_status("Curse")  # Adds 1 stack by default
 
 ################################################################################

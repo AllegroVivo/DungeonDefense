@@ -45,13 +45,6 @@ class Acceleration(DMStatus):
         self.owner.increase_stat_pct("dex", self.effect_value())
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called in every battle loop iteration."""
-
-        self.stat_adjust()
-        self.reduce_stacks_by_half()
-
-################################################################################
     def effect_value(self) -> float:
         """The value of this status's effect.
 

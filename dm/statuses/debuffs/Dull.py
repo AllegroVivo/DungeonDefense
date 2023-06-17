@@ -34,20 +34,20 @@ class Dull(DMStatus):
                 "reduced by 1 each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=1.00
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         # If we're defending
         if self.owner == ctx.defender:
             # And a trap is attacking
             if isinstance(ctx.attacker, DMTrapRoom):
                 # Increase damage by 100%
-                ctx.amplify_pct(1.00)
+                ctx.amplify_pct(self.base_effect)
                 # Reduce by one
                 self.reduce_stacks_by_one()
 

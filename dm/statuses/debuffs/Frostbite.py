@@ -34,13 +34,13 @@ class Frostbite(DMStatus):
                 "receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=DMStatusType.Debuff,
+            base_effect=0.05
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         # If we're defending
         if self.owner == ctx.defender:
@@ -50,27 +50,33 @@ class Frostbite(DMStatus):
             self.reduce_stacks_by_half()
 
 ################################################################################
+    @property
+    def base_effect(self) -> float:
+
+        dull = self.owner.get_status("Dull")
+        if dull is None:
+            return 0
+
+        return (self._base_effect * self._base_scalar) + (0.001 * dull.stacks)
+
+################################################################################
     def effect_value(self) -> float:
         """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = (b + (a * d)) * n**
+        **effect = b * s**
 
         In this function:
 
-        - b is the base effectiveness per stack of Slow.
-        - d is the number of Dull stacks
-        - n is the number of Slow stacks.
-        - a is the additional effectiveness per stack of Dull.
+        - b is the base adjustment.
+        - s is the number of Slow stacks.
         """
+
         slow = self.owner.get_status("Slow")
         if slow is None:
             return 0
 
-        dull = self.owner.get_status("Dull")
-        dull_stacks = 0 if dull is None else dull.stacks
-
-        return (0.05 + (0.005 * dull_stacks)) * slow.stacks
+        return self.base_effect * slow.stacks
 
 ################################################################################

@@ -30,8 +30,17 @@ class LastResort(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
+        # If the Dark Lord is defending
         if ctx.defender == self.game.dark_lord:
+            # And there are no other monsters in the boss room
             if len(self.game.dungeon.map.boss_tile.monsters) == 1:  # Remember, Dark Lord counts:
-                ctx.mitigate_pct(0.30)
+                # Reduce damage
+                ctx.mitigate_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.30
 
 ################################################################################

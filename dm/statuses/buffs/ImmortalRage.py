@@ -49,7 +49,7 @@ class ImmortalRage(DMStatus):
 
 ################################################################################
     @property
-    def base_effect(self) -> Optional[float]:
+    def base_effect(self) -> float:
 
         return (self._base_effect * self._scalar) * (0.005 * self.stacks)  # 0.5% additional effectiveness
 

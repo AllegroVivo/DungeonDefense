@@ -30,6 +30,12 @@ class MysteriousMonsterEgg(DMRelic):
         """Called automatically when a relic is added to the player's inventory."""
 
         for monster in self.game.all_monsters:
-            monster.grant_exp(monster.level * 100)  # Probably need to experiment with this value.
+            monster.grant_exp(int(monster.level * self.effect_value()))
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 100  # Probably need to experiment with this value.
 
 ################################################################################
