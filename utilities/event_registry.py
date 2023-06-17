@@ -19,6 +19,12 @@ EVENT_REGISTRY = {
     "before_attack" : [  # [None]
         Poison,
     ],
+    "book_acquired" : [  # [DMBook]
+        MysteriousQuill
+    ],
+    "book_read" : [  # [DMBook]
+        RingOfEnlightenment
+    ],
     "boss_room_entered" : [  # [DMUnit]
         CurseOfTheSkull
     ],
@@ -31,11 +37,29 @@ EVENT_REGISTRY = {
     "boss_skill_forbidden_love" : [  # [BossSkillContext]
         DemonicWater
     ],
+    "boss_skill_frost_arrow" : [  # [BossSkillContext]
+        ConchShell,
+    ],
+    "boss_skill_hemokinesis" : [  # [BossSkillContext]
+        BloodyHourglass,
+    ],
+    "boss_skill_harvest" : [  # [BossSkillContext]
+        DemonsScale,
+    ],
     "boss_skill_petrifying_gaze": [  # [BossSkillContext]
         ObsidianFang,
     ],
+    "boss_skill_rallying_cry" : [  # [BossSkillContext]
+        DeliciousMilk
+    ],
+    "boss_skill_split" : [  # [BossSkillContext]
+        EmmasTailAccessory
+    ],
+    "boss_skill_used" : [  # [BossSkillContext]
+        VampireAxe, VampireRing
+    ],
     "boss_skill_vampiric_impulse": [  # [BossSkillContext]
-        BatControl
+        BatControl, VampireRune
     ],
     "boss_skill_vampiric_infection": [  # [BossSkillContext]
         InfectedBlood,
@@ -46,8 +70,14 @@ EVENT_REGISTRY = {
     "burn_activated" : [  # [???]
         CateyeStone
     ],
+    "corruption_start" : [  # [???]
+        TheOriginOfTheFall
+    ],
     "dull_applied" : [  # [DMStatus]
         Hammer
+    ],
+    "dungeon_fate" : [  # [None]
+        StaffOfReign,
     ],
     "egg_hatch" : [  # [EggHatchContext]
         AdvancedIncubator
@@ -58,6 +88,12 @@ EVENT_REGISTRY = {
     "on_death" : [  # [AttackContext]
         GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore, DeathGrip,
         LittleCoin, ManaRecoveryRune, SecondHeart
+    ],
+    "on_heal" : [  # [HealingContext]
+
+    ],
+    "on_purchase" : [  # [PurchaseContext]
+        AncientCoin
     ],
     "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit

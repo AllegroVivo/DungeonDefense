@@ -2,68 +2,46 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("BloodyCloth",)
 
 ################################################################################
-class Template(DMRelic):
+class BloodyCloth(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
-            rank=3,
-            unlock=UnlockPack.Myth
+            _id="REL-186",
+            name="Bloody Cloth",
+            description=(
+                "The Dark Lord acquires Vampire equal to 50 % of missing LIFE "
+                "at the start of the battle."
+            ),
+            rank=3
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.game.subscribe_event("before_battle", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this relic's effect.
+        """The value of this relic's effect."""
 
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
+        return (self.game.dark_lord.max_life - self.game.dark_lord.life) / 2
 
 ################################################################################
     def notify(self, *args) -> None:
         """A general event response function."""
 
-        pass
+        self.game.dark_lord.add_status("Vampire", self.effect_value())
 
 ################################################################################

@@ -9,54 +9,34 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("EmmasTailAccessory",)
 
 ################################################################################
-class Template(DMRelic):
+class EmmasTailAccessory(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-219",
+            name="Emma's Tail Accessory",
+            description=(
+                "Inflicting damage to the enemy in Vulnerable state with "
+                "'Boss Skill : Split' will increase generation of Fury to 200 %."
+            ),
             rank=3,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Original
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.game.subscribe_event("boss_skill_split", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this relic's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
+        """The value of this relic's effect."""
 
         pass
 
@@ -64,6 +44,7 @@ class Template(DMRelic):
     def notify(self, *args) -> None:
         """A general event response function."""
 
+        # Need to implement skills first. :(
         pass
 
 ################################################################################

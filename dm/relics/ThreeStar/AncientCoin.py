@@ -5,22 +5,25 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import PurchaseContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("AncientCoin",)
 
 ################################################################################
-class Template(DMRelic):
+class AncientCoin(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-237",
+            name="Ancient Coin",
+            description=(
+                "Gold spent in shops is reduced by 1 %. Efficiency is gradually "
+                "reduced on repeated acquisition."
+            ),
             rank=3,
             unlock=UnlockPack.Myth
         )
@@ -29,19 +32,7 @@ class Template(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.game.subscribe_event("on_purchase", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -49,21 +40,20 @@ class Template(DMRelic):
 
         Breakdown:
         ----------
-        **effect = b + (e * s)**
+        **effect = b * (0.99^n)**
 
         In this function:
 
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
+        - b is the base effectiveness.
+        - n is the number of times this relic has been acquired.
         """
 
-        pass
+        return 0.01 * (0.99 ** self._count)
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: PurchaseContext) -> None:
         """A general event response function."""
 
-        pass
+        ctx.scale(-self.effect_value())
 
 ################################################################################

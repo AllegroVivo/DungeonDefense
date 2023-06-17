@@ -47,7 +47,10 @@ class Fury(DMStatus):
             merciless = self.owner.get_status("Merciless")
             if merciless is not None:
                 merciless -= 1
-            else:
-                self.reduce_stacks_by_half()
+                return
+
+            # Check for the Fury Mace relic (reduces Fury reduction by 50% to 25%)
+            relic = self.game.get_relic("Fury Mace")
+            self.reduce_stacks_pct(0.50 if relic is None else 0.25)
 
 ################################################################################

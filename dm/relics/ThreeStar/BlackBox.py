@@ -2,28 +2,31 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("BlackBox",)
 
 ################################################################################
-class Template(DMRelic):
+class BlackBox(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
-            rank=3,
-            unlock=UnlockPack.Myth
+            _id="REL-185",
+            name="Black Box",
+            description=(
+                "Chance to acquire an additional relic as a reward after "
+                "elite battles."
+            ),
+            rank=3
         )
+
+        # Need to implement rewards logic first.
 
 ################################################################################
     def on_acquire(self) -> None:

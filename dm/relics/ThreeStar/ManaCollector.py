@@ -2,46 +2,35 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("ManaCollector",)
 
 ################################################################################
-class Template(DMRelic):
+class ManaCollector(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
-            rank=3,
-            unlock=UnlockPack.Myth
+            _id="REL-199",
+            name="Mana Collector",
+            description=(
+                "Recover Empty Mana Crystals equal to the number of monsters "
+                "deployed at the start of the battle."
+            ),
+            rank=3
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.game.subscribe_event("before_battle", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -49,21 +38,20 @@ class Template(DMRelic):
 
         Breakdown:
         ----------
-        **effect = b + (e * s)**
+        **effect = b * m**
 
         In this function:
 
         - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
+        - m is the number of monsters deployed.
         """
 
-        pass
+        return 1 * len(self.game.deployed_monsters)
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self) -> None:
         """A general event response function."""
 
-        pass
+        self.game.dark_lord.restore_mana(int(self.effect_value()))
 
 ################################################################################

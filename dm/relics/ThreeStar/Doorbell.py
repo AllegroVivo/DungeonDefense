@@ -9,39 +9,35 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("Doorbell",)
 
 ################################################################################
-class Template(DMRelic):
+class Doorbell(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-217",
+            name="Doorbell",
+            description=(
+                "Damage the Dark Lord receives per hero during battle in the "
+                "Dark Lord's Room is decreased by 1 %. (Max 50 %)"
+            ),
             rank=3,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Original
         )
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when a relic is added to the player's inventory."""
-
-        pass
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        # If we're in the boss room
+        if ctx.room == self.game.dungeon.map.boss_tile:
+            # And the defender is the dark lord
+            if ctx.defender == self.game.dark_lord:
+                # Mitigate the damage.
+                ctx.mitigate_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
@@ -49,21 +45,15 @@ class Template(DMRelic):
 
         Breakdown:
         ----------
-        **effect = b + (e * s)**
+        **effect = max(a * h, m)**
 
         In this function:
 
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
+        - a is the additional effectiveness per hero.
+        - h is the number of heroes.
+        - m is the maximum effectiveness.
         """
 
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
-
-        pass
+        return max(0.01 * len(self.game.dungeon.map.boss_tile.heroes), 0.50)
 
 ################################################################################

@@ -7,21 +7,24 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("AbyssFlower",)
+__all__ = ("ManaGrail",)
 
 ################################################################################
-class AbyssFlower(DMRelic):
+class ManaGrail(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-183",
-            name="Abyss Flower",
-            description="Poison is decreased by 25 %, instead of 50%.",
+            _id="REL-201",
+            name="Mana Grail",
+            description=(
+                "The Mana Crystals remaining at the end of battle now carry over "
+                "to the next day."
+            ),
             rank=3
         )
 
-        # Handled in the Poison status calculations
+        # Handled in the day advancement logic.
 
 ################################################################################

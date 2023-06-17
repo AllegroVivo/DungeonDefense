@@ -224,6 +224,11 @@ class DMGame:
     def advance_day(self) -> None:
 
         self.day += 1
+
+        relic = self.get_relic("Mana Grail")
+        if relic is None:
+            self.dark_lord.current_mana = 0
+
         self.state_machine.switch_state("fate_select")
 
 ################################################################################

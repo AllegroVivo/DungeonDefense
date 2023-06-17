@@ -47,7 +47,10 @@ class Regeneration(DMStatus):
         """Called in every iteration of the battle loop."""
 
         self.owner.heal(self.stacks)
-        self.reduce_stacks_by_half()
+        # Check for the corresponding relic
+        relic = self.game.get_relic("Four-leaf Clover")
+        scalar = 0.30 if relic is not None else 0.50
+        self.reduce_stacks_pct(scalar)
 
 ################################################################################
     def notify(self, status: DMStatus) -> None:
