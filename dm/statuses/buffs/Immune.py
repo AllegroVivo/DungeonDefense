@@ -41,10 +41,10 @@ class Immune(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("status_acquired", self.try_negate_debuff)
+        self.game.subscribe_event("status_acquired", self.notify)
 
 ################################################################################
-    def try_negate_debuff(self, status: DMStatus) -> None:
+    def notify(self, status: DMStatus) -> None:
 
         if status.type is DMStatusType.Debuff:
             # Grab the resist info

@@ -55,6 +55,7 @@ class DMRoom(DMLevelable):
 
         self._position: Vector2 = position
         self.graphics: RoomGraphical = RoomGraphical(self)
+        self._monsters: List[DMMonster] = []
 
 ################################################################################
     def __repr__(self) -> str:
@@ -65,6 +66,12 @@ class DMRoom(DMLevelable):
             f"center: {self.center}, "
             f"type: {self.room_type}>"
         )
+
+################################################################################
+    @property
+    def type(self) -> DMType:
+
+        return DMType.Room
 
 ################################################################################
     @property
@@ -110,6 +117,11 @@ class DMRoom(DMLevelable):
         return self._monsters
 
 ################################################################################
+    def sort_monsters(self) -> None:
+
+        self.monsters.sort(key=lambda m: m.stat_score)
+
+################################################################################
     @property
     def center(self) -> Vector2:
 
@@ -147,6 +159,7 @@ class DMRoom(DMLevelable):
 
         new_obj.graphics = self.graphics._copy()
         # new_obj.highlighted = False
+        new_obj._monsters = []
 
         # Dummy coordinates until it's placed.
         new_obj.position = kwargs.pop("position", None) or Vector2(-1, -1)

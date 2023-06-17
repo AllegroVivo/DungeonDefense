@@ -31,16 +31,16 @@ class Bloodlust(DMStatus):
             description=(
                 "When under the effect of Vampire, DEX and ATK are increased by "
                 "10%, with increasing effectiveness dependant upon the number of "
-                "Bloodlust stacks possessed. Stat is halved upon activation."
+                "Bloodlust stacks possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.10
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """For use in a no-arguments-required situation. This is not automatically
-        called."""
+        """Called automatically when a stat refresh is initiated."""
 
         vampire = self.owner.get_status("Vampire")
         if vampire is not None:
@@ -55,16 +55,16 @@ class Bloodlust(DMStatus):
 
         Breakdown:
         ----------
-        **% = (n * a) + x**
+        **effect = b + (e * s)**
 
         In this function:
 
-        - x is the base adjustment.
-        - n is the number of Bloodlust stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - e is the additional effectiveness per stack.
+        - s is the number of Bloodlust stacks.
         """
 
         # Might split this into two functions if the attack increase isn't significant enough.
-        return (self.stacks * 0.005) + 0.10
+        return self.base_effect + (0.005 * self.stacks)  # 0.5% additional effectiveness
 
 ################################################################################

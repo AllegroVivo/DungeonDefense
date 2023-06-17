@@ -8,7 +8,7 @@ __all__ = ("ALL_FATES", "SPAWNABLE_FATES")
 
 ################################################################################
 # Packages
-# from .dungeon         import *
+from .dng               import *
 
 # Modules
 from .battle            import BattleFate
@@ -32,7 +32,7 @@ ALL_FATES: List[Type["DMFateCard"]] = [
     MonsterTraderFate, TreasureFate, TrialFate,
 
     # Dungeon Card sub-Fates.
-    # ReadingFate, RestFate, RoomSwapFate, TortureFate, TrainFate, UpgradeFate
+    ReadingFate, RestFate, RoomSwapFate, TortureFate, TrainFate, UpgradeFate
 ]
 
 SPAWNABLE_FATES: List[Type["DMFateCard"]] = [

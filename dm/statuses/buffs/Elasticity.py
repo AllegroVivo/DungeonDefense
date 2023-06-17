@@ -30,7 +30,7 @@ class Elasticity(DMStatus):
             name="Elasticity",
             description=(
                 "Cancels the next damage to be received by up to 10% of max LIFE. "
-                "The stat is reduced by 1 upon activation."
+                "The stat is reduced by 1 each time damage is received."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -38,10 +38,9 @@ class Elasticity(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # Effective for up to 10% of max LIFE.
             effect_value = min(ctx.damage, int(self.owner.max_life * 0.10))
             # If we're mitigating the full amount of the attack, just fail it to exit the loop.

@@ -1,19 +1,19 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
-from ...core.vector import DMVector
 
 if TYPE_CHECKING:
-    from ...core.game         import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("TortureFate",)
 
 ################################################################################
-class TortureFate(DMFateCard):
+class TortureFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.Torture
 
@@ -24,9 +24,8 @@ class TortureFate(DMFateCard):
             _id="FAT-205",
             name="Torture",
             description="Select a prisoner to Torture.",
-            new_state="dng_torture",
-            rank=0,
-            position=DMVector(x, y)
+            next_state="dng_torture",
+            position=Vector2(x, y)
         )
 
 ################################################################################

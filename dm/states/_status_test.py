@@ -22,10 +22,12 @@ class _StatusTestState(DMState):
 
         super().__init__(game)
 
-        self.game.battle_mgr.engage(
-            self.game.inventory.get_random_inventory_monster(),
-            self.game.inventory.get_random_inventory_monster()
-        )
+        monster1 = self.game.inventory.get_random_inventory_monster()
+        monster2 = self.game.inventory.get_random_inventory_monster()
+        while monster1 == monster2:
+            monster2 = self.game.inventory.get_random_inventory_monster()
+
+        self.game.battle_mgr.engage(monster1, monster2)
         self.count = 0
 
 ################################################################################
@@ -47,13 +49,11 @@ class _StatusTestState(DMState):
 ################################################################################
     def _add_status_debug(self) -> None:
 
-        attacker = self.game.battle_mgr._encounters[0]._attacker
-        defender = self.game.battle_mgr._encounters[0]._defender
+        monster = self.game.battle_mgr._encounters[0]._attacker
+        hero = self.game.battle_mgr._encounters[0]._defender
 
         # if self.count == 1:
-        # attacker += self.game.spawn("Immortality", parent=attacker, stacks=2)
-        defender += self.game.spawn("Fury", parent=defender, stacks=10)
-        defender += self.game.spawn("Merciless", parent=defender)
+        monster.add_status("Chained", stacks=3)
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

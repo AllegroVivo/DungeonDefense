@@ -3,17 +3,17 @@ from __future__ import annotations
 from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
 
 if TYPE_CHECKING:
-    from ...core.game       import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("RestFate",)
 
 ################################################################################
-class RestFate(DMFateCard):
+class RestFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.Rest
 
@@ -26,8 +26,7 @@ class RestFate(DMFateCard):
             description=(
                 "Rest for a day and Recover 30% of your max LIFE rounded up."
             ),
-            new_state="dng_rest",
-            rank=0,
+            next_state="dng_rest",
             position=Vector2(x, y)
         )
 

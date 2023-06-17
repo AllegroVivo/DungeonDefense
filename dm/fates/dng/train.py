@@ -1,19 +1,19 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
-from ...core.vector import DMVector
 
 if TYPE_CHECKING:
-    from ...core.game         import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("TrainFate",)
 
 ################################################################################
-class TrainFate(DMFateCard):
+class TrainFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.Train
 
@@ -24,9 +24,8 @@ class TrainFate(DMFateCard):
             _id="FAT-203",
             name="Train",
             description="Select a monster to promote to Elite and beyond.",
-            new_state="dng_train",
-            rank=0,
-            position=DMVector(x, y)
+            next_state="dng_train",
+            position=Vector2(x, y)
         )
 
 ################################################################################

@@ -33,31 +33,32 @@ class Hatred(DMStatus):
                 "No effect can reduce or remove this. "
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.01
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.attacker == self.owner:
+        if self.owner == ctx.attacker:
             # Boom, simple.
             ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        H = 0.01 * n
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Hatred stacks.
+        - b is the base adjustment.
+        - s is the number of Hatred stacks.
         """
 
-        return 0.01 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

@@ -40,18 +40,17 @@ class Regeneration(DMStatus):
     def on_acquire(self) -> None:
         """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("status_applied", self.try_negate_debuff)
+        self.game.subscribe_event("status_applied", self.notify)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         self.owner.heal(self.stacks)
         self.reduce_stacks_by_half()
 
 ################################################################################
-    def try_negate_debuff(self, status: DMStatus) -> None:
+    def notify(self, status: DMStatus) -> None:
 
         if status.owner != self.owner:
             return

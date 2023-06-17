@@ -35,7 +35,9 @@ class FateCardSelectState(DMState):
             elif event.key == K_END:
                 self.next_state = "fate_board_view"
             elif event.key == K_RETURN:
-                self.game.state_machine.switch_state(self.options[self.selection].next_state)
+                card = self.options[self.selection]
+                if card.name == "Rest":
+                    self.game.state_machine.switch_state(card.next_state)
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

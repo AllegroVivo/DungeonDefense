@@ -208,9 +208,9 @@ class DMGame:
         )
 
 ###############################################################################
-    def get_room_at(self, pos: Vector2, debug=False) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:
 
-        return self.dungeon.get_room_at(pos, debug)
+        return self.dungeon.get_room_at(pos)
 
 ################################################################################
     def display_popup(self, title: Optional[str], text: Optional[str]) -> None:
@@ -224,6 +224,7 @@ class DMGame:
     def advance_day(self) -> None:
 
         self.day += 1
+        self.state_machine.switch_state("fate_select")
 
 ################################################################################
     def dispatch_event(self, event_type: str, **payload) -> None:
@@ -248,7 +249,24 @@ class DMGame:
 ################################################################################
     def get_relic(self, relic: Union[str, DMRelic]) -> Optional[DMRelic]:
 
-        self.relics.get_relic(relic)
+        return self.relics.get_relic(relic)
 
 ################################################################################
+    def push_state(self, state: Union[str, DMState]) -> None:
+        """Pushes a state on top of the current state, but doesn't replace it."""
+
+        self.state_machine.push_state(state)
+
+################################################################################
+    def pop_state(self) -> None:
+        """Removes the top state from the stack."""
+
+        self.state_machine.pop_state()
+
+################################################################################
+    def switch_state(self, state: Union[str, DMState]) -> None:
+        """Completely replaces the current state with the given state."""
+
+        self.state_machine.switch_state(state)
+
 ################################################################################

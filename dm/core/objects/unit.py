@@ -159,10 +159,20 @@ class DMUnit(DMLevelable):
         return self._graphics
 
 ################################################################################
+    @property
+    def equipment(self) -> Optional:
+
+        return self._equip
+
+################################################################################
     def add_status(self, name: str, stacks: Union[int, float] = 1) -> None:
 
         status = self.game.spawn(name, parent=self, stacks=int(stacks))
-        self._add_status(status)  # type: ignore
+
+        ctx = StatusContext(self.game, status)  # type: ignore
+        ctx.execute()
+
+        self._add_status(ctx.calculate())  # type: ignore
 
 ################################################################################
     def _add_status(self, status: DMStatus) -> None:

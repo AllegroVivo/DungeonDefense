@@ -63,7 +63,7 @@ class DMObjectPool:
         self.__monsters: List[DMMonster] = [m(self._state) for m in self.__monster_types]  # type: ignore
         self.__heroes: List[DMHero] = [h(self._state) for h in self.__hero_types]  # type: ignore
         self.__rooms: List[DMRoom] = [r(self._state) for r in self.__room_types]  # type: ignore
-        self.__statuses: List[DMStatus] = [s(self._state, None, 0) for s in self.__status_types]  # type: ignore
+        self.__statuses: List[DMStatus] = [s(self._state, None) for s in self.__status_types]  # type: ignore
         self.__relics: List[DMRelic] = [relic(self._state) for relic in self.__relic_types]  # type: ignore
         self.__fates: List[DMFateCard] = [f(self._state, 0, 0) for f in self.__fate_types]  # type: ignore
 

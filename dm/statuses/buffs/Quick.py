@@ -29,30 +29,30 @@ class Quick(DMStatus):
             name="Quick",
             description="DEX is increased by 1% per stack.",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.01
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         self.owner.increase_stat_pct("dex", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = b * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Acceleration stacks.
-        - b is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Quick stacks.
         """
 
-        return 0.01 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

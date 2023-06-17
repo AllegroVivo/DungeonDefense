@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 from typing     import TYPE_CHECKING, Optional
 
 from ...core.objects.status import DMStatus
@@ -30,7 +32,7 @@ class DodgeTrap(DMStatus):
             _id="BUF-107",
             name="Dodge Trap",
             description=(
-                "Dodges an attack by a trap. Stacks are reduced by 1 upon "
+                "Dodges an attack by a trap. Stacks are reduced by 1 per "
                 "activation."
             ),
             stacks=stacks,
@@ -39,16 +41,21 @@ class DodgeTrap(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # And being attacked by a trap
             if isinstance(ctx.attacker, DMTrapRoom):
-                # The attack will fail.
-                ctx.will_fail = True
-                # Reduce stacks.
+                # Check the associated relic.
+                relic = self.game.get_relic("Fake Map")
+                if relic is not None:
+                    chance = random.random()
+                    if chance > 0.25:  # 25% chance to ignore this stat.
+                        # If we pass, the attack will fail.
+                        ctx.will_fail = True
+
+                # Reduce stacks regardless.
                 self.reduce_stacks_by_one()
 
 ################################################################################

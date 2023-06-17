@@ -55,9 +55,9 @@ class DMDungeon:
         self.game.dark_lord.update(dt)
 
 ###############################################################################
-    def get_room_at(self, pos: Union[Vector2, Tuple[int, int]], debug=False) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Union[Vector2, Tuple[int, int]]) -> Optional[DMRoom]:
 
-        return self.map.get_room_at(Vector2(pos), debug)
+        return self.map.get_room_at(Vector2(pos))
 
 ################################################################################
     def all_rooms(self, entry: bool = False, boss: bool = False, empty: bool = False) -> List[DMRoom]:

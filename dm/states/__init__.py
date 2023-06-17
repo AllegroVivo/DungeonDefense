@@ -27,5 +27,8 @@ STATE_MAPPINGS: Dict[str, Type["DMState"]] = {
     "fate_board_view" : FateBoardViewState,
     "fate_select" : FateCardSelectState,
     "battle" : BattleState,
+    "dungeon_fate" : DungeonFateState,
+    "confirm_cancel" : ConfirmCancelState,
+    "popup" : PopupDialogState  # This isn't typically called by string reference.
 }
 ################################################################################

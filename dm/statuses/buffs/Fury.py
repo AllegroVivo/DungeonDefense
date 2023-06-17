@@ -29,8 +29,8 @@ class Fury(DMStatus):
             _id="BUF-111",
             name="Fury",
             description=(
-                "The next attack or skill deals additional damage equal to amount "
-                "of Fury possessed. The stat is halved upon activation."
+                "Adds additional damage to an attack or skill equal to Fury "
+                "possessed. Fury stacks are halved each time it is activated."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -38,10 +38,9 @@ class Fury(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.attacker == self.owner:
+        if self.owner == ctx.attacker:
             # Add damage equal to stacks
             ctx.amplify_flat(self.stacks)
             # Reduce if not under the effect of Merciless (prevents Fury reduction)

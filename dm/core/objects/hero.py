@@ -60,6 +60,12 @@ class DMHero(DMUnit):
         self.counter = 0
 
 ################################################################################
+    @property
+    def type(self) -> DMType:
+
+        return DMType.Hero
+
+################################################################################
     def update(self, dt: float) -> None:
 
         super().update(dt)

@@ -35,6 +35,16 @@ class ArmorFragment(DMStatus):
             status_type=DMStatusType.AntiBuff
         )
 
-        # Implemented in the Armor status calculation
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically upon the status's acquisition by the unit."""
+
+        self.game.subscribe_event("status_execute", self.notify)
+
+################################################################################
+    def notify(self, *args) -> None:
+        """A general event response function."""
+
+        pass
 
 ################################################################################

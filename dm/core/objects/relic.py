@@ -29,6 +29,12 @@ class DMRelic(DMObject):
         super().__init__(state, _id, name, description, rank, unlock)
 
 ################################################################################
+    @property
+    def type(self) -> DMType:
+
+        return DMType.Relic
+
+################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 

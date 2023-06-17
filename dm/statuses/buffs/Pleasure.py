@@ -30,7 +30,7 @@ class Pleasure(DMStatus):
             name="Pleasure",
             description=(
                 "Changes to Fury when attacking an enemy, and to Regeneration "
-                "when receiving damage. Stat is halved upon activation."
+                "when receiving damage. Half of Pleasure remains after the change."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -38,8 +38,7 @@ class Pleasure(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         # Apply the appropriate stat
         status = "Fury" if ctx.attacker == self.owner else "Regeneration"

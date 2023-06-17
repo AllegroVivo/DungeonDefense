@@ -3,17 +3,17 @@ from __future__ import annotations
 from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
 
 if TYPE_CHECKING:
-    from ...core.game         import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("ReadingFate",)
 
 ################################################################################
-class ReadingFate(DMFateCard):
+class ReadingFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.Reading
 
@@ -27,7 +27,6 @@ class ReadingFate(DMFateCard):
                 "Select a book to read and gain a benefit for the rest of the run."
             ),
             next_state="dng_reading",
-            rank=0,
             position=Vector2(x, y)
         )
 

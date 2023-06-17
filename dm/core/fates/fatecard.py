@@ -45,8 +45,10 @@ class DMFateCard(DMObject):
 
         super().__init__(state, _id, name, description, rank)
 
-        self._small_sprite: FateCardGraphicalSm = FateCardGraphicalSm(self)
-        self._large_sprite: FateCardGraphicalLg = FateCardGraphicalLg(self)
+        self._small_sprite: FateCardGraphicalSm = None  # Type: ignore
+        self._large_sprite: FateCardGraphicalLg = None  # Type: ignore
+
+        self._load_sprites()
 
         self._position: Vector2 = position
         self._highlighted: bool = False
@@ -54,6 +56,12 @@ class DMFateCard(DMObject):
         self._selected: bool = False
 
         self.next_state: str = next_state
+
+################################################################################
+    def _load_sprites(self) -> None:
+
+        self._small_sprite = FateCardGraphicalSm(self)
+        self._large_sprite = FateCardGraphicalLg(self)
 
 ################################################################################
     def highlight(self, state: bool) -> None:

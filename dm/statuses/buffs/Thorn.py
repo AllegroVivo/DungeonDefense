@@ -38,17 +38,26 @@ class Thorn(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_after_execute(self.notify)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
-        if ctx.defender == self.owner:
+        # If we're defending.
+        if self.owner == ctx.defender:
+            # And damage will occur
             if ctx.damage > 0:
-                ctx.attacker.damage(self.stacks)
+                damage = self.stacks
+
+                # Check for the corresponding relic.
+                relic = self.game.get_relic("Abyss Thorn")
+                if relic is not None:
+                    damage *= 2
+
+                # Apply final damage and reduce stacks
+                ctx.attacker.damage(damage)
                 self.reduce_stacks_by_half()
 
 ################################################################################

@@ -64,6 +64,13 @@ class Slow(DMStatus):
         slow = self.owner.get_status("Slow")
         scalar = 0 if slow is None else slow.stacks
 
-        return 0.50 + (0.001 * scalar)
+        base = 0.50  # 50% base effectiveness
+
+        # Check for the associated relic.
+        relic = self.game.get_relic("Net")
+        if relic is not None:
+            base += 0.10  # Relic increases effectiveness to 60%
+
+        return base + (0.001 * scalar)
 
 ################################################################################

@@ -1,22 +1,27 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Union
+from typing     import TYPE_CHECKING, List, Union
 
 from .attack import AttackContext
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMUnit, DMGame, DMRoom, DMTrapRoom
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
+    from dm.core.objects.room import DMRoom
+    from dm.core.objects.status import DMStatus
+    from ...rooms.traproom import DMTrapRoom
 ################################################################################
 
-__all__ = ("AttackContext", "BossSkillContext")
+__all__ = ("BossSkillContext", )
 
 ################################################################################
 class BossSkillContext(AttackContext):
 
     __slots__ = (
         "_parent",
-        "_mana_cost"
+        "_mana_cost",
+        "_statuses",
     )
 
 ################################################################################
@@ -29,7 +34,7 @@ class BossSkillContext(AttackContext):
         # parent: DMBossSkill
     ):
 
-        super().__init__(game, room, attacker, defender)
+        super().__init__(game, attacker, defender, AttackType.Skill)
 
         # self._parent: DMBossSkill = parent
         # self.mana_cost = self._parent.mana_cost
@@ -40,6 +45,12 @@ class BossSkillContext(AttackContext):
     def mana_cost(self) -> int:
 
         return self._mana_cost
+
+################################################################################
+    @property
+    def statuses(self) -> List[DMStatus]:
+
+        return self._statuses
 
 ################################################################################
     def reduce_mana_cost(self, amount: int) -> None:

@@ -1,19 +1,19 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
-from ...core.vector import DMVector
 
 if TYPE_CHECKING:
-    from ...core.game         import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("RoomSwapFate",)
 
 ################################################################################
-class RoomSwapFate(DMFateCard):
+class RoomSwapFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.RoomSwap
 
@@ -22,11 +22,10 @@ class RoomSwapFate(DMFateCard):
         super().__init__(
             game,
             _id="FAT-206",
-            name="Room Exchange",
+            name="Room Swap",
             description="Select two rooms and switch their locations.",
-            new_state="dng_roomswap",
-            rank=0,
-            position=DMVector(x, y)
+            next_state="dng_roomswap",
+            position=Vector2(x, y)
         )
 
 ################################################################################

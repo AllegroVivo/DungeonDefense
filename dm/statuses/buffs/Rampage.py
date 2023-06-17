@@ -33,35 +33,35 @@ class Rampage(DMStatus):
                 "by 1% per stack."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.20
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         if self.owner == ctx.attacker:
             ctx.amplify_pct(self.effect_value())
         else:
-            ctx.amplify_pct(self.effect_value() / 2)
+            ctx.amplify_pct(self.effect_value() / 2)  # Divide in half since it's only a 1% increase, not 2%
 
         # Does not reduce.
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = e * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Rampage stacks.
-        - e is the effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Rampage stacks.
         """
 
-        return 0.02 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

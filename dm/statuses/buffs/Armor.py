@@ -39,8 +39,9 @@ class Armor(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
+        """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # Determine whether stack count or damage total is lower
             effect_value = min(self.stacks, ctx.damage)
             # Check for antibuff

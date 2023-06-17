@@ -30,8 +30,8 @@ class Absorption(DMStatus):
             name="Absorption",
             description=(
                 "Only take damage equal to 10% of your Maximum LIFE should the "
-                "damage exceed that amount. Absorption stacks are reduced by 1 "
-                "upon activation."
+                "damage exceed that amount. Reduce Absorption by 1 each time "
+                "it is activated."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -39,9 +39,10 @@ class Absorption(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
+        """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # And if the attack's damage will exceed 10% of max LIFE
             if ctx.damage > self.owner.max_life * 0.10:
                 # Do a hard override to 10% of LIFE.

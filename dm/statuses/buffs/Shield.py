@@ -38,8 +38,7 @@ class Shield(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         if ctx.defender == self.owner:
             # Check against resist and return if it's too high.

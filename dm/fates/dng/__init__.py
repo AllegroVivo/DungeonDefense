@@ -1,3 +1,4 @@
+from ._base     import DungeonFateCard
 from .reading   import ReadingFate
 from .rest      import RestFate
 from .roomswap  import RoomSwapFate

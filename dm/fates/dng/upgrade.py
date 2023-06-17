@@ -1,19 +1,19 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING
 
-from ...core.fates  import DMFateCard
+from ._base import DungeonFateCard
 from utilities      import *
-from ...core.vector import DMVector
 
 if TYPE_CHECKING:
-    from ...core.game         import DMGame
+    from ...core.game.game import DMGame
 ################################################################################
 
 __all__ = ("UpgradeFate",)
 
 ################################################################################
-class UpgradeFate(DMFateCard):
+class UpgradeFate(DungeonFateCard):
 
     FTYPE: DMFateType = DMFateType.Upgrade
 
@@ -24,9 +24,8 @@ class UpgradeFate(DMFateCard):
             _id="FAT-202",
             name="Upgrade",
             description="Select a room to Upgrade.",
-            new_state="dng_upgrade",
-            rank=0,
-            position=DMVector(x, y)
+            next_state="dng_upgrade",
+            position=Vector2(x, y)
         )
 
 ################################################################################

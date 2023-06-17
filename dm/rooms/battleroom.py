@@ -66,13 +66,6 @@ class DMBattleRoom(DMRoom):
         return DMRoomType.Battle
 
 ################################################################################
-    @property
-    def monsters(self) -> List[DMMonster]:
-
-        self._monsters.sort(key=lambda m: m.stat_score)
-        return self._monsters
-
-################################################################################
     def set_monster_cap(self, value: int) -> None:
 
         self.monster_cap = value

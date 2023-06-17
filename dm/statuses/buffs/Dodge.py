@@ -30,7 +30,7 @@ class Dodge(DMStatus):
             name="Dodge",
             description=(
                 "Evades the next attack. Stat is decreased by 1 and unit gains 1 "
-                "Dodge Resist upon activation."
+                "Dodge Resist per evasion."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -38,10 +38,9 @@ class Dodge(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # Check against the resist first.
             resist = self.owner.get_status("Dodge Resist")
             if resist is not None:

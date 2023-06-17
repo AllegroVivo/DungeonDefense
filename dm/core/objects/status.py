@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Type, TypeVar, Union
+from typing     import TYPE_CHECKING, Optional, Type, TypeVar, Union
 
 from .object    import DMObject
 from utilities  import *
@@ -23,7 +23,9 @@ class DMStatus(DMObject):
         "_stacks",
         "_type",
         "_flat_adjustment",
-        "_scalar"
+        "_scalar",
+        "_base_effect",
+        "_base_scalar"
     )
 
 ################################################################################
@@ -36,7 +38,8 @@ class DMStatus(DMObject):
         name: str,
         description: str,
         stacks: int,
-        status_type: DMStatusType
+        status_type: DMStatusType,
+        base_effect: float = 0
     ):
 
         super().__init__(state, _id, name, description)
@@ -47,6 +50,11 @@ class DMStatus(DMObject):
 
         self._flat_adjustment: int = 0
         self._scalar: float = 1.0
+
+        self._base_effect: Optional[float] = base_effect
+        self._base_scalar: float = 1.0
+
+        self.game.subscribe_event("after_attack", self.calculate)
 
 ################################################################################
     def __iadd__(self, other: Union[DMStatus, int]) -> DMStatus:
@@ -73,7 +81,7 @@ class DMStatus(DMObject):
             self.reduce_stacks_flat(other)
         else:
             raise ArgumentTypeError(
-                "DMStatus.__iadd__()",
+                "DMStatus.__isub__()",
                 type(other),
                 type(DMStatus), type(int)
             )
@@ -111,21 +119,21 @@ class DMStatus(DMObject):
 
 ################################################################################
     @property
+    def type(self) -> DMType:
+
+        return DMType.Status
+
+################################################################################
+    @property
     def game(self) -> DMGame:
 
-        return self._parent.game
+        return self._state
 
 ################################################################################
     @property
     def owner(self) -> DMUnit:
 
         return self._parent
-
-################################################################################
-    @property
-    def type(self) -> DMStatusType:
-
-        return self._type
 
 ################################################################################
     @property
@@ -136,7 +144,42 @@ class DMStatus(DMObject):
 ################################################################################
     def calculate(self) -> int:
 
-        return int((self._stacks * self._scalar) + self._flat_adjustment)
+        # Set the new value of stacks and reset the modifiers.
+        self._stacks = int((self._stacks * self._scalar) + self._flat_adjustment)
+        self._scalar = 1.0
+        self._flat_adjustment = 0
+
+        return self._stacks
+
+################################################################################
+    @property
+    def base_effect(self) -> Optional[float]:
+
+        return self._base_effect * self._base_scalar
+
+################################################################################
+    def increase_base_effect(self, amount: float) -> None:
+
+        if not isinstance(amount, float):
+            raise ArgumentTypeError(
+                "DMStatus.scale_base_effect().",
+                type(amount),
+                type(float)
+            )
+
+        self._base_scalar += amount
+
+################################################################################
+    def reduce_base_effect(self, amount: float) -> None:
+
+        if not isinstance(amount, float):
+            raise ArgumentTypeError(
+                "DMStatus.scale_base_effect().",
+                type(amount),
+                type(float)
+            )
+
+        self._base_scalar -= amount
 
 ################################################################################
     def reduce_stacks_flat(self, amount: int) -> None:
@@ -208,6 +251,9 @@ class DMStatus(DMObject):
 
         new_obj._flat_adjustment = 0
         new_obj._scalar = 1.0
+
+        new_obj._base_effect = self._base_effect
+        new_obj._base_scalar = 1.0
 
         return new_obj
 

@@ -29,7 +29,7 @@ class Revenge(DMStatus):
             _id="BUF-126",
             name="Revenge",
             description=(
-                "When about to receive damage, negates the damage once and grants "
+                "When about to receive damage, negates the damage and grants "
                 "Thorn equal to ATK."
             ),
             stacks=stacks,
@@ -38,8 +38,7 @@ class Revenge(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         if ctx.defender == self.owner:
             # Check against the owner's resist first

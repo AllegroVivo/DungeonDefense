@@ -58,9 +58,25 @@ class DMObject:
 
 ################################################################################
     @property
+    def type(self) -> DMType:
+
+        raise NotImplementedError
+
+################################################################################
+    @property
     def game(self) -> DMGame:
 
         return self._state
+
+################################################################################
+    def listen(self, event: str) -> None:
+
+        self.game.subscribe_event(event, self.notify)
+
+################################################################################
+    def notify(self, *args) -> None:
+
+        raise NotImplementedError
 
 ################################################################################
     def _copy(self, **kwargs) -> DMObject:

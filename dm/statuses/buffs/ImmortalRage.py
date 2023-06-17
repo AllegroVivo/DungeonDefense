@@ -37,41 +37,40 @@ class ImmortalRage(DMStatus):
             status_type=DMStatusType.Buff
         )
 
-        self._immortality_count: int = 0
-
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.attacker == self.owner:
+        if self.owner == ctx.attacker:
             immortality = self.owner.get_status("Immortality")
             if immortality is not None:
-                self._immortality_count = immortality.stacks
                 ctx.amplify_pct(self.effect_value())
                 self.reduce_stacks_by_half()
 
 ################################################################################
+    @property
+    def base_effect(self) -> Optional[float]:
+
+        return (self._base_effect * self._scalar) * (0.005 * self.stacks)  # 0.5% additional effectiveness
+
+################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **% = b + (n * a)**
+        **effect = b * s**
 
         In this function:
 
-        - b is the base effectiveness per stack.
-        - n is the number of Immortality stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Immortality stacks.
         """
 
-        if not self._immortality_count:
+        immortality = self.owner.get_status("Immortality")
+        if immortality is None:
             return 0
 
-        effectiveness = 0.05 + (self._immortality_count * 0.05)
-        self._immortality_count = None
-
-        return effectiveness
+        return self.base_effect * immortality.stacks
 
 ################################################################################

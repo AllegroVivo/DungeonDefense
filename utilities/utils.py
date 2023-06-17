@@ -3,7 +3,7 @@ import os
 import pygame
 import re
 
-from pygame         import Rect, Vector2
+from pygame         import Rect, Surface, Vector2
 from pygame.font    import Font
 from typing         import Dict, List, Tuple, Union
 
@@ -20,7 +20,8 @@ __all__ = (
     "multicolor_text",
     "pixel_to_grid",
     "grid_to_topleft_pixel",
-    "grid_to_center_pixel"
+    "grid_to_center_pixel",
+    "center_text"
 )
 
 ################################################################################
@@ -167,5 +168,12 @@ def grid_to_center_pixel(grid_x, grid_y):
     pixel_y = (grid_y * (ROOM_SIZE + GRID_PADDING) + ROOM_SIZE // 2) + 50
 
     return Vector2(pixel_x, pixel_y)
+
+################################################################################
+def center_text(surface: Surface, text: Surface):
+
+    text_rect = text.get_rect()
+    text_rect.center = (surface.get_width() // 2, surface.get_height() // 2)
+    surface.blit(text, text_rect)
 
 ################################################################################

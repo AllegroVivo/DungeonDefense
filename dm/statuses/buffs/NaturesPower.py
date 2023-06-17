@@ -29,37 +29,39 @@ class NaturesPower(DMStatus):
             _id="BUF-119",
             name="Nature's Power",
             description=(
-                "When damaging the next enemy, deals extra damage equal to "
+                "When damaging the next enemy, deal extra damage equal to "
                 "Regeneration possessed."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.005
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.attacker == self.owner:
-            regeneration = self.owner.get_status("Regeneration")
-            if regeneration is not None:
-                ctx.amplify_flat(int(regeneration.stacks * self.effect_value()))
+        if self.owner == ctx.attacker:
+            ctx.amplify_flat(int(self.effect_value()))
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = 1 + (n * a)**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Nature's Power stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - s is the number of Regeneration stacks.
         """
 
-        return 1 + (self.stacks * 0.005)
+        regeneration = self.owner.get_status("Regeneration")
+        if regeneration is None:
+            return 0
+
+        return self.base_effect * regeneration.stacks
 
 ################################################################################

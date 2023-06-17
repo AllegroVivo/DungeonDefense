@@ -4,6 +4,9 @@
 # that event, for convenience.
 ################################################################################
 EVENT_REGISTRY = {
+    "after_attack" : [  # [None]
+        DMStatus
+    ],
     "battle_end" : [  # [None]
         LifePotion, RegenerationOrb
     ],
@@ -11,7 +14,7 @@ EVENT_REGISTRY = {
         TokenOfFriendship
     ],
     "battle_start" : [  # [None]
-        IronPlate,
+        IronPlate, LesserManaStone
     ],
     "before_attack" : [  # [None]
         Poison,
@@ -20,10 +23,22 @@ EVENT_REGISTRY = {
         CurseOfTheSkull
     ],
     "boss_skill_bite" : [  # [BossSkillContext]
-        VampiricMonster
+        VampiricMonster, DemonTooth
     ],
     "boss_skill_blood_lord" : [  # [BossSkillContext]
         BloodStaff, BloodyMeteorite
+    ],
+    "boss_skill_forbidden_love" : [  # [BossSkillContext]
+        DemonicWater
+    ],
+    "boss_skill_petrifying_gaze": [  # [BossSkillContext]
+        ObsidianFang,
+    ],
+    "boss_skill_vampiric_impulse": [  # [BossSkillContext]
+        BatControl
+    ],
+    "boss_skill_vampiric_infection": [  # [BossSkillContext]
+        InfectedBlood,
     ],
     "boss_skill_venom_fang" : [  # [BossSkillContext]
         DeadlySting
@@ -37,14 +52,24 @@ EVENT_REGISTRY = {
     "egg_hatch" : [  # [EggHatchContext]
         AdvancedIncubator
     ],
+    "experience_awarded" : [  # [ExperienceContext]
+        ConstructionMaterial
+    ],
     "on_death" : [  # [AttackContext]
-        GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore
+        GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore, DeathGrip,
+        LittleCoin, ManaRecoveryRune, SecondHeart
     ],
     "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit
     ],
+    "room_change" : [  # [DMUnit]
+        BattleDrums,
+    ],
     "status_acquired" : [  # [DMStatus]
         Regeneration, Despair
+    ],
+    "status_execute" : [  # [DMStatus]
+        AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability
     ],
     "trap_activated" : [  # [AttackContext] (maybe?)
         InsigniaOfTerror

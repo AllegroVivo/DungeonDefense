@@ -23,6 +23,9 @@ class DMType(Enum):
     Hero = 2
     DarkLord = 3
     FateCard = 4
+    Object = 5
+    Relic = 6
+    Status = 7
 
 ################################################################################
 class DMRoomType(Enum):

@@ -39,7 +39,7 @@ class Context(ABC):
         raise NotImplementedError
 
 ################################################################################
-    def register_after_execute(self, callback: Callable[[Context], None]) -> None:
+    def register_after_execute(self, callback: Callable) -> None:
 
         self._post_execution_callbacks.append(callback)
 

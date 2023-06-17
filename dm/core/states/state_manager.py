@@ -93,6 +93,11 @@ class DMStateMachine:
         self.push_state(state)
 
 ################################################################################
+    def clear_previous_state(self) -> None:
+
+        self._previous_state = None
+
+################################################################################
     def handle_event(self, event: Event) -> None:
 
         if self._states:
@@ -106,7 +111,7 @@ class DMStateMachine:
             state.update(dt)
 
             if state.quit:
-                self._states.pop()
+                self._previous_state = self._states.pop()
                 if not self._states:
                     self.game.quit()
             elif state.next_state:

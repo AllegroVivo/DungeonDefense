@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from pygame         import Surface
     from pygame.event   import Event
 
-    from ..core.game    import DMGame
+    from ...core.game.game    import DMGame
 ################################################################################
 
 __all__ = ("Template",)
@@ -28,7 +28,7 @@ class Template(DMState):
 ################################################################################
     def handle_event(self, event: Event) -> None:
 
-        return super().handle_event(event)
+        pass
 
 ################################################################################
     def update(self, dt: float) -> None:
@@ -38,6 +38,6 @@ class Template(DMState):
 ################################################################################
     def draw(self, screen: Surface) -> None:
 
-        super().draw(screen)
+        pass
 
 ################################################################################

@@ -30,8 +30,8 @@ class Mirror(DMStatus):
             _id="BUF-118",
             name="Mirror",
             description=(
-                "Forces the next enemy attempting to attack this status's owner "
-                "to attack itself. Stat decreases by 1 and you gain 1 Mirror "
+                "Forces the next enemy attempting to attack this the owner "
+                "to attack itself. Stat decreases by 1 and unit gains 1 Mirror "
                 "Fragment upon activation."
             ),
             stacks=stacks,
@@ -40,12 +40,11 @@ class Mirror(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             # Change attack target to the attacker
-            ctx._defender = ctx._attacker
+            ctx.reassign_defender(ctx.attacker)
 
             # Reduce stacks and apply antibuff
             self.reduce_stacks_by_one()

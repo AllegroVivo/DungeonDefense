@@ -30,7 +30,7 @@ class Immortality(DMStatus):
             name="Immortality",
             description=(
                 "Survive critical damage with 1 LIFE. Stat decreases by 1 and "
-                "you gain 1 Immortal Rage upon activation."
+                "you gain 1 Regenerated Body per effect activation."
             ),
             stacks=stacks,
             status_type=DMStatusType.Buff
@@ -38,14 +38,13 @@ class Immortality(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
-            ctx.register_after_execute(self.callback)
+        if self.owner == ctx.defender:
+            ctx.register_after_execute(self.notify)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
         if not ctx.defender.is_alive:
             # Check resistance
@@ -60,8 +59,6 @@ class Immortality(DMStatus):
             # Reduce stacks
             self.reduce_stacks_by_one()
 
-            # Apply additional effect
-            self.owner.add_status("Immortal Rage")
             # And resistance
             self.owner.add_status("Regenerated Body")
 

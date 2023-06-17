@@ -1,108 +1,88 @@
 from __future__ import annotations
 
-from pygame         import Surface
-from pygame.font    import Font
-from typing         import TYPE_CHECKING
+from typing     import TYPE_CHECKING
 
-from ..core.states      import DMState
+from .menus.confirmcancel import ConfirmCancelState
+from .menus.popup import PopupDialogState
+from ._dng_select import DungeonSelectState
 from utilities          import *
 
 if TYPE_CHECKING:
+    from pygame         import Surface
     from pygame.event   import Event
 
-    from ..core.game.game import DMGame
+    from ..core.game.game    import DMGame
 ################################################################################
 
 __all__ = ("_DebugState",)
 
 ################################################################################
-class _DebugState(DMState):
+class _DebugState(DungeonSelectState):
 
     def __init__(self, game: DMGame):
 
         super().__init__(game)
 
-        monster1 = self.game.inventory.get_random_inventory_monster()
-        monster2 = self.game.inventory.get_random_inventory_monster()
-        while monster1 == monster2:
-            monster2 = self.game.inventory.get_random_inventory_monster()
-
-        self.game.battle_mgr.engage(monster1, monster2)
-        self.count = 0
+        # We need this to check for the confirm/cancel response.
+        self.game.state_machine.clear_previous_state()
 
 ################################################################################
     def handle_event(self, event: Event) -> None:
 
+        previous_state = self.game.state_machine.previous_state
+        if previous_state is not None:
+            if previous_state.selection == 0:  # type: ignore
+                self.process_upgrade()
+                self.game.switch_state("fate_select")
+            else:
+                self.game.state_machine.clear_previous_state()
+
+        super().handle_event(event)
+
         if event.type == KEYDOWN:
-            # if event.key == K_SPACE:
-            #     # Pause
-            #     pass
             if event.key == K_RETURN:
-                self.count += 1
-                self._add_status_debug()
-            elif event.key == K_SPACE:
-                self.game.battle_mgr.update(1)
-            # elif event.key == K_BACKSPACE:
-            #     self.count = max(self.count - 1, 0)
-            #     self._add_status_debug()
-
-################################################################################
-    def _add_status_debug(self) -> None:
-
-        monster = self.game.battle_mgr._encounters[0]._attacker
-        hero = self.game.battle_mgr._encounters[0]._defender
-
-        # if self.count == 1:
-        monster.add_status("Chained", stacks=3)
-
-################################################################################
-    def draw(self, screen: Surface) -> None:
-
-        screen.fill(BLACK)
-
-        atk_statuses = [
-            f"{s.name}: {s.stacks}" for s in self.game.battle_mgr._encounters[0]._attacker.statuses
-        ]
-        total_height = len(atk_statuses) * 40
-        start_y = (SCREEN_HEIGHT - total_height) / 2
-        font = Font("assets/fonts/raleway.ttf", 40)
-
-        atk_title = font.render("Attacker:", True, WHITE)
-        x = ((SCREEN_WIDTH // 2) - atk_title.get_width()) / 2
-        screen.blit(atk_title, (x, 50))
-        for i, string in enumerate(atk_statuses):
-            text_surface = font.render(string, True, WHITE)
-            # Center horizontally in the screen
-            x = ((SCREEN_WIDTH // 2) - text_surface.get_width()) / 2
-            # Stack vertically
-            y = start_y + i * 40
-            screen.blit(text_surface, (x, y))
-
-        def_statuses = [
-            f"{s.name}: {s.stacks}" for s in self.game.battle_mgr._encounters[0]._defender.statuses
-        ]
-
-        total_height = len(def_statuses) * 40
-        start_y = ((SCREEN_HEIGHT - total_height) / 2)
-        font = Font("assets/fonts/raleway.ttf", 40)
-
-        def_title = font.render("Defender:", True, WHITE)
-        x = (((SCREEN_WIDTH // 2) - def_title.get_width()) / 2) + (SCREEN_WIDTH // 2)
-        screen.blit(def_title, (x, 50))
-        for i, string in enumerate(def_statuses):
-            text_surface = font.render(string, True, WHITE)
-            # Center horizontally in the screen
-            x = (((SCREEN_WIDTH // 2) - text_surface.get_width()) / 2) + (SCREEN_WIDTH // 2)
-            # Stack vertically
-            y = start_y + i * 40
-            screen.blit(text_surface, (x, y))
-
-        # self.game.battle_mgr.draw(screen)
+                self.handle_selection()
 
 ################################################################################
     def update(self, dt: float) -> None:
 
-        pass
-        # self.game.battle_mgr.update(dt)
+        super().update(dt)
+
+################################################################################
+    def draw(self, screen: Surface) -> None:
+
+        super().draw(screen)
+
+################################################################################
+    def handle_selection(self) -> None:
+
+        room = self.game.dungeon.get_highlighted_room()
+
+        if room.room_type in (DMRoomType.Empty, DMRoomType.Entrance, DMRoomType.Boss):
+            return
+
+        if room.upgrades == 10:
+            self.game.push_state(
+                PopupDialogState(
+                    self.game,
+                    "Unable to Upgrade",
+                    "This room is already at the maximum rank."
+                )
+            )
+            return
+
+        self.game.push_state(
+            ConfirmCancelState(
+                self.game,
+                f"Upgrade {room.name}?",
+                f"This will increase {room.name}'s ranking to {room.rank + 1}."
+            )
+        )
+
+################################################################################
+    def process_upgrade(self) -> None:
+
+        room = self.game.dungeon.get_highlighted_room()
+        room.upgrade()
 
 ################################################################################

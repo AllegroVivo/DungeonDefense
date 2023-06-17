@@ -28,7 +28,7 @@ class Ecstasy(DMStatus):
             parent,
             _id="BUF-109",
             name="Ecstasy",
-            description="Prevents Pleasure stack from decreasing 1 time.",
+            description="Prevents Pleasure stacks from decreasing 1 time.",
             stacks=stacks,
             status_type=DMStatusType.Buff
         )

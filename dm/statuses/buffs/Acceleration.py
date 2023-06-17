@@ -30,24 +30,23 @@ class Acceleration(DMStatus):
             name="Acceleration",
             description=(
                 "DEX is increased by 50%, with increasing effectiveness depending "
-                "upon the number of Acceleration stacks possessed. Stacks are halved "
-                "upon activation."
+                "upon the number of Acceleration stacks possessed. Stat is halved "
+                "with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.50
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """This function is called automatically when a stat refresh is initiated.
-        A refresh can be initiated manually or by the global listener."""
+        """Called automatically when a stat refresh is initiated."""
 
         self.owner.increase_stat_pct("dex", self.effect_value())
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every battle loop iteration."""
 
         self.stat_adjust()
         self.reduce_stacks_by_half()
@@ -58,15 +57,15 @@ class Acceleration(DMStatus):
 
         Breakdown:
         ----------
-        **% = (n * a) + x**
+        **effect = b + (e * s)**
 
         In this function:
 
-        - x is the base adjustment.
-        - n is the number of Acceleration stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - e is the additional effectiveness per stack.
+        - s is the number of Acceleration stacks.
         """
 
-        return (self.stacks * 0.001) + 0.50
+        return self.base_effect + (0.001 * self.stacks)  # 0.1% additional per stack.
 
 ################################################################################

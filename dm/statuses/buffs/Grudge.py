@@ -29,20 +29,20 @@ class Grudge(DMStatus):
             _id="BUF-112",
             name="Grudge",
             description=(
-                "The next attack's damage is increased by 15% per stack of Grudge. "
-                "This stat is decreased by 1 upon activation, but Pleasure equal "
-                "to unit's ATK is gained."
+                "The next attack's damage is increased by 15% per stack of Grudge "
+                "possessed. This stat decreases by 1 per attack, but Pleasure "
+                "equal to own ATK is gained."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.15
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.attacker == self.owner:
+        if self.owner == ctx.attacker:
             # Increase damage
             ctx.amplify_pct(self.effect_value())
 
@@ -50,21 +50,22 @@ class Grudge(DMStatus):
             self.reduce_stacks_by_one()
 
             # Apply Pleasure buff
-            self.owner.add_status("Pleasure", stacks=self.owner.attack // 2)
+            self.owner.add_status("Pleasure", stacks=self.owner.attack)
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **% = 0.15 * n**
+        **effect = b * s**
 
         In this function:
 
-        - n is the number of Grudge stacks.
+        - b is the base adjustment.
+        - s is the number of Grudge stacks.
         """
 
-        return 0.15 * self.stacks
+        return self.base_effect * self.stacks
 
 ################################################################################

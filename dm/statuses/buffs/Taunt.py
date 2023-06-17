@@ -35,21 +35,20 @@ class Taunt(DMStatus):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        if ctx.room == self.owner.room:
+        if self.owner.room == ctx.room:
             # Force change the defending unit to the owner of this status.
-            if ctx.defender != self.owner:
-                ctx._defender = self.owner
+            if self.owner != ctx.defender:
+                ctx.reassign_defender(self.owner)
 
         # Register callback to reduce stacks if damage is actually done
-        ctx.register_after_execute(self.callback)
+        ctx.register_after_execute(self.notify)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
-        if ctx.defender == self.owner:
+        if self.owner == ctx.defender:
             if ctx.damage > 0:
                 self.reduce_stacks_by_one()
 

@@ -29,25 +29,40 @@ class Focus(DMStatus):
             _id="BUF-110",
             name="Focus",
             description=(
-                "The next attack inflicts 50% additional damage, with increasing "
-                "effectiveness depending upon the stacks of Focus possessed. "
-                "Stat is halved upon activation."
+                "The next attack inflicts 50% extra damage, and effect increases "
+                "depending on the Focus possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.50
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         # If we're attacking
-        if ctx.attacker == self.owner:
+        if self.owner == ctx.attacker:
             # Boost that damage
             ctx.amplify_pct(self.effect_value())
             # And reduce stacks
             self.reduce_stacks_by_half()
+
+################################################################################
+    @property
+    def base_effect(self) -> Optional[float]:
+
+        # After much deliberation, I've decided that the scaled percentage should
+        # be the base for the effectiveness increase below, so the scalar is
+        # factored in here instead at at the time of return.
+        base_effect = self._base_effect * self._scalar
+
+        # Check for the associated relic
+        relic = self.game.get_relic("Necklace of Focus")
+        if relic is not None:
+            base_effect *= 2  # Relic effect increases base effectiveness to 100%
+
+        return base_effect
 
 ################################################################################
     def effect_value(self) -> float:
@@ -55,15 +70,15 @@ class Focus(DMStatus):
 
         Breakdown:
         ----------
-        **% = (n * a) + x**
+        **effect = b + (e * s)**
 
         In this function:
 
-        - x is the base adjustment.
-        - n is the number of Focus stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - e is the additional effectiveness per stack.
+        - s is the number of Focus stacks.
         """
 
-        return (self.stacks * 0.001) + 0.50
+        return self.base_effect * (0.001 * self.stacks)  # 0.1% additional effectiveness
 
 ################################################################################

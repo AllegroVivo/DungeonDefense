@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygame     import Surface
-from typing     import TYPE_CHECKING
+from typing     import TYPE_CHECKING, Union
 
 from dm.core.objects.unit import DMUnit
 from ..graphics.darklord    import DarkLordGraphical
@@ -63,5 +63,14 @@ class DMDarkLord(DMUnit):
     def restore_mana(self, amount: int) -> None:
 
         self.current_mana = min(self.current_mana + amount, self._max_mana)
+
+################################################################################
+    def heal(self, amount: Union[int, float]) -> None:
+
+        relic = self.game.get_relic("Healing Necklace")
+        if relic is not None:
+            amount *= 1.25  # Adds 25% additional healing
+
+        super().heal(amount)
 
 ################################################################################

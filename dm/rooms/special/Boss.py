@@ -7,7 +7,7 @@ from ...rooms.battleroom    import DMBattleRoom
 from utilities              import *
 
 if TYPE_CHECKING:
-    from ...core    import DMGame
+    from ...core.game.game    import DMGame
 ################################################################################
 
 __all__ = ("BossRoom",)
@@ -38,7 +38,7 @@ class BossRoom(DMBattleRoom):
     def _init_dark_lord(self) -> None:
 
         self.dark_lord = self.game.dark_lord
-        self.monsters.append(self.dark_lord)  # type: ignore
+        self.deploy_monster(self.dark_lord)  # type: ignore
 
 ################################################################################
     @property

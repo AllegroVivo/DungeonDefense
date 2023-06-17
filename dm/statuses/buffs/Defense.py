@@ -31,23 +31,19 @@ class Defense(DMStatus):
             description=(
                 "Damage received is decreased by 50%, with increasing "
                 "effectiveness dependent on the number of Defense stacks "
-                "possessed. Stat is halved upon activation."
+                "possessed. Stat is halved when receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.50
         )
-
-        self.damage: int = 0
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if ctx.defender == self.owner:
-            # Cache a reference to the damage so we can use it in the calculation.
-            self.damage = ctx.damage
+        if self.owner == ctx.defender:
             # Adjust CTX damage.
             ctx.mitigate_pct(self.effect_value())
             # And reduce stacks.
@@ -59,17 +55,16 @@ class Defense(DMStatus):
 
         Breakdown:
         ----------
-        **% = (n * a) + x**
+        **effect = b + (e * s)**
 
         In this function:
 
-        - x is the base effectiveness
-        - n is the number of Defense stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - e is the additional effectiveness per stack.
+        - s is the number of Defense stacks.
         """
 
-        ret = (self.stacks * 0.001) + 0.50
-        self.damage = None
+        ret = self.base_effect + (0.001 * self.stacks)  # 0.1% additional effectiveness
 
         return ret
 

@@ -107,10 +107,9 @@ class DMDungeonMap:
         return len(self.grid[0])
 
 ###############################################################################
-    def get_room_at(self, pos: Vector2, debug=False) -> Optional[DMRoom]:
+    def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:
 
         if pos.x < 0 or pos.y < 0:
-            print(f"{pos} invalid")
             return
 
         try:

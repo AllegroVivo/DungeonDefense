@@ -23,7 +23,6 @@ class FateCardGraphicalLg:
         "_parent",
         "_sprite",
         "_info_text",
-        "_font"
     )
 
 ################################################################################
@@ -32,8 +31,6 @@ class FateCardGraphicalLg:
         self._parent: DMFateCard = parent
         self._sprite: Optional[Surface] = None
         self._info_text: Optional[Surface] = None
-
-        self._font: Font = Font("assets/fonts/raleway.ttf", 36)
 
         self.load_sprites()
 
@@ -64,7 +61,7 @@ class FateCardGraphicalLg:
     @property
     def title(self) -> Surface:
 
-        return Font(None, 48).render(self._parent.name, True, WHITE)
+        return Font("assets/fonts/raleway.ttf", 48).render(self._parent.name, True, WHITE)
 
 ################################################################################
     def draw(self, surface: Surface, position: Vector2) -> None:

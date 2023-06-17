@@ -415,8 +415,8 @@ class AttackContext(Context):
         return unit.life + unit.defense - self.damage <= 0
 
 ################################################################################
-    def register_after_execute(self, callback: Callable[[AttackContext], None]) -> None:
+    def reassign_defender(self, unit: DMUnit) -> None:
 
-        self._post_execution_callbacks.append(callback)
+        self._defender = unit
 
 ################################################################################

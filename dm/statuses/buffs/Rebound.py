@@ -34,18 +34,18 @@ class Rebound(DMStatus):
                 "is halved when receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=DMStatusType.Buff,
+            base_effect=0.10
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """For use in an AttackContext-based situation. Is always called in
-        every battle loop."""
+        """Called in every iteration of the battle loop."""
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_after_execute(self.notify)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.defender:
             # If the status owner is going to take damage
@@ -56,20 +56,26 @@ class Rebound(DMStatus):
                 self.reduce_stacks_by_half()
 
 ################################################################################
+    @property
+    def base_effect(self) -> float:
+
+        return (self._base_effect * self._base_scalar) * self.owner.max_life
+
+################################################################################
     def effect_value(self) -> float:
-        """The value of this status's effect. For example:
+        """The value of this status's effect.
 
         Breakdown:
         ----------
-        **effect = (L * 0.10) + (n * a)**
+        **effect = b + (a * s)**
 
         In this function:
 
-        - L is the defender's base max LIFE.
-        - n is the number of Rebound stacks.
-        - a is the additional effectiveness per stack.
+        - b is the base adjustment.
+        - a is the additional effectiveness per stack
+        - s is the number of Rebound stacks.
         """
 
-        return (self.owner.max_life * 0.10) + (self.stacks * 0.01)
+        return self.base_effect + (0.01 * self.stacks)
 
 ################################################################################
