@@ -37,6 +37,12 @@ class ManEatingPlant(DMRelic):
             # original, but I'm going to say 30% seems reasonable. May adjust.
             if ctx.defender.life < ctx.defender.max_life * 0.30:
                 # Increase damage.
-                ctx.amplify_pct(0.30)
+                ctx.amplify_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.30
 
 ################################################################################

@@ -34,7 +34,7 @@ class ExperienceContext(Context):
 
 ################################################################################
     @property
-    def obj(self) -> DMLevelable:
+    def target(self) -> DMLevelable:
 
         return self._obj
 

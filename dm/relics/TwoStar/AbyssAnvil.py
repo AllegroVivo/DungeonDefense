@@ -28,8 +28,17 @@ class AbyssAnvil(DMRelic):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
+        # Check all monsters
         for monster in self.game.deployed_monsters:
+            # And if they're wearing equipment
             if monster.equipment is not None:
-                monster.increase_stat_pct("attack", 0.20)
+                # Buff attack
+                monster.increase_stat_pct("attack", self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.20
 
 ################################################################################

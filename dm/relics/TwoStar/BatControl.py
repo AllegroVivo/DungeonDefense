@@ -8,17 +8,17 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("BatControl",)
 
 ################################################################################
-class Template(DMRelic):
+class BatControl(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
             _id="REL-136",
-            name="BatControl",
+            name="Bat Control",
             description=(
                 "Reduces the cost of 'Boss Skill : Vampiric Impulse' by 1."
             ),

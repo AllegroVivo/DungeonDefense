@@ -34,7 +34,9 @@ class DeathGrip(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
+        # If a monster was the defender
         if isinstance(ctx.defender, DMMonster):
+            # Restore mana
             self.game.dark_lord.restore_mana(1)
 
 ################################################################################

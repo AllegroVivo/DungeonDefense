@@ -38,7 +38,17 @@ class ConstructionMaterial(DMRelic):
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.obj, DMRoom):
-            ctx.amplify_pct(0.15)
+        # If the target of the experience is a room
+        if isinstance(ctx.target, DMRoom):
+            # Might need to add a check here for where the EXP is coming from.
+
+            # Increase experience
+            ctx.amplify_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.15
 
 ################################################################################

@@ -48,6 +48,11 @@ class Poison(DMStatus):
 
         # Appears to apply on any action - attacking or defending
         self.owner.damage(self.stacks)
-        self.reduce_stacks_by_half()
+
+        # Check for the associated relic
+        relic = self.game.get_relic("Abyss Flower")
+
+        # And reduce the stacks accordingly
+        self.reduce_stacks_pct(0.50 if relic is None else 0.25)
 
 ################################################################################

@@ -7,7 +7,7 @@ from .Bullion               import Bullion
 from .CateyeStone           import CateyeStone
 from .CurseOfTheSkull       import CurseOfTheSkull
 from .DeadlySting           import DeadlySting
-from .ForseeingOrb          import ForseeingOrb
+from .ForeseeingOrb          import ForeseeingOrb
 from .GhostAmulet           import GhostAmulet
 from .GravityBracelet       import GravityBracelet
 from .Hammer                import Hammer

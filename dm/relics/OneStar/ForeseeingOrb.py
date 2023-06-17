@@ -8,17 +8,17 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("ForseeingOrb",)
+__all__ = ("ForeseeingOrb",)
 
 ################################################################################
-class ForseeingOrb(DMRelic):
+class ForeseeingOrb(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
             _id="REL-110",
-            name="Forseeing Orb",
+            name="Foreseeing Orb",
             description="Reduces LIFE consumed in Events by 20 %.",
             rank=1
         )

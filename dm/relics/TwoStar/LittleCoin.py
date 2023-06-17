@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
+from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 from ...rooms.traproom import DMTrapRoom
 
@@ -34,7 +35,11 @@ class LittleCoin(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
+        # If a trap is attacking
         if isinstance(ctx.attacker, DMTrapRoom):
-            self.game.inventory.add_gold(1)
+            # And a hero was defending
+            if isinstance(ctx.defender, DMHero):
+                # Add gold
+                self.game.inventory.add_gold(1)
 
 ################################################################################

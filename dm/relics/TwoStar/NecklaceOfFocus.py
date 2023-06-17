@@ -23,6 +23,6 @@ class NecklaceOfFocus(DMRelic):
             rank=2
         )
 
-        # Implemented in focus status calculations.
+        # Implemented in Focus status calculations.
 
 ################################################################################

@@ -30,13 +30,20 @@ class BattleDrums(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("room_change", self.notify)
+        self.game.subscribe_event("room_enter", self.notify)
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
         """A general event response function."""
 
+        # Add Fury to all monsters in the same room.
         for monster in unit.room.monsters:
-            monster.add_status("Fury", stacks=monster.attack * 0.10)
+            monster.add_status("Fury", stacks=monster.attack * self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.10
 
 ################################################################################

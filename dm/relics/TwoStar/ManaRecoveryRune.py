@@ -39,9 +39,12 @@ class ManaRecoveryRune(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
+        # If the defeated was a hero
         if isinstance(ctx.defender, DMHero):
+            # Run chances
             chance = random.random()
             if chance <= 10:
+                # And restore mana if passed
                 self.game.dark_lord.restore_mana(1)
 
 ################################################################################

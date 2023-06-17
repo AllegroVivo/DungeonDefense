@@ -4,22 +4,22 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("SnakeBracelet",)
 
 ################################################################################
-class Template(DMRelic):
+class SnakeBracelet(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-164",
+            name="Snake Bracelet",
+            description="The cost of 'Boss Skill : Snake Trap' is reduced by (1).",
             rank=2
         )
 
@@ -27,30 +27,12 @@ class Template(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.game.subscribe_event("boss_skill_snake_trap", self.notify)
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of the effect corresponding to this relic."""
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        pass
+        ctx.reduce_mana_cost(1)
 
 ################################################################################

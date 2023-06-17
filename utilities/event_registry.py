@@ -62,8 +62,11 @@ EVENT_REGISTRY = {
     "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit
     ],
-    "room_change" : [  # [DMUnit]
+    "room_enter" : [  # [DMUnit]
         BattleDrums,
+    ],
+    "room_exit" : [  # [DMUnit][DMRoom]
+        DragonKingsBelt
     ],
     "status_acquired" : [  # [DMStatus]
         Regeneration, Despair

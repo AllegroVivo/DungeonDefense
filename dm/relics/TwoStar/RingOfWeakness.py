@@ -36,6 +36,12 @@ class RingOfWeakness(DMRelic):
 
         if status.name == "Weak":
             if isinstance(status.owner, DMHero):
-                status.increase_base_effect(0.20)  # Base effect of 50% + 20% (of 50%) = 60%
+                status.increase_base_effect(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+        """The value of this relic's effect."""
+
+        return 0.20
 
 ################################################################################
