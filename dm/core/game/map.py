@@ -6,8 +6,12 @@ from typing         import TYPE_CHECKING, List, Optional, Type, Union
 from utilities      import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMDungeon, DMGame, DMMonster, DMRoom
-    from dm.rooms   import BossRoom
+    from dm.core.game.dungeon import DMDungeon
+    from dm.core.game.game    import DMGame
+    from dm.core.objects.relic import DMRelic
+    from dm.core.objects.room  import DMRoom
+    from dm.core.objects.monster import DMMonster
+    from dm.rooms   import BossRoom, EmptyRoom
 ################################################################################
 
 __all__ = ("DMDungeonMap",)
@@ -303,5 +307,32 @@ class DMDungeonMap:
                     pass
 
         return ret
+
+################################################################################
+    def extend_grid(self, relic: DMRelic) -> None:
+
+        empty: Type[EmptyRoom] = self.game.spawn(obj_id="ROOM-000")  # type: ignore
+
+        if relic.__class__.__name__.startswith("MagicShovel"):
+            side = relic.__class__.__name__[-1]  # Last letter is either "T" or "B"
+            y_pos = 0 if side == "T" else len(self.grid) - 1
+            row = [empty(self.game, Vector2(x, y_pos)) for x in range(len(self.grid[0]))]
+            self.grid.insert(y_pos, row)
+        elif relic.__class__.__name__.endswith("Pickaxe"):
+            for i, row in enumerate(self.grid):
+                row.insert(0, empty(self.game, Vector2(0, i)))
+        else:
+            raise ValueError(
+                f"Unexpected relic type passed to DMDungeonMap.extend_grid(): "
+                f"{relic.__class__.__name__}"
+            )
+
+################################################################################
+    def replace_room(self, old: DMRoom, new: DMRoom) -> None:
+
+        for row in self.grid:
+            for i, room in enumerate(row):
+                if room == old:
+                    row[i] = new
 
 ################################################################################

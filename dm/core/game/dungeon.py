@@ -13,8 +13,8 @@ if TYPE_CHECKING:
     from ..objects.hero import DMHero
     from ..objects.monster import DMMonster
     from ..objects.room import DMRoom
+    from ..objects.relic import DMRelic
     from ...rooms.special.Entrance   import EntranceRoom
-    from ..objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("DMDungeon",)
@@ -192,5 +192,15 @@ class DMDungeon:
             return []
 
         return room.monsters  # type: ignore
+
+################################################################################
+    def extend_map(self, relic: DMRelic) -> None:
+
+        self.map.extend_grid(relic)
+
+################################################################################
+    def replace_room(self, room: DMRoom, replacement: DMRoom) -> None:
+
+        self.map.replace_room(room, replacement)
 
 ################################################################################

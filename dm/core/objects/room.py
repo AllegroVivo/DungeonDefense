@@ -6,7 +6,6 @@ from typing     import (
     TYPE_CHECKING,
     List,
     Optional,
-    Tuple,
     Type,
     TypeVar,
     Union
@@ -245,5 +244,11 @@ class DMRoom(DMLevelable):
     def try_engage_monster(self, unit: DMUnit) -> bool:
 
         return False
+
+################################################################################
+    def remove(self) -> None:
+
+        empty = self.game.spawn(obj_id="ROOM-000", init_obj=True, position=self.position)
+        self.game.dungeon.replace_room(self, empty)  # type: ignore
 
 ################################################################################

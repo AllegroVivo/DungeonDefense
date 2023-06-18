@@ -21,8 +21,8 @@ class Template(DMRelic):
             _id="REL-101",
             name="UrMom",
             description="UrMom",
-            rank=3,
-            unlock=UnlockPack.Myth
+            rank=4,
+            unlock=UnlockPack.Original
         )
 
 ################################################################################

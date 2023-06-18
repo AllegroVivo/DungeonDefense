@@ -12,7 +12,8 @@ __all__ = (
     "DMStatusType",
     "BattleState",
     "AttackType",
-    "DMPurchaseType"
+    "DMPurchaseType",
+    "DMAdjustmentType"
 )
 
 ################################################################################
@@ -131,5 +132,11 @@ class AttackType(Enum):
 class DMPurchaseType(Enum):
 
     Temp = 0
+
+################################################################################
+class DMAdjustmentType(Enum):
+
+        Gold = 1
+        Soul = 2
 
 ################################################################################

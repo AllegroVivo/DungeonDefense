@@ -5,6 +5,7 @@ from .BlackBox              import BlackBox
 from .BloodyCloth           import BloodyCloth
 from .BloodyHourglass       import BloodyHourglass
 from .BlueCoralReef         import BlueCoralReef
+from .BrokenPromise         import BrokenPromise
 from .Cake                  import Cake
 from .CommandersGauntlet    import CommandersGauntlet
 from .ConchShell            import ConchShell

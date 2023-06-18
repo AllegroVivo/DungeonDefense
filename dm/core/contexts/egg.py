@@ -26,6 +26,12 @@ class EggHatchContext(Context):
         self._options: List[DMMonster] = options
 
 ################################################################################
+    @property
+    def options(self) -> List[DMMonster]:
+
+        return self._options
+
+################################################################################
     def set_options(self, *options: DMMonster) -> None:
 
         self._options = [m for m in options]

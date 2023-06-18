@@ -5,16 +5,14 @@
 ################################################################################
 EVENT_REGISTRY = {
     "after_attack" : [  # [None]
-        DMStatus
+        DMStatus, BloomingBud
     ],
     "battle_end" : [  # [None]
-        LifePotion, RegenerationOrb
-    ],
-    "battle_exp_assigned" : [  # [ExperienceContext]
-        TokenOfFriendship
+        LifePotion, RegenerationOrb, ManaConverter
     ],
     "battle_start" : [  # [None]
-        IronPlate, LesserManaStone
+        IronPlate, LesserManaStone, BloodyCloth, CubeFromOtherworld, DemonicLamp,
+        ElixirOfImmortality, ManaCollector, ManaStone, VoodooMask
     ],
     "before_attack" : [  # [None]
         Poison,
@@ -29,7 +27,7 @@ EVENT_REGISTRY = {
         CurseOfTheSkull
     ],
     "boss_skill_bite" : [  # [BossSkillContext]
-        VampiricMonster, DemonTooth
+        VampiricMonster, DevilsTooth,
     ],
     "boss_skill_blood_lord" : [  # [BossSkillContext]
         BloodStaff, BloodyMeteorite
@@ -40,11 +38,11 @@ EVENT_REGISTRY = {
     "boss_skill_frost_arrow" : [  # [BossSkillContext]
         ConchShell,
     ],
-    "boss_skill_hemokinesis" : [  # [BossSkillContext]
-        BloodyHourglass,
-    ],
     "boss_skill_harvest" : [  # [BossSkillContext]
         DemonsScale,
+    ],
+    "boss_skill_hemokinesis" : [  # [BossSkillContext]
+        BloodyHourglass,
     ],
     "boss_skill_petrifying_gaze": [  # [BossSkillContext]
         ObsidianFang,
@@ -67,6 +65,9 @@ EVENT_REGISTRY = {
     "boss_skill_venom_fang" : [  # [BossSkillContext]
         DeadlySting
     ],
+    "boss_skill_venom_whip" : [  # [BossSkillContext]
+        DemonGlove,
+    ],
     "burn_activated" : [  # [???]
         CateyeStone
     ],
@@ -80,26 +81,33 @@ EVENT_REGISTRY = {
         StaffOfReign,
     ],
     "egg_hatch" : [  # [EggHatchContext]
-        AdvancedIncubator
+        AdvancedIncubator, Biography
     ],
     "experience_awarded" : [  # [ExperienceContext]
-        ConstructionMaterial
+        ConstructionMaterial, MagicalSoil, WarriorsBlood, TokenOfFriendship,
+    ],
+    "gold_acquired" : [  # [GoldContext]
+        BottomlessWallet,
+    ],
+    "hero_spawn" : [  # [DMHero]
+        BlueCoralReef, Monocle, RustyBlade,
     ],
     "on_death" : [  # [AttackContext]
-        GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore, DeathGrip,
-        LittleCoin, ManaRecoveryRune, SecondHeart
+        GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore,
+        DeathGrip, LittleCoin, ManaRecoveryRune, SecondHeart, CorpseFlower,
+        Scorpion, DemonicFruit,
     ],
     "on_heal" : [  # [HealingContext]
-
+        Cake
     ],
     "on_purchase" : [  # [PurchaseContext]
-        AncientCoin
+        AncientCoin, PremiumMembershipCert,
     ],
     "reset_stats" : [  # [Optional[DMUnit]]
         DMUnit
     ],
     "room_enter" : [  # [DMUnit]
-        BattleDrums,
+        BattleDrums, TurbanOfCharm
     ],
     "room_exit" : [  # [DMUnit][DMRoom]
         DragonKingsBelt
@@ -108,7 +116,8 @@ EVENT_REGISTRY = {
         Regeneration, Despair
     ],
     "status_execute" : [  # [DMStatus]
-        AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability
+        AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability,
+        GiantThorn, SmokedMeat, WoodenStaff, Rafflesia
     ],
     "trap_activated" : [  # [AttackContext] (maybe?)
         InsigniaOfTerror

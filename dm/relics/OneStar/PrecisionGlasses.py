@@ -28,7 +28,7 @@ class PrecisionGlasses(DMRelic):
         """Called automatically when a relic is added to the player's inventory."""
 
         for room in self.game.dungeon.all_rooms():
-            room.grant_exp(room.level * self.effect_value())
+            room.grant_exp(int(room.level * self.effect_value()))
 
 ################################################################################
     def effect_value(self) -> float:

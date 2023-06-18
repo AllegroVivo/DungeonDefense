@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing     import (
     TYPE_CHECKING,
     Callable,
+    List,
     Optional,
     TypeVar,
     Union
@@ -136,6 +137,7 @@ class AttackContext(Context):
         "_fail",
         "_skill",
         "_running",
+        "_addl_targets"
     )
 
 ################################################################################
@@ -166,6 +168,7 @@ class AttackContext(Context):
 
         self._attacker: Union[DMUnit] = attacker  # , DMTrapRoom] = attacker
         self._defender: DMUnit = defender
+        self._addl_targets: List[DMUnit] = []
 
         self._damage: DamageComponent = DamageComponent(attacker.attack)
         # self._skill: DMSkill = skill
@@ -269,6 +272,10 @@ class AttackContext(Context):
 
         # Finalize the damage.
         self.defender.damage(self.damage)
+
+        # Damage the additional targets too
+        for target in self._addl_targets:
+            target.damage(self.damage)
 
         # Run any post-execution callbacks:
         for callback in self._post_execution_callbacks:
@@ -418,5 +425,17 @@ class AttackContext(Context):
     def reassign_defender(self, unit: DMUnit) -> None:
 
         self._defender = unit
+
+################################################################################
+    def register_additional_target(self, unit: DMUnit) -> None:
+
+        if not isinstance(unit, DMUnit):
+            raise ArgumentTypeError(
+                "AttackContext.register_additional_target()",
+                type(unit),
+                type(DMUnit)
+            )
+
+        self._addl_targets.append(unit)
 
 ################################################################################

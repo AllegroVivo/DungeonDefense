@@ -42,7 +42,14 @@ class Vampire(DMStatus):
 
         if self.owner == ctx.attacker:
             # Pretty straightforward
-            self.owner.heal(self.stacks)
+            heal_amt = self.stacks
+            # Check for the corresponding relic  (If present, doubles healing effect)
+            relic = self.game.get_relic("VampireThorn")
+            if relic is not None:
+                heal_amt *= 2
+
+            # Heal the Dark Lord and reduce stacks
+            self.owner.heal(heal_amt)
             self.reduce_stacks_by_half()
 
 ################################################################################

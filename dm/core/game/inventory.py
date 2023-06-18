@@ -5,11 +5,13 @@ import random
 from pygame     import Surface
 from typing     import TYPE_CHECKING, List, Literal, Optional
 
-from ..objects  import DMMonster
+from ..contexts.gold import GoldAcquiredContext
+from ..objects.monster  import DMMonster
+from ..objects.object import DMObject
 from utilities  import *
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("DMInventory",)
@@ -110,8 +112,12 @@ class DMInventory:
                 type(int), type(float)
             )
 
-        self._gold += int(amount)
-        # self._game.publish_event("gold_acquired", amount=amount)
+        # Dispatch the event so the other game elements can edit the amount
+        ctx = GoldAcquiredContext(self._game, amount)
+        self._game.dispatch_event("gold_acquired", ctx=ctx)
+
+        # Then add the gold to the inventory.
+        self._gold += int(ctx.calculate())
 
 ################################################################################
     def add_soul(self, amount: int) -> None:
@@ -133,5 +139,16 @@ class DMInventory:
             raise ArgumentTypeError("DMInventory.add_monster()", type(monster), type(DMMonster))
 
         self.monsters.append(monster)
+
+################################################################################
+    def add_item(self, item: DMObject) -> None:
+
+        if not isinstance(item, DMObject):
+            raise ArgumentTypeError("DMInventory.add_item()", type(item), type(DMObject))
+
+        # Depending on the kind of item, add it to the appropriate manager.
+        if isinstance(item, DMMonster):
+            self.add_monster(item)
+        # etc...
 
 ################################################################################

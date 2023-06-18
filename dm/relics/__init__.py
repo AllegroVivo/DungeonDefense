@@ -9,6 +9,7 @@ __all__ = ("ALL_RELICS",)
 ################################################################################
 from .OneStar       import *
 from .TwoStar       import *
+from .ThreeStar     import *
 ################################################################################
 # All Relics
 ALL_RELICS: List[Type["DMRelic"]] = [
@@ -29,7 +30,22 @@ ALL_RELICS: List[Type["DMRelic"]] = [
     ObsidianFang, PhoenixBeak, PotionOfTranscendence, RingOfDefense,
     RingOfWeakness, RuneOfVulnerability, SealedCoffin, SecondHeart, SharpThorn,
     SnakeBracelet, SoulOrb, SpeedPotion, StaffOfAuthority, Starfish,
-    StrawberryPudding, SwordOfCharm, ThunderBracelet, TimeBomb, Wrench
+    StrawberryPudding, SwordOfCharm, ThunderBracelet, TimeBomb, Wrench,
 
+    # 3-Star
+    AbyssFlower, AncientCoin, ArmorOfMadness, BlackBox, BloodyCloth,
+    BloodyHourglass, BlueCoralReef, BrokenPromise, Cake, CommandersGauntlet,
+    ConchShell, CorpseFlower, CubeFromOtherworld, CursedCandle, DeliciousMilk,
+    DemonGlove, DemonicLamp, DemonLordsSeal, DemonsScale, DevilsTooth, Doorbell,
+    DungeonIndex, Dynamite, ElixirOfImmortality, EmmasTailAccessory,
+    FlameOfEternity, FourLeafClover, FuryMace, GiantThorn, GreaterManaPotion,
+    JewelOfTheDeepSea, LoopOfFate, MagicalSoil, MagicSpring, ManaCollector,
+    ManaConverter, ManaGrail, ManaStone, Monocle, MonsterHorn, MysteriousQuill,
+    PhoenixClaw, RingOfEnlightenment, Rose, RustyBlade, Scorpion, SmokedMeat,
+    SolarKey, StaffOfReign, Strawberry, TheOriginOfTheFall, TraitorsDagger,
+    VampireAxe, VampireRing, VampireRune, VoodooMask, WarriorsBlood,
+    WoodenStaff,
+
+    # 4-Star
 ]
 ################################################################################
