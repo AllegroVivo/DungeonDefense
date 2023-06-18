@@ -9,21 +9,23 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("GobletOfSoul",)
 
 ################################################################################
-class Template(DMRelic):
+class GobletOfSoul(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-279",
+            name="Goblet of Soul",
+            description="Altar's soul harvest range is increased by 1.",
             rank=4,
             unlock=UnlockPack.Corruption
         )
+
+        # Need to implement Altars first.
 
 ################################################################################
     def on_acquire(self) -> None:

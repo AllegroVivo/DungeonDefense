@@ -12,7 +12,7 @@ EVENT_REGISTRY = {
     ],
     "battle_start" : [  # [None]
         IronPlate, LesserManaStone, BloodyCloth, CubeFromOtherworld, DemonicLamp,
-        ElixirOfImmortality, ManaCollector, ManaStone, VoodooMask
+        ElixirOfImmortality, ManaCollector, ManaStone, VoodooMask, PioneersEye,
     ],
     "before_attack" : [  # [None]
         Poison,
@@ -21,7 +21,7 @@ EVENT_REGISTRY = {
         MysteriousQuill
     ],
     "book_read" : [  # [DMBook]
-        RingOfEnlightenment
+        RingOfEnlightenment, SagesBrush,
     ],
     "boss_room_entered" : [  # [DMUnit]
         CurseOfTheSkull
@@ -54,7 +54,7 @@ EVENT_REGISTRY = {
         EmmasTailAccessory
     ],
     "boss_skill_used" : [  # [BossSkillContext]
-        VampireAxe, VampireRing
+        VampireAxe, VampireRing, FairyWings,
     ],
     "boss_skill_vampiric_impulse": [  # [BossSkillContext]
         BatControl, VampireRune
@@ -90,7 +90,7 @@ EVENT_REGISTRY = {
         BottomlessWallet,
     ],
     "hero_spawn" : [  # [DMHero]
-        BlueCoralReef, Monocle, RustyBlade,
+        BlueCoralReef, Monocle, RustyBlade, AmethystChoker,
     ],
     "on_death" : [  # [AttackContext]
         GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore,
@@ -113,11 +113,12 @@ EVENT_REGISTRY = {
         DragonKingsBelt
     ],
     "status_acquired" : [  # [DMStatus]
-        Regeneration, Despair
+        Regeneration, Despair, PearlShell
     ],
     "status_execute" : [  # [DMStatus]
         AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability,
-        GiantThorn, SmokedMeat, WoodenStaff, Rafflesia
+        GiantThorn, SmokedMeat, WoodenStaff, Rafflesia, Thunderbolt
+
     ],
     "trap_activated" : [  # [AttackContext] (maybe?)
         InsigniaOfTerror

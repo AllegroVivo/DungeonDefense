@@ -5,37 +5,29 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("GuardianJellyfish",)
+__all__ = ("MagicShovelB",)
 
 ################################################################################
-class GuardianJellyfish(DMRelic):
+class MagicShovelB(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-267",
-            name="Guardian Jellyfish",
-            description="Damage received by Dark Lord is reduced by 15 %.",
+            _id="REL-274",
+            name="Magic Shovel (Bottom)",
+            description="Add an extra Row to the bottom of the dungeon.",
             rank=4,
             unlock=UnlockPack.Original
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def on_acquire(self) -> None:
+        """Called automatically when a relic is added to the player's inventory."""
 
-        if ctx.defender == self.game.dark_lord:
-            ctx.mitigate_pct(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect."""
-
-        return 0.15
+        self.game.dungeon.extend_map(self)
 
 ################################################################################

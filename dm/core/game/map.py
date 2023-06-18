@@ -156,7 +156,7 @@ class DMDungeonMap:
     def auto_deploy(self) -> None:
         """Automatically deploys monsters from the inventory, from strongest -
         based on total stat score - to weakest. Starts at the top-right of the
-        dng_options and moves to the bottom left.
+        dungeon and moves to the bottom left.
         ~SP 6/2/23
         """
 

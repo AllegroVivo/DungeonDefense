@@ -9,18 +9,21 @@ if TYPE_CHECKING:
     from dm.core.game.game import DMGame
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("PioneersEye",)
 
 ################################################################################
-class Template(DMRelic):
+class PioneersEye(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-280",
+            name="Pioneer's Eye",
+            description=(
+                "At the start of the battle, Focus of 1 per book read is "
+                "given to allies."
+            ),
             rank=4,
             unlock=UnlockPack.Corruption
         )
@@ -29,7 +32,7 @@ class Template(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.game.subscribe_event("battle_start", self.notify)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
@@ -49,21 +52,23 @@ class Template(DMRelic):
 
         Breakdown:
         ----------
-        **effect = b + (e * s)**
+        **effect = e * b**
 
         In this function:
 
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
+        - e is the effectiveness per bool.
+        - b is the number of books read.
         """
 
-        pass
+        # num_books = len(self.game.books.obtained)
+        num_books = 0
+        return 1 * num_books
 
 ################################################################################
     def notify(self, *args) -> None:
         """A general event response function."""
 
-        pass
+        for monster in self.game.deployed_monsters:
+            monster.add_status("Focus", self.effect_value())
 
 ################################################################################

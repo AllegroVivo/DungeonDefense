@@ -1,41 +1,45 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
+from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
+    from dm.core.objects.status import DMStatus
 ################################################################################
 
-__all__ = ("GuardianJellyfish",)
+__all__ = ("PearlShell",)
 
 ################################################################################
-class GuardianJellyfish(DMRelic):
+class PearlShell(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-267",
-            name="Guardian Jellyfish",
-            description="Damage received by Dark Lord is reduced by 15 %.",
+            _id="REL-268",
+            name="Pearl Shell",
+            description=(
+                "Whenever Slow is inflicted on an enemy, also inflict 1 Frostbite."
+            ),
             rank=4,
             unlock=UnlockPack.Original
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def on_acquire(self) -> None:
+        """Called automatically when a relic is added to the player's inventory."""
 
-        if ctx.defender == self.game.dark_lord:
-            ctx.mitigate_pct(self.effect_value())
+        self.game.subscribe_event("status_acquired", self.notify)
 
 ################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect."""
+    def notify(self, status: DMStatus) -> None:
+        """A general event response function."""
 
-        return 0.15
+        if status.name == "Slow":
+            if isinstance(status.owner, DMHero):
+                status.owner.add_status("Frostbite", 1)
 
 ################################################################################

@@ -7,20 +7,21 @@ from utilities import UnlockPack
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
+    from dm.core.objects.status    import DMStatus
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("Thunderbolt",)
 
 ################################################################################
-class Template(DMRelic):
+class Thunderbolt(DMRelic):
 
     def __init__(self, state: DMGame):
 
         super().__init__(
             state,
-            _id="REL-101",
-            name="UrMom",
-            description="UrMom",
+            _id="REL-282",
+            name="Thunderbolt",
+            description="Additional damage caused by Shock is increased by 75 %.",
             rank=4,
             unlock=UnlockPack.Corruption
         )
@@ -29,41 +30,19 @@ class Template(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.game.subscribe_event("status_execute", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
-        """The value of this relic's effect.
+        """The value of this relic's effect."""
 
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
+        return 0.75
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, status: DMStatus) -> None:
         """A general event response function."""
 
-        pass
+        if status.name == "Shock":
+            status.increase_base_effect(self.effect_value())
 
 ################################################################################

@@ -10,6 +10,7 @@ __all__ = ("ALL_RELICS",)
 from .OneStar       import *
 from .TwoStar       import *
 from .ThreeStar     import *
+from .FourStar      import *
 ################################################################################
 # All Relics
 ALL_RELICS: List[Type["DMRelic"]] = [
@@ -47,5 +48,18 @@ ALL_RELICS: List[Type["DMRelic"]] = [
     WoodenStaff,
 
     # 4-Star
+    AmethystChoker, AncientPickaxe, AssassinsDagger, BackwardsClock,
+    BeadsOfObedience, Biography, BlackCatStatue, BloodyHammer, BloomingBud,
+    Blueprint, BottomlessWallet, BraceletOfFury, CoreOfEarth, CoreOfFire,
+    CoreOfIce, CoreOfWind, DemonicFruit, DemonIndex, FaintMagicEnergy,
+    FairyWings, Flowerpot, GobletOfSoul, GreaterManaStone, GuardianJellyfish,
+    HiddenTrapChute, LegendaryPickaxe, MagicShovelB, MagicShovelT, MonsterNest,
+    OldAltarKey, PearlShell, PhoenixFeather, PioneersEye, PrehistoricPickaxe,
+    PremiumMembershipCert, Rafflesia, SacredScissors, SagesBrush,
+    ShadowPriestsBook, ShieldOfTheDevil, SmallDemonStatue, SteelBoomerang,
+    Thunderbolt, Thurible, TurbanOfCharm, VampireThorn,
+
+    # 5-Star
+
 ]
 ################################################################################
