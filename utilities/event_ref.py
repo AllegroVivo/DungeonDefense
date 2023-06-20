@@ -22,7 +22,7 @@ _EVENT_REFERENCE: List[str] = [
     "on_attack",                    # [AttackContext]
     "on_death",                     # [AttackContext]
     "healing_applied",              # [HealingContext]
-    "on_room_enter",                # [DMRoom][DMFighter]
+    "room_enter",                   # [DMUnit]
     "on_room_exit",                 # [DMRoom][DMFighter]
     "trap_activation",              # [AttackContext]
 
@@ -45,7 +45,7 @@ _EVENT_REFERENCE: List[str] = [
     "boss_skill_whip",              # [BossSkillContext]
 
     # General Status-Related
-    "status_applied",               # [DMStatus][Optional[AttackContext]]
+    "status_acquired",              # [DMStatus][Optional[AttackContext]]
     "status_execute",               # [DMStatus]
 
     # Specific Status-Related

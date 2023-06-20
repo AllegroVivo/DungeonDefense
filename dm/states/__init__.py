@@ -29,6 +29,6 @@ STATE_MAPPINGS: Dict[str, Type["DMState"]] = {
     "battle" : BattleState,
     "dungeon_fate" : DungeonFateState,
     "confirm_cancel" : ConfirmCancelState,
-    "popup" : PopupDialogState  # This isn't typically called by string reference.
+    "popup" : PopupDialogState,  # This isn't typically called by string reference.
 }
 ################################################################################

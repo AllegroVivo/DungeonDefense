@@ -23,7 +23,6 @@ class Imp(DMMonster):
             life=40,
             attack=6,
             defense=2.0,
-            dex=1.0,
             rank=1,
             idle_frames=6
         )

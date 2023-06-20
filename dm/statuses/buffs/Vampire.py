@@ -48,8 +48,16 @@ class Vampire(DMStatus):
             if relic is not None:
                 heal_amt *= 2
 
-            # Heal the Dark Lord and reduce stacks
+            # Heal the unit and reduce stacks by half.
             self.owner.heal(heal_amt)
             self.reduce_stacks_by_half()
+
+            if heal_amt is None:
+                return
+
+            # Check for the other corresponding relic.
+            relic = self.game.get_relic("BlooddrinkerSword")
+            if relic is not None:
+                self.game.dark_lord.add_status("Hatred", 1)
 
 ################################################################################

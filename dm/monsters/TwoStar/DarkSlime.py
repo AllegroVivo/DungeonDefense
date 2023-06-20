@@ -24,7 +24,6 @@ class DarkSlime(DMMonster):
             attack=11,
             defense=4.0,
             rank=2,
-            dex=1.0,
             idle_frames=6
         )
 

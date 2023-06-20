@@ -23,7 +23,7 @@ class AdjustableContext(Context):
     )
 
 ################################################################################
-    def __init__(self, state: DMGame, base_amt: int, _obj: Optional[DMObject] = None):
+    def __init__(self, state: DMGame, base_amt: int = 0, _obj: Optional[DMObject] = None):
 
         super().__init__(state)
 

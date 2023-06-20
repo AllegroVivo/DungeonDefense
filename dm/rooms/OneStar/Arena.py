@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
 
 if TYPE_CHECKING:
-    from ...core    import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("Arena",)
@@ -13,33 +14,41 @@ __all__ = ("Arena",)
 ################################################################################
 class Arena(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-102",
+            game, position,
+            _id="ROOM-102",
             name="Arena",
             description=(
-                "Deployed monsters' maximum ATK is increased by 10(+3 per Lv)."
+                "The deployed monsters' ATK is increased by {value}."
             ),
             level=level,
             rank=1
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
-
-        self.game.subscribe_event("stat_calculation", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.mutate_stat("attack", self.effect_value())
+            monster.increase_stat_flat("atk", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value of this room's effect.
 
-        return 10 + (3 * self.level)
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base adjustment.
+        - a is the additional effectiveness per level.
+        - LV is the room's level.
+        """
+
+        return 4 + (2 * self.level)
 
 ################################################################################

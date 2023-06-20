@@ -27,7 +27,7 @@ class DMBattleRoom(DMRoom):
     def __init__(
         self,
         state: DMGame,
-        position: Vector2,
+        position: Optional[Vector2],
         _id: str,
         name: str,
         description: str,
@@ -45,19 +45,18 @@ class DMBattleRoom(DMRoom):
     @property
     def is_full(self) -> bool:
 
-        return len(self._monsters) >= self.monster_cap
+        return len(self.monsters) >= self.monster_cap
 
 ################################################################################
     def deploy_monster(self, monster: DMMonster) -> None:
 
-        monster.room = self.position
-        self._monsters.append(monster)
+        monster.deploy(self)
 
 ################################################################################
     def withdraw_monster(self, monster: DMMonster) -> None:
 
         if monster in self.monsters:
-            self._monsters.remove(monster)
+            monster.withdraw()
 
 ################################################################################
     @property
@@ -73,15 +72,15 @@ class DMBattleRoom(DMRoom):
 ################################################################################
     def reset_monster_deployment(self) -> None:
 
-        self.game.inventory.monsters.extend(self._monsters)
-        self._monsters.clear()
+        for monster in self.monsters:
+            monster.withdraw()
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
 
         super().draw(screen)
 
-        for monster in self._monsters:
+        for monster in self.monsters:
             monster.graphics.draw(screen)
 
 ################################################################################
@@ -99,7 +98,6 @@ class DMBattleRoom(DMRoom):
 
         new_obj: DMBattleRoom = super()._copy(**kwargs)  # type: ignore
 
-        new_obj._monsters = []
         new_obj.monster_cap = kwargs.pop("monster_cap", 3)
 
         return new_obj  # type: ignore

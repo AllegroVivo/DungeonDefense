@@ -4,8 +4,10 @@ from abc        import abstractmethod
 from pygame     import Rect, Surface, Vector2
 from typing     import (
     TYPE_CHECKING,
+    Any,
     List,
     Optional,
+    Tuple,
     Type,
     TypeVar,
     Union
@@ -13,10 +15,12 @@ from typing     import (
 
 from utilities  import *
 
+from .chargeable import DMChargeable
 from ..graphics import RoomGraphical
 from .levelable import DMLevelable
 
 if TYPE_CHECKING:
+    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
     from dm.core.game.game import DMGame
     from dm.core.objects.hero import DMHero
@@ -29,19 +33,18 @@ __all__ = ("DMRoom",)
 R = TypeVar("R", bound="DMRoom")
 
 ################################################################################
-class DMRoom(DMLevelable):
+class DMRoom(DMLevelable, DMChargeable):
 
     __slots__ = (
         "_position",
-        "_monsters",
-        "graphics",
+        "_graphics",
     )
 
 ################################################################################
     def __init__(
         self,
         state: DMGame,
-        position: Vector2,
+        position: Optional[Vector2],
         _id: str,
         name: str,
         description: str,
@@ -51,10 +54,10 @@ class DMRoom(DMLevelable):
     ):
 
         super().__init__(state, _id, name, description, level, rank, unlock=unlock)
+        DMChargeable.__init__(self)
 
-        self._position: Vector2 = position
-        self.graphics: RoomGraphical = RoomGraphical(self)
-        self._monsters: List[DMMonster] = []
+        self._position: Vector2 = position or Vector2(-1, -1)
+        self._graphics: RoomGraphical = RoomGraphical(self)
 
 ################################################################################
     def __repr__(self) -> str:
@@ -71,6 +74,12 @@ class DMRoom(DMLevelable):
     def type(self) -> DMType:
 
         return DMType.Room
+
+################################################################################
+    @property
+    def graphics(self) -> RoomGraphical:
+
+        return self._graphics
 
 ################################################################################
     @property
@@ -107,18 +116,13 @@ class DMRoom(DMLevelable):
     @property
     def heroes(self) -> List[DMHero]:
 
-        return [hero for hero in self.game.dungeon.heroes if hero.room == self]
+        return [h for h in self.game.dungeon.heroes if h.room == self]
 
 ################################################################################
     @property
     def monsters(self) -> List[DMMonster]:
 
-        return self._monsters
-
-################################################################################
-    def sort_monsters(self) -> None:
-
-        self.monsters.sort(key=lambda m: m.stat_score)
+        return [m for m in self.game.all_monsters if m.room == self]
 
 ################################################################################
     @property
@@ -189,10 +193,7 @@ class DMRoom(DMLevelable):
 ################################################################################
     def update(self, dt: float) -> None:
 
-        pass
-        # if self.room_type is DMRoomType.Battle:
-        #     for monster in self.monsters:  # type: ignore
-        #         monster.update(dt)
+        DMChargeable.update(self, dt)
 
 ################################################################################
     @property
@@ -207,19 +208,48 @@ class DMRoom(DMLevelable):
 
 ################################################################################
     def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
 
-        # self.game.subscribe_event("", self.notify)
-        raise NotImplementedError
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        raise NotImplementedError
+        pass
 
 ################################################################################
-    def effect_value(self) -> int:
+    def handle(self, ctx: AttackContext) -> None:
+        """Automatically called as part of all battle loops."""
 
-        return -1
+        pass
+
+################################################################################
+    def notify(self, *args) -> None:
+        """A general event response function."""
+
+        pass
+
+################################################################################
+    def effect_value(self) -> Any:
+        """The value(s) of this room's effect.
+
+        A random value from the base effectiveness range is chosen, then a random
+        value from the additional effectiveness range is added to the total for
+        each level of this room.
+
+        Breakdown:
+        ----------
+        **effect = (a to b) + ((x to y) * LV)**
+
+        In this function:
+
+        - (a to b) is the base effectiveness will be chosen.
+        - (x to y) is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        pass
+
+################################################################################
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
+
+        pass
 
 ################################################################################
     def get_adjacent_room(self, direction: Union[str, Vector2]) -> Optional[DMRoom]:

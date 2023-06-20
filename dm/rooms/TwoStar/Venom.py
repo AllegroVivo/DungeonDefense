@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Venom",)
@@ -13,33 +16,41 @@ __all__ = ("Venom",)
 ################################################################################
 class Venom(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-114",
+            game, position,
+            _id="ROOM-129",
             name="Venom",
             description=(
-                "Applies 20 (+10 per Lv) Poison to heroes that entered the room."
+                "Applies {value} Poison to heroes that entered the room."
             ),
             level=level,
             rank=2
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            ctx.unit += self.game.spawn("Poison", stacks=self.effect_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                unit.add_status("Poison", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
 
         return 20 + (10 * self.level)
 

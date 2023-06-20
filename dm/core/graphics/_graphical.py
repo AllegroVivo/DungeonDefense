@@ -4,7 +4,7 @@ from pygame     import Surface
 from typing     import TYPE_CHECKING, Optional, Tuple, Type, TypeVar
 
 if TYPE_CHECKING:
-    from dm.core    import DMObject
+    from dm.core.objects.object    import DMObject
 ################################################################################
 
 __all__ = ("GraphicalComponent",)

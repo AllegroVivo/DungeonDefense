@@ -24,7 +24,6 @@ class Tester(DMMonster):
             life=1000,
             attack=100,
             defense=1.0,
-            dex=1.0,
             rank=1,
             idle_frames=6
         )

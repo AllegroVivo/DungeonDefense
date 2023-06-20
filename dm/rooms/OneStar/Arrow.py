@@ -2,52 +2,70 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional, Tuple
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Arrow",)
 
 ################################################################################
-class Arrow(DMBattleRoom):
+class Arrow(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-101",
+            game, position,
+            _id="ROOM-104",
             name="Arrow",
             description=(
-                "Inflicts 1~18 (+0~17 per Lv) damage to the hero that entered "
-                "the room."
+                "Inflicts {damage} damage to each hero that enters the room."
             ),
             level=level,
             rank=1
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def activate(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            ctx.unit.damage(self.effect_value())
+        self.attack(unit)
 
 ################################################################################
-    def effect_value(self) -> int:
+    def effect_value(self) -> Tuple[int]:
+        """The value of this room's effect.
 
-        damage = random.randint(1, 18)
+        A random value from the base effectiveness range is chosen, then a random
+        value from the additional effectiveness range is added to the total for
+        each level of this room.
+
+        Breakdown:
+        ----------
+        **effect = (a to b) + ((x to y) * LV)**
+
+        In this function:
+
+        - (a to b) is the base effectiveness.
+        - (x to y) is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        effect = random.randint(1, 18)
         for _ in range(self.level):
-            damage += random.randint(0, 17)
+            effect += random.randint(0, 17)
 
-        return damage
+        return effect,
+
+################################################################################
+    def activate(self, unit: DMHero) -> None:
+        """Called automatically when a unit enteres this room."""
+
+        pass
 
 ################################################################################

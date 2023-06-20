@@ -6,7 +6,6 @@ from ...core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts.attack import AttackContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################

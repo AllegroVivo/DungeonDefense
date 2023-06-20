@@ -70,13 +70,14 @@ class DMObject:
 
 ################################################################################
     def listen(self, event: str) -> None:
+        """Automatically listens to the provided event with `self.notify`."""
 
         self.game.subscribe_event(event, self.notify)
 
 ################################################################################
     def notify(self, *args) -> None:
 
-        raise NotImplementedError
+        pass
 
 ################################################################################
     def _copy(self, **kwargs) -> DMObject:

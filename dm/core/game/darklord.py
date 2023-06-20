@@ -8,6 +8,7 @@ from ..graphics.darklord    import DarkLordGraphical
 
 if TYPE_CHECKING:
     from .game  import DMGame
+    from ..objects.room import DMRoom
 ################################################################################
 
 __all__ = ("DMDarkLord",)
@@ -18,7 +19,8 @@ class DMDarkLord(DMUnit):
     __slots__ = (
         "_state",
         "_max_mana",
-        "current_mana"
+        "_deployed",
+        "_current_mana"
     )
 
 ################################################################################
@@ -39,7 +41,8 @@ class DMDarkLord(DMUnit):
         )
 
         self._max_mana = 10
-        self.current_mana = 10
+        self._current_mana = 10
+        self._deployed = True  # Always true here
 
         self._mover = None
 
@@ -55,14 +58,20 @@ class DMDarkLord(DMUnit):
         self.restore_mana(amount)
 
 ################################################################################
+    @property
+    def current_mana(self) -> int:
+
+        return self._current_mana
+
+################################################################################
     def consume_mana(self, amount: int) -> None:
 
-        self.current_mana = max(self.current_mana - amount, 0)
+        self._current_mana = max(self._current_mana - amount, 0)
 
 ################################################################################
     def restore_mana(self, amount: int) -> None:
 
-        self.current_mana = min(self.current_mana + amount, self._max_mana)
+        self._current_mana = min(self._current_mana + amount, self._max_mana)
 
 ################################################################################
     def heal(self, amount: Union[int, float]) -> None:
@@ -72,5 +81,10 @@ class DMDarkLord(DMUnit):
             amount *= 1.25  # Adds 25% additional healing
 
         super().heal(amount)
+
+################################################################################
+    def deploy(self, room: DMRoom) -> None:
+
+        self.room = room
 
 ################################################################################

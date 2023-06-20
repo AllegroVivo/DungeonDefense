@@ -1,12 +1,19 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+import random
+
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities      import UnlockPack
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
+from utilities  import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame
+    from dm.core.contexts import AttackContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("BiggerRoom",)
@@ -14,15 +21,15 @@ __all__ = ("BiggerRoom",)
 ################################################################################
 class BiggerRoom(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-127",
+            game, position,
+            _id="ROOM-150",
             name="Bigger Room",
             description=(
                 "Increases the number of deployable monsters by 1. The deployed "
-                "monsters' LIFE is increased by 50 (+25 per Lv) %."
+                "monsters' LIFE is increased by {value} %."
             ),
             level=level,
             rank=4,
@@ -31,19 +38,27 @@ class BiggerRoom(DMBattleRoom):
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def effect_value(self) -> float:
+        """The value(s) of this room's effect.
 
-        self.game.subscribe_event("stat_calculation", self.notify)
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        return 0.50 + (0.25 * self.level)
 
 ################################################################################
-    def notify(self, **kwargs) -> None:
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_pct("life", self.effect_value() / 100)
-
-################################################################################
-    def effect_value(self) -> int:
-
-        return 50 + (25 * self.level)
+            monster.increase_stat_pct("life", self.effect_value())
 
 ################################################################################

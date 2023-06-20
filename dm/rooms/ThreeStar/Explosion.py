@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Explosion",)
@@ -15,40 +18,54 @@ __all__ = ("Explosion",)
 ################################################################################
 class Explosion(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-117",
+            game, position,
+            _id="ROOM-137",
             name="Explosion",
             description=(
-                "Inflicts 1~6 (+0~6 per Lv) damage to all enemies in the current "
-                "room and all adjacent rooms when a hero enters the room."
+                "Inflicts {value} damage to all enemies in the current room "
+                "and all adjacent rooms when a hero enters the room."
             ),
             level=level,
             rank=3
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            adj_rooms = self.game.dungeon.get_adjacent_rooms(self.position, include_current=True)
-            heroes = []
-            for room in adj_rooms:
-                heroes.extend(room.heroes)
-
-            for hero in heroes:
-                hero.damage(self.effect_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                heroes = []
+                # Grab affected rooms
+                rooms = self.game.dungeon.get_adjacent_rooms(self.position, include_current=True)
+                # And compile a list of heroes in those rooms
+                for room in rooms:
+                    heroes += room.heroes
+                # Deal damage to all heroes in the affected rooms
+                for hero in heroes:
+                    hero.damage(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        A random value from the base effectiveness range is chosen, then a random
+        value from the additional effectiveness range is added to the total for
+        each level of this room.
+
+        Breakdown:
+        ----------
+        **damage = (i to j) + ((x to y) * LV)**
+
+        In these functions:
+
+        - (i to j) is the base damage.
+        - (x to y) is the additional damage per level.
+        - LV is the level of this room.
+        """
 
         damage = random.randint(1, 6)
         for _ in range(self.level):

@@ -8,11 +8,12 @@ EVENT_REGISTRY = {
         DMStatus, BloomingBud
     ],
     "battle_end" : [  # [None]
-        LifePotion, RegenerationOrb, ManaConverter
+        LifePotion, RegenerationOrb, ManaConverter, ElderDragon, Return,
     ],
     "battle_start" : [  # [None]
         IronPlate, LesserManaStone, BloodyCloth, CubeFromOtherworld, DemonicLamp,
         ElixirOfImmortality, ManaCollector, ManaStone, VoodooMask, PioneersEye,
+        Graveyard,
     ],
     "before_attack" : [  # [None]
         Poison,
@@ -72,7 +73,10 @@ EVENT_REGISTRY = {
         CateyeStone
     ],
     "corruption_start" : [  # [???]
-        TheOriginOfTheFall
+        TheOriginOfTheFall, BlackMask,
+    ],
+    "day_advance" : [  # [DMDay]
+        AncientEgg, ElderDragon, StatueOfSealedRage,
     ],
     "dull_applied" : [  # [DMStatus]
         Hammer
@@ -81,21 +85,27 @@ EVENT_REGISTRY = {
         StaffOfReign,
     ],
     "egg_hatch" : [  # [EggHatchContext]
-        AdvancedIncubator, Biography
+        AdvancedIncubator, Biography, Hatchery,
     ],
     "experience_awarded" : [  # [ExperienceContext]
         ConstructionMaterial, MagicalSoil, WarriorsBlood, TokenOfFriendship,
+        CursedAmberStone, CrackedAmberStone, PerfectAmberStone,
+        ReapersSoulFragment,
     ],
-    "gold_acquired" : [  # [GoldContext]
+    "gold_acquired" : [  # [GoldAcquiredContext]
         BottomlessWallet,
     ],
     "hero_spawn" : [  # [DMHero]
-        BlueCoralReef, Monocle, RustyBlade, AmethystChoker,
+        BlueCoralReef, Monocle, RustyBlade, AmethystChoker, Greenstone,
+        AncientEgg, CorruptedDragon,
     ],
     "on_death" : [  # [AttackContext]
         GhostAmulet, LifePotion, UndeadGrip, ElectricalShort, Spore,
         DeathGrip, LittleCoin, ManaRecoveryRune, SecondHeart, CorpseFlower,
-        Scorpion, DemonicFruit,
+        Scorpion, DemonicFruit, TeardrinkerSword, MarkOfShadow,
+        ShiningMarkOfShadow, StigmaOfAsceticism, FirstMarkOfAsceticism,
+        SecondMarkOfAsceticism, ThirdMarkOfAsceticism, LastMarkOfAsceticism,
+        Sacrifice, Scream
     ],
     "on_heal" : [  # [HealingContext]
         Cake
@@ -104,21 +114,28 @@ EVENT_REGISTRY = {
         AncientCoin, PremiumMembershipCert,
     ],
     "reset_stats" : [  # [Optional[DMUnit]]
-        DMUnit
+        DMUnit, DMRelicManager
     ],
     "room_enter" : [  # [DMUnit]
-        BattleDrums, TurbanOfCharm
+        BattleDrums, TurbanOfCharm, DMTrapRoom, Betrayal, DMChargeable,
+        Bloodthirst, Pressure, Haste, MirrorRoom, ShieldOfSteel,
     ],
     "room_exit" : [  # [DMUnit][DMRoom]
         DragonKingsBelt
     ],
     "status_acquired" : [  # [DMStatus]
-        Regeneration, Despair, PearlShell
+        Regeneration, Despair, PearlShell, DarkCube, AcceleratingWatch,
+        CursedPocketWatch,
     ],
     "status_execute" : [  # [DMStatus]
         AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability,
-        GiantThorn, SmokedMeat, WoodenStaff, Rafflesia, Thunderbolt
+        GiantThorn, SmokedMeat, WoodenStaff, Rafflesia, Thunderbolt,
+        FullMoonNecklace, HalfMoonNecklace, CrescentNecklace, StickyNet,
+        LittleSwampMonster,
 
+    ],
+    "soul_acquired" : [  # [SoulAcquiredContext]
+        CorruptedAncientEgg,
     ],
     "trap_activated" : [  # [AttackContext] (maybe?)
         InsigniaOfTerror

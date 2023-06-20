@@ -8,7 +8,8 @@ from typing     import TYPE_CHECKING, List, Optional, Tuple, Type, TypeVar
 from ._graphical    import GraphicalComponent
 
 if TYPE_CHECKING:
-    from dm.core    import DMObject
+    from dm.core.objects.object    import DMObject
+    from dm.core.game.game         import DMGame
 ################################################################################
 
 __all__ = ("AnimatableComponent",)
@@ -66,6 +67,12 @@ class AnimatableComponent(GraphicalComponent):
             )
             self._assert_frame_size()
             self._split_spritesheet()
+
+################################################################################
+    @property
+    def game(self) -> DMGame:
+
+        return self.parent.game
 
 ################################################################################
     def update(self, dt: float) -> None:

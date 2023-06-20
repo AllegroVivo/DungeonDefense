@@ -1,56 +1,74 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional, Tuple
 
 from ..battleroom   import DMBattleRoom
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("DoubleGiant",)
+__all__ = ("Haste",)
 
 ################################################################################
-class DoubleGiant(DMBattleRoom):
+class Haste(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-119",
+            game, position,
+            _id="ROOM-147",
             name="Haste",
             description=(
-                "DEX of deployed monster is increased by 10 (+1 per Lv) %. "
-                "Gives 2 (+1 per Lv) Acceleration to deployed monsters whenever "
-                "a hero enters the room."
+                "DEX of deployed monster is increased by {value} %. Gives "
+                "{status} Acceleration to deployed monsters whenever a hero "
+                "enters the room."
             ),
             level=level,
             rank=4
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("stat_calculation", self.notify_stat_calc)
-        self.game.subscribe_event("on_room_change", self.notify_room_change)
+        if unit.room == self:
+            if isinstance(unit, DMUnit):
+                unit.add_status("Acceleration", self.effect_value()[1])
 
 ################################################################################
-    def notify_stat_calc(self, **kwargs) -> None:
+    def effect_value(self) -> Tuple[float, int]:
+        """The value(s) of this room's effect(s).
+
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        effect = float(10 + (1 * self.level))
+        status = 2 + (1 * self.level)
+
+        return effect, status
+
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
+
+        self.listen("room_enter")
+
+################################################################################
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.mutate_stat("dex", 0.10 + (0.01 * self.level))
-
-################################################################################
-    def notify_room_change(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            for monster in self.monsters:
-                monster += self.game.spawn("Acceleration", stacks=self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-
-        return 2 + (1 * self.level)
+            monster.increase_stat_pct("DEX", self.effect_value()[0])
 
 ################################################################################

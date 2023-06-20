@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
-from ...core.contexts.experience    import ExperienceContext
-from ..battleroom                   import DMBattleRoom
+from ..battleroom   import DMBattleRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Rage",)
@@ -14,14 +16,14 @@ __all__ = ("Rage",)
 ################################################################################
 class Rage(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-109",
+            game, position,
+            _id="ROOM-116",
             name="Rage",
             description=(
-                "Gives 2 (+2 per Lv.) Acceleration to deployed monsters whenever a "
+                "Gives {value} Acceleration to deployed monsters whenever a "
                 "hero enters."
             ),
             level=level,
@@ -29,21 +31,29 @@ class Rage(DMBattleRoom):
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_change", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            for monster in self.monsters:
-                monster += self.game.spawn("Acceleration", stacks=self.effect_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                for monster in self.monsters:
+                    monster.add_status("Acceleration", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
 
-        return 3 + (1 * self.level)
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - e is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        return 2 + (2 * self.level)
 
 ################################################################################

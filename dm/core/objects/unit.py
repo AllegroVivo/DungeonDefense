@@ -15,11 +15,12 @@ from ..graphics._graphical import GraphicalComponent
 from ...core.objects.levelable import DMLevelable
 from ...core.battle.stats import BaseStats
 from ...core.objects.status import DMStatus
+from ...core.objects.room import DMRoom
 from utilities              import *
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.room import DMRoom
+    from dm.core.objects.skill import DMSkill
 ################################################################################
 
 __all__ = ("DMUnit",)
@@ -57,7 +58,7 @@ class DMUnit(DMLevelable):
         dex: float,
         level: int,
         graphics: GraphicalComponent,
-        skills: Optional[List] = None,
+        skills: Optional[List[DMSkill]] = None,
         rank: int = 0,
         unlock: Optional[UnlockPack] = None,
         start_cell: Optional[Vector2] = None
@@ -69,7 +70,7 @@ class DMUnit(DMLevelable):
 
         self._room: Optional[Vector2] = start_cell
 
-        self._skills: List = skills or []
+        self._skills: List[DMSkill] = skills or []
         self._equip = None
 
         self._statuses: List[DMStatus] = []
@@ -84,7 +85,7 @@ class DMUnit(DMLevelable):
         self._engaged: bool = False
 
         # Subscribe to stat recalculation events.
-        self.game.subscribe_event("reset_stats", self.reset_stats)
+        self.game.subscribe_event("reset_stats", self.refresh_stats)
 
 ################################################################################
     def __iadd__(self, other: DMStatus) -> DMUnit:
@@ -159,6 +160,11 @@ class DMUnit(DMLevelable):
         return self._graphics
 
 ################################################################################
+    def draw_zoom(self, surface: Surface) -> None:
+
+        self._graphics.draw_zoom(surface)  # type: ignore
+
+################################################################################
     @property
     def equipment(self) -> Optional:
 
@@ -167,12 +173,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def add_status(self, name: str, stacks: Union[int, float] = 1) -> None:
 
-        status = self.game.spawn(name, parent=self, stacks=int(stacks))
-
-        ctx = StatusContext(self.game, status)  # type: ignore
-        ctx.execute()
-
-        self._add_status(ctx.calculate())  # type: ignore
+        self._add_status(self.game.spawn(name, parent=self, stacks=int(stacks)))  # type: ignore
 
 ################################################################################
     def _add_status(self, status: DMStatus) -> None:
@@ -196,7 +197,7 @@ class DMUnit(DMLevelable):
         # Trigger any immediate effects
         status.on_acquire()
 
-        self.game.dispatch_event("status_applied", status=status)
+        self.game.dispatch_event("status_acquired", status=status)
 
 ################################################################################
     def handle_curse(self, status: DMStatus) -> DMStatus:
@@ -287,6 +288,12 @@ class DMUnit(DMLevelable):
         return self._stats
 
 ################################################################################
+    @property
+    def skills(self) -> List[DMSkill]:
+
+        return self._skills
+
+################################################################################
     def reset_stats(self) -> None:
 
         self._stats.reset()
@@ -295,8 +302,12 @@ class DMUnit(DMLevelable):
     def refresh_stats(self) -> None:
 
         self.reset_stats()
+
         for status in self.statuses:
             status.stat_adjust()
+
+        for skill in self.skills:
+            skill.stat_adjust()
 
 ################################################################################
     @property

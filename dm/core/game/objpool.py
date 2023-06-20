@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING, List, Optional, Type, Union
+from typing     import TYPE_CHECKING, Dict, List, Optional, Tuple, Type, Union
 
-# Bulk type Imports
+# Bulk type imports for the pool
 from ...fates       import ALL_FATES, SPAWNABLE_FATES
 from ...heroes      import ALL_HEROES
 from ...monsters    import ALL_MONSTERS
@@ -185,24 +185,7 @@ class DMObjectPool:
 
         eligible_weights = None
         if weighted:
-            if spawn_type is not DMSpawnType.Fate:
-                weights = {rank: 0.5 ** (rank - 1) for rank in range(1, 6)}
-            else:
-                # Fates are weighted differently
-                weights = {
-                    1 : 70,
-                    2 : 20,
-                    3 : 10,
-                    4 : 5,
-                    5 : 2
-                }
-                # weights = {  # For debugging
-                #     1 : 10,
-                #     2 : 20,
-                #     3 : 70,
-                #     4 : 5,
-                #     5 : 2
-                # }
+            weights = self._generate_weights(spawn_type)
             eligible_weights = [weights[rank] for rank in range(start_rank, end_rank + 1)]
 
         chosen_idx = random.choices(
@@ -217,6 +200,23 @@ class DMObjectPool:
         return result(self._state)._copy(**kwargs)
 
 ################################################################################
+    def _generate_weights(self, spawn_type: DMSpawnType) -> Dict[int, float]:
+        # Define the start and end weights for each rank
+        rank_weights = self._base_weights(spawn_type)
+
+        # Calculate the weight for each rank based on the current day
+        weights = {}
+        for rank, (start_weight, end_weight) in rank_weights.items():
+            weight = start_weight + ((end_weight - start_weight) * (self._state.day.current / 2000))  # 2000 is the "max" day
+            weights[rank] = weight
+
+        # Normalize the weights so they sum to 1
+        total_weight = sum(weights.values())
+        normalized_weights = {rank: weight / total_weight for rank, weight in weights.items()}
+
+        return normalized_weights
+
+################################################################################
     @staticmethod
     def generate_type(raw_type: str) -> Type[DMObject]:
 
@@ -226,5 +226,35 @@ class DMObjectPool:
             return DMMonster  # type: ignore
 
         raise ValueError("Invalid raw_type provided to ObjectPool.generate_type().")
+
+################################################################################
+    @staticmethod
+    def _base_weights(_type: DMSpawnType) -> Dict[int, Tuple[int, int]]:
+        """Returns a rank vs. weight-over-time mapping for the given spawn type."""
+
+        if _type == DMSpawnType.Monster:
+            return {
+                1: (100, 50),
+                2: (50, 40),
+                3: (10, 30),
+                4: (5, 15),
+                5: (1, 5),
+            }
+        elif _type == DMSpawnType.Hero:
+            pass
+        elif _type == DMSpawnType.Relic:
+            pass
+        elif _type == DMSpawnType.Fate:
+            return {
+                1: (100, 100),
+                2: (40, 40),
+                3: (30, 30),
+                4: (15, 15),
+                5: (2, 5),
+            }
+        elif _type == DMSpawnType.Room:
+            pass
+        else:
+            raise ValueError("Invalid spawn type provided to ObjectPool._base_weights().")
 
 ################################################################################

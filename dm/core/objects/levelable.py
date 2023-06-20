@@ -58,6 +58,11 @@ class DMLevelable(DMObject):
         return self._upgrades
 
 ################################################################################
+    def _determine_exp_for_current_level(self) -> int:
+
+        pass
+
+################################################################################
     def grant_exp(self, amount: int) -> None:
 
         self._exp += amount

@@ -7,9 +7,9 @@ from dm.core.objects.room import DMRoom
 from utilities      import *
 
 if TYPE_CHECKING:
-    from pygame     import Surface
-
-    from dm.core    import DMGame, DMMonster
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
+    from dm.core.objects.status import DMStatus
 ################################################################################
 
 __all__ = ("DMTrapRoom",)
@@ -40,6 +40,9 @@ class DMTrapRoom(DMRoom):
 
         self._activated_before: bool = False
 
+        # Subscribe to room enter events since those are most likely to trigger traps.
+        self.listen("room_enter")
+
 ################################################################################
     @property
     def room_type(self) -> DMRoomType:
@@ -53,19 +56,46 @@ class DMTrapRoom(DMRoom):
         return self._activated_before
 
 ################################################################################
+    @property
+    def statuses(self) -> List[DMStatus]:
+        """For compatibility with :class:`AttackContext`."""
+
+        return []
+
+################################################################################
+    def refresh_stats(self) -> None:
+        """For compatibility with :class:`AttackContext`."""
+        pass
+
+################################################################################
     def activate_first_time(self) -> None:
 
         self._activated_before = True
 
 ################################################################################
-    def draw(self, screen: Surface) -> None:
+    def attack(self, unit: DMUnit) -> None:
 
-        super().draw(screen)
+        self.game.battle_mgr.trap_attack(self, unit)
+
+################################################################################
+    def activate(self, unit: DMUnit) -> None:
+        """A general event response function."""
+
+        pass
+
+################################################################################
+    def notify(self, unit: DMUnit) -> None:
+
+        # This is where the automatic listener call goes to.
+        if unit.room == self:
+            self.activate(unit)
 
 ################################################################################
     def _copy(self, **kwargs) -> DMTrapRoom:
 
         new_obj: DMTrapRoom = super()._copy(**kwargs)  # type: ignore
+
+        new_obj._activated_before = False
 
         return new_obj  # type: ignore
 

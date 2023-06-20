@@ -11,40 +11,11 @@ from ..objects.object import DMObject
 from utilities  import *
 
 if TYPE_CHECKING:
+    from pygame.event  import Event
     from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("DMInventory",)
-
-################################################################################
-class InventoryMonster:
-
-    __slots__ = (
-        "_parent",
-        "_highlighted",
-    )
-
-################################################################################
-    def __init__(self, parent: DMMonster):
-
-        self._parent: DMMonster = parent
-        self._highlighted: bool = False
-
-################################################################################
-    def highlight(self) -> None:
-
-        self._highlighted = True
-
-################################################################################
-    def clear_highlight(self) -> None:
-
-        self._highlighted = False
-
-################################################################################
-    @property
-    def zoom_sprite(self) -> Surface:
-
-        return self._parent.graphics.zoom  # type: ignore
 
 ################################################################################
 class DMInventory:
@@ -55,6 +26,8 @@ class DMInventory:
         "_soul",
         "monsters",
     )
+
+    MONSTERS_PER_ROW = 8
 
 ################################################################################
     def __init__(self, game: DMGame):
@@ -78,6 +51,40 @@ class DMInventory:
         ]
 
 ################################################################################
+    def handle_event(self, event: Event) -> None:
+
+        if event.type == KEYDOWN:
+            if self.get_highlighted_monster() is None:
+                return
+
+            current_highlight = self.get_highlighted_monster()
+            idx = self.monsters.index(current_highlight)
+
+            if event.key == K_UP:
+                # Keeps the cursor from moving above the grid
+                idx = max(idx - self.MONSTERS_PER_ROW, 0)
+            elif event.key == K_DOWN:
+                # Keeps the cursor from moving below the grid
+                idx = min(idx + self.MONSTERS_PER_ROW, len(self.monsters) - 1)
+            elif event.key == K_LEFT:
+                # Keeps the cursor from wrapping around to the previous row
+                if (idx - 1) % self.MONSTERS_PER_ROW != 0 or idx == 1:
+                    idx = max(0, idx - 1)
+            elif event.key == K_RIGHT:
+                # Keeps the cursor from wrapping around to the next row
+                if (idx + 1) % self.MONSTERS_PER_ROW != 0 or idx == 0:
+                    idx = min(idx + 1, len(self.monsters) - 1)
+
+            current_highlight.highlight(False)
+            self.monsters[idx].highlight(True)
+
+################################################################################
+    def draw_monsters(self, screen: Surface) -> None:
+
+        for monster in self.monsters:
+            monster.draw_zoom(screen)
+
+################################################################################
     def get_random_inventory_monster(self, strongest: bool = True) -> Optional[DMMonster]:
 
         if not self.monsters:
@@ -90,6 +97,13 @@ class DMInventory:
             monster = random.choice(self.monsters)
             self.monsters.remove(monster)
             return monster
+
+################################################################################
+    def get_highlighted_monster(self) -> Optional[DMMonster]:
+
+        for monster in self.monsters:
+            if monster.highlighted:
+                return monster
 
 ################################################################################
     def sort_monsters(self, sort_type: Literal["strength"] = "strength") -> None:

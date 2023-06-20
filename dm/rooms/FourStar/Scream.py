@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from dm.core    import AttackContext, DMGame
+    from dm.core.contexts import AttackContext
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("Scream",)
@@ -13,36 +16,49 @@ __all__ = ("Scream",)
 ################################################################################
 class Scream(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-120",
+            game, position,
+            _id="ROOM-148",
             name="Scream",
             description=(
-                "Gives 1 (+1 per Lv) Panic to all enemies in the dungeon when "
-                "a hero dies in this room."
+                "Gives {value} Panic to all enemies in the dungeon when a hero "
+                "dies in this room."
             ),
             level=level,
             rank=4
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
-
-        self.game.subscribe_event("on_death", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: AttackContext = kwargs.get("ctx")
-        if ctx.room == self:
-            for hero in self.game.dungeon.heroes:
-                hero += self.game.spawn("Panic", stacks=self.effect_value())
-
-################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
 
         return 1 + (1 * self.level)
+
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
+
+        self.game.subscribe_event("on_death", self.on_death)
+
+################################################################################
+    def on_death(self, ctx: AttackContext) -> None:
+
+        if ctx.room == self:
+            if isinstance(ctx.defender, DMHero):
+                for hero in self.game.all_heroes:
+                    hero.add_status("Panic", self.effect_value())
 
 ################################################################################

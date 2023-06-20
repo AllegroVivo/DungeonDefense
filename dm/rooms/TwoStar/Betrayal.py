@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities      import UnlockPack
+from ...core.objects.hero import DMHero
+from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Betrayal",)
@@ -14,14 +17,14 @@ __all__ = ("Betrayal",)
 ################################################################################
 class Betrayal(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-115",
+            game, position,
+            _id="ROOM-133",
             name="Betrayal",
             description=(
-                "Gives 6 (+6 per Lv) Pleasure to monsters in the room whenever "
+                "Gives {value} Pleasure to monsters in the room whenever "
                 "a hero enters."
             ),
             level=level,
@@ -30,21 +33,35 @@ class Betrayal(DMBattleRoom):
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_change", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            for monster in self.monsters:
-                monster += self.game.spawn("Pleasure", stacks=self.effect_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                for monster in self.monsters:
+                    monster.add_status("Pleasure", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
 
         return 6 + (6 * self.level)
+
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
+
+        self.listen("room_enter")
 
 ################################################################################

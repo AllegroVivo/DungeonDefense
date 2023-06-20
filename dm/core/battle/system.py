@@ -4,10 +4,14 @@ from pygame     import Surface
 from typing     import TYPE_CHECKING, List
 
 from .encounter import DMEncounter
-from utilities  import DMFateType
+from ..contexts import AttackContext
+from utilities  import DMFateType, ArgumentTypeError
 
 if TYPE_CHECKING:
-    from dm.core    import DMUnit, DMGame, DMHero
+    from dm.core.game.game import DMGame
+    from dm.core.objects.hero import DMHero
+    from dm.core.objects.unit import DMUnit
+    from ...rooms.traproom import DMTrapRoom
 ################################################################################
 
 __all__ = ("DMBattleManager", )
@@ -22,6 +26,10 @@ class DMBattleManager:
         "_encounters",
         "_spawn_interval",
         "_spawn_elapsed",
+        "_hero_amt_base",
+        "_hero_amt_additional",
+        "_hero_amt_scalar",
+        "_dragon_slayer_flag",
         "counter"
     )
 
@@ -35,6 +43,12 @@ class DMBattleManager:
 
         self._spawn_interval: float = 2.0
         self._spawn_elapsed: float = 0
+
+        self._hero_amt_base: int = 1
+        self._hero_amt_additional: int = 1
+        self._hero_amt_scalar: float = 1.0
+
+        self._dragon_slayer_flag: bool = False
 
         self.counter = 20
 
@@ -133,5 +147,41 @@ class DMBattleManager:
     def engage(self, attacker: DMUnit, defender: DMUnit) -> None:
 
         self._encounters.append(DMEncounter(self.game, attacker, defender))
+
+################################################################################
+    def trap_attack(self, trap: DMTrapRoom, defender: DMUnit) -> None:
+
+        # Traps don't need a full engagement, just a single turn.
+        ctx = AttackContext(self.game, trap, defender)
+        ctx.execute()
+
+################################################################################
+    def increase_spawn_total_pct(self, amount: float) -> None:
+
+        if not isinstance(amount, float):
+            raise ArgumentTypeError(
+                "BattleManager.increase_spawn_total_pct()",
+                type(amount),
+                type(float)
+            )
+
+        self._hero_amt_scalar += amount
+
+################################################################################
+    def increase_spawn_total_flat(self, amount: int) -> None:
+
+        if not isinstance(amount, int):
+            raise ArgumentTypeError(
+                "BattleManager.increase_spawn_total_pct()",
+                type(amount),
+                type(int)
+            )
+
+        self._hero_amt_additional += amount
+
+################################################################################
+    def set_dragon_slayer(self, value: bool) -> None:
+
+        self._dragon_slayer_flag = value
 
 ################################################################################

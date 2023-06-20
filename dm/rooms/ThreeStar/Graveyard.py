@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from dm.rooms.battleroom import DMBattleRoom
+from ..battleroom   import DMBattleRoom
 
 if TYPE_CHECKING:
-    from dm.core import DMGame
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Graveyard",)
@@ -13,34 +15,48 @@ __all__ = ("Graveyard",)
 ################################################################################
 class Graveyard(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-114",
+            game, position,
+            _id="ROOM-132",
             name="Graveyard",
             description=(
-                "Gives 2 (+1 per Lv) Immortality to all monsters in the room "
-                "at the beginning of the battle."
+                "Gives {value} Immortality to all monsters in the room at "
+                "the beginning of the battle."
             ),
             level=level,
             rank=3
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
-
-        self.game.subscribe_event("before_battle", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
         for monster in self.monsters:
-            monster += self.game.spawn("Immortality", stacks=self.effect_value())
+            monster.add_status("Immortality", 1)
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        Breakdown:
+        ----------
+        **effect =b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
 
         return 2 + (1 * self.level)
+
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
+
+        self.listen("battle_start")
 
 ################################################################################

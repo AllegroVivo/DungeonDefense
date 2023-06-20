@@ -11,6 +11,7 @@ from .OneStar       import *
 from .TwoStar       import *
 from .ThreeStar     import *
 from .FourStar      import *
+from .FiveStar      import *
 ################################################################################
 # All Relics
 ALL_RELICS: List[Type["DMRelic"]] = [
@@ -60,6 +61,18 @@ ALL_RELICS: List[Type["DMRelic"]] = [
     Thunderbolt, Thurible, TurbanOfCharm, VampireThorn,
 
     # 5-Star
-
+    AcceleratingWatch, AncientEgg, BigPortal, BlackHolyGrail, BlackMask,
+    BlooddrinkerSword, BrokenAncientEgg, BrokenHolyGrail, CompletedDNA,
+    CorruptedAncientEgg, CorruptedDragon, CorruptedSoulOrb, CorruptionController,
+    CrackedAmberStone, CrescentNecklace, CrudeCube, CursedAmberStone,
+    CursedPocketWatch, CurseOfTheSwampMonster, DarkCube, DungeonGuideMap,
+    ElderDragon, FakeDungeonGuideMap, FirstMarkOfAsceticism, FullMoonNecklace,
+    ImprovedCube, ImprovedDNA, IncompleteDNA, InfinitelyRotatingBlade,
+    LastMarkOfAsceticism, LittleSwampMonster, MarkOfShadow, PerfectAmberStone,
+    PicturesOfVillageRuins, ProtectorsDNA, ReapersSoulFragment, RestoredHolyGrail,
+    RulersDNA, SecondMarkOfAsceticism, ShiningCube, ShiningMarkOfShadow,
+    SmallPortal, SoulPot, StatueOfControlledAnger, StatueOfLiberatedRage,
+    StatueOfSealedRage, StickyNet, StigmaOfAsceticism, StigmaOfDragonSlayer,
+    SwampMonsterWall, TeardrinkerSword, ThirdMarkOfAsceticism,
 ]
 ################################################################################

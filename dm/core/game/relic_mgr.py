@@ -27,6 +27,9 @@ class DMRelicManager:
         self._state: DMGame = game
         self._obtained: List[DMRelic] = []
 
+        # Subscribe to stat recalculation events.
+        self._state.subscribe_event("reset_stats", self.stat_adjust)
+
 ################################################################################
     def __contains__(self, item: DMRelic) -> bool:
 
@@ -50,6 +53,12 @@ class DMRelicManager:
         return self._obtained
 
 ################################################################################
+    def stat_adjust(self) -> None:
+
+        for relic in self._obtained:
+            relic.stat_adjust()
+
+################################################################################
     def get_relic(self, relic: Union[str, DMRelic]) -> Optional[DMRelic]:
 
         if not isinstance(relic, (str, DMRelic)):
@@ -70,14 +79,17 @@ class DMRelicManager:
             return
 
 ################################################################################
-    def add_relic(self, relic: DMRelic) -> None:
+    def add_relic(self, relic: Union[DMRelic, str]) -> None:
 
-        if not isinstance(relic, DMRelic):
+        if not isinstance(relic, (DMRelic, str)):
             raise ArgumentTypeError(
                 "RelicManager.add_relic().",
                 type(relic),
-                type(DMRelic)
+                type(DMRelic), type(str)
             )
+
+        if isinstance(relic, str):
+            relic = self.game.spawn(relic, init_obj=True)
 
         # Make sure there isn't already an instance in the relic list.
         found = False
@@ -93,5 +105,18 @@ class DMRelicManager:
 
         # Run acquisition callback
         relic.on_acquire()
+
+################################################################################
+    def remove_relic(self, relic: DMRelic) -> None:
+
+        if not isinstance(relic, DMRelic):
+            raise ArgumentTypeError(
+                "RelicManager.remove_relic().",
+                type(relic),
+                type(DMRelic)
+            )
+
+        if relic in self._obtained:
+            self._obtained.remove(relic)
 
 ################################################################################

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from dm.rooms.battleroom import DMBattleRoom
-from utilities      import UnlockPack
+from ..battleroom   import DMBattleRoom
+from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core    import AttackContext, DMGame
+    from dm.core.contexts.attack import AttackContext
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("Sacrifice",)
@@ -14,15 +16,15 @@ __all__ = ("Sacrifice",)
 ################################################################################
 class Sacrifice(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-116",
+            game, position,
+            _id="ROOM-143",
             name="Sacrifice",
             description=(
-                "Dark Lord's LIFE is restored by 2 (+1 per Lv) % if enemy "
-                "dies in the room."
+                "Dark Lord's LIFE is restored by {value} % if enemy dies "
+                "in the room."
             ),
             level=level,
             rank=3,
@@ -31,19 +33,34 @@ class Sacrifice(DMBattleRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
+        """Called automatically when this room is added to the map."""
 
-        self.game.subscribe_event("on_death", self.notify)
+        self.listen("on_death")
 
 ################################################################################
-    def notify(self, **kwargs) -> None:
+    def notify(self, ctx: AttackContext) -> None:
+        """A general event response function."""
 
-        ctx: AttackContext = kwargs.get("ctx")
         if ctx.room == self:
-            self.game.dark_lord.heal((0.02 * (1 * self.level)) * self.game.dark_lord.max_life)
+            self.game.dark_lord.heal(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
 
-        return 6 + (6 * self.level)
+        Breakdown:
+        ----------
+        **effect = (b + (a * LV)) * DL**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        - DL is the Dark Lord's max life.
+        """
+
+        effect = 0.02 + (0.01 * self.level)
+        return int(self.game.dark_lord.max_life * effect)
 
 ################################################################################

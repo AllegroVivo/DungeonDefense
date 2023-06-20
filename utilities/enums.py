@@ -27,6 +27,7 @@ class DMType(Enum):
     Object = 5
     Relic = 6
     Status = 7
+    Skill = 8
 
 ################################################################################
 class DMRoomType(Enum):

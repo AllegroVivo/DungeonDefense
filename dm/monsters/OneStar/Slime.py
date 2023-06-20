@@ -5,7 +5,7 @@ from typing     import TYPE_CHECKING
 from dm.core.objects.monster import DMMonster
 
 if TYPE_CHECKING:
-    from dm.core    import DMGame
+    from dm.core.game.game    import DMGame
 ################################################################################
 
 __all__ = ("Slime", )
@@ -23,7 +23,6 @@ class Slime(DMMonster):
             life=50,
             attack=5,
             defense=2.0,
-            dex=1.0,
             rank=1,
             idle_frames=6
         )

@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional, Tuple
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Thunder",)
@@ -15,49 +18,59 @@ __all__ = ("Thunder",)
 ################################################################################
 class Thunder(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-119",
+            game, position,
+            _id="ROOM-139",
             name="Thunder",
             description=(
-                "Inflicts 1~18 (+0~17 per Lv) and applies 16 (+8 per Lv) Shock "
-                "to a random hero in the dungeon when a hero enters the room."
+                "Inflicts {damage} damage and applies {status} Shock to a random "
+                "hero in the dungeon when a hero enters the room."
             ),
             level=level,
             rank=3
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            # Damage
-            ctx.unit.damage(self.effect_value())
-
-            # Random hero gets debuff
-            random_hero = random.choice(self.game.dungeon.heroes)
-            random_hero += self.game.spawn("Shock", stacks=self.shock_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                target = random.choice(self.game.dungeon.heroes)
+                target.damage(self.effect_value()[0])
+                target.add_status("Shock", self.effect_value()[1])
 
 ################################################################################
-    def effect_value(self) -> int:
+    def effect_value(self) -> Tuple[int, int]:
+        """The value(s) of this room's effect.
 
-        data = random.randint(1, 18)
+        A random value from the base damage range is chosen, then a random value
+        from the additional damage range is added to the total for each level of
+        this room.
+
+        Breakdown:
+        ----------
+        **damage = (i to j) + ((x to y) * LV)**
+
+        **status = b + (a * LV)**
+
+        In these functions:
+
+        - (i to j) is the base damage.
+        - (x to y) is the additional damage per level.
+        - b is the base status.
+        - a is the additional stacks per level.
+        - LV is the level of this room.
+        """
+
+        damage = random.randint(1, 18)
+        status = 16
         for _ in range(self.level):
-            data += random.randint(0, 17)
+            damage += random.randint(0, 17)
+            status += (8 * self.level)
 
-        return data
-
-################################################################################
-    def shock_value(self) -> int:
-
-        return 16 + (8 * self.level)
+        return status, damage
 
 ################################################################################

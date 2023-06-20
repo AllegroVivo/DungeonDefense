@@ -242,23 +242,27 @@ class BaseStats:
 ###############################################################################
     def mutate_stat(self, stat: str, amount: Union[int, float]) -> None:
 
-        if stat not in (
-                "life", "attack", "defense", "dex", "num_attacks",
-                "combat", "combat_ability", "speed"
-        ):
+        if not isinstance(stat, str):
             raise ValueError("Invalid stat type passed to StatComponent.mutate_stat().")
+
+        stat = stat.lower()
+        if stat not in (
+            "life", "attack", "atk", "defense", "def", "dex", "num_attacks",
+            "combat", "combat_ability", "speed"
+        ):
+            raise ValueError("Invalid stat mention passed to StatComponent.mutate_stat().")
 
         if stat == "life":
             self._life.mutate(amount)
-        elif stat == "attack":
+        elif stat in ("attack", "atk"):
             self._attack.mutate(amount)
-        elif stat == "defense":
+        elif stat in ("defense", "def"):
             self._defense.mutate(amount)
         elif stat == "dex":
             self._dex.mutate(amount)
         elif stat == "num_attacks":
             self._num_attacks.mutate(amount)
-        elif stat == "combat" or stat == "combat_ability":
+        elif stat in ("combat", "combat_ability"):
             self._combat.mutate(amount)
         elif stat == "speed":
             self._speed.mutate(amount)

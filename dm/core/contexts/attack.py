@@ -17,7 +17,8 @@ if TYPE_CHECKING:
     from ...core.objects.unit import DMUnit
     from ...core.objects.room import DMRoom
     from ...rooms.traproom import DMTrapRoom
-################################################################################
+    from ...core.objects.status import DMStatus
+    ################################################################################
 
 __all__ = ("AttackContext", )
 
@@ -137,17 +138,18 @@ class AttackContext(Context):
         "_fail",
         "_skill",
         "_running",
-        "_addl_targets"
+        "_addl_targets",
+        "_statuses",
     )
 
 ################################################################################
     def __init__(
         self,
         state: DMGame,
-        attacker: Union[DMUnit],  # DMTrapRoom],
+        attacker: Union[DMUnit, DMTrapRoom],
         defender: DMUnit,
-        attack_type: AttackType = AttackType.Attack,
-        # skill: Optional[DMSkill] = None
+        base_damage: Optional[int] = None,
+        statuses: Optional[List[DMStatus]] = None,
     ):
 
         super().__init__(state)
@@ -166,19 +168,20 @@ class AttackContext(Context):
                 )
             )
 
-        self._attacker: Union[DMUnit] = attacker  # , DMTrapRoom] = attacker
+        self._attacker: Union[DMUnit, DMTrapRoom] = attacker
         self._defender: DMUnit = defender
         self._addl_targets: List[DMUnit] = []
 
-        self._damage: DamageComponent = DamageComponent(attacker.attack)
+        self._damage: DamageComponent = DamageComponent(base_damage or attacker.attack)
         # self._skill: DMSkill = skill
+        self._statuses: List[DMStatus] = statuses or []
 
         self._hit_chance: float = 1.0
         self._fail: bool = False
 
         self._running = True
 
-        self._type: AttackType = attack_type
+        self._type: AttackType = AttackType.Attack
 
 ################################################################################
     def __repr__(self) -> str:
@@ -206,6 +209,9 @@ class AttackContext(Context):
 ################################################################################
     @property
     def room(self) -> DMRoom:
+
+        if isinstance(self._attacker, DMTrapRoom):
+            return self._attacker
 
         return self._state.get_room_at(self._attacker._room)
 
@@ -261,6 +267,7 @@ class AttackContext(Context):
         # Avoid status processing if we've already marked the attack as failed.
         if not self.will_fail:
             # Then offensive buffs and debuffs :(
+            # (unit.statuses is a blank list on Traps, so this will effectively just pass)
             attacker_statuses = [s for s in self._attacker.statuses if s.type is DMStatusType.Buff]
             attacker_statuses.extend([s for s in self._attacker.statuses if s.type is DMStatusType.Debuff])
 
@@ -277,6 +284,11 @@ class AttackContext(Context):
         for target in self._addl_targets:
             target.damage(self.damage)
 
+        # Apply any status effects.
+        for status in self._statuses:
+            # Use the internal method here since we have an instance of DMStatus already.
+            self.defender._add_status(status)
+
         # Run any post-execution callbacks:
         for callback in self._post_execution_callbacks:
             callback(self)
@@ -286,6 +298,23 @@ class AttackContext(Context):
 
         # End this attack
         self._running = False
+
+################################################################################
+    def add_status(self, status: DMStatus) -> None:
+
+        if not isinstance(status, DMStatus):
+            raise ArgumentTypeError(
+                "AttackContext.apply_status()",
+                type(status),
+                type(DMStatus)
+            )
+
+        for s in self._statuses:
+            if s.name == status.name:
+                s.increase_stacks_flat(status.stacks)
+                return
+
+        self._statuses.append(status)
 
 ################################################################################
     def mitigate_flat(self, value: int) -> None:
@@ -415,7 +444,7 @@ class AttackContext(Context):
         if self.will_fail:
             return False
 
-        # Select the ctx's defender as the default check.
+        # Select the CTX's defender as the default check.
         if unit is None:
             unit = self.defender
 

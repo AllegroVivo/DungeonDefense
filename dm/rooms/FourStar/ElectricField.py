@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import random
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from typing     import TYPE_CHECKING
-
-from ..traproom import DMTrapRoom
-from utilities  import *
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("ElectricField",)
@@ -16,40 +16,46 @@ __all__ = ("ElectricField",)
 ################################################################################
 class ElectricField(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-125",
+            game, position,
+            _id="ROOM-156",
             name="Electric Field",
             description=(
-                "Gives 32 (+24 per Lv) Shock to all heroes in adjacent rooms "
-                "when a hero enters the room."
+                "Gives {value} Shock to all heroes in adjacent rooms when "
+                "a hero enters the room."
             ),
             level=level,
             rank=4
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            adj_rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-            heroes = []
-            for room in adj_rooms:
-                heroes.extend(room.heroes)
-            for hero in heroes:
-                hero += self.game.spawn("Shock", stacks=self.effect_value())
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                rooms = self.game.dungeon.get_adjacent_rooms(self.position)
+                for room in rooms:
+                    for hero in room.heroes:
+                        hero.add_status("Shock", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
 
-        return 32 + (24 * self.level)
+        Breakdown:
+        ----------
+        **effect = b + (a * LV)**
+
+        In this function:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
+
+        return 36 + (24 * self.level)
 
 ################################################################################

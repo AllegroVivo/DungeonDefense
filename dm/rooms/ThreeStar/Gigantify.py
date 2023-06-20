@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional, Tuple
 
-from dm.rooms.battleroom import DMBattleRoom
+from ..battleroom   import DMBattleRoom
 
 if TYPE_CHECKING:
-    from dm.core import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("Gigantify",)
@@ -13,16 +14,15 @@ __all__ = ("Gigantify",)
 ################################################################################
 class Gigantify(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-113",
+            game, position,
+            _id="ROOM-131",
             name="Gigantify",
             description=(
                 "You can only deploy 1 monster in this room, but the monster "
-                "will gigantify and get 2(+1 per 2Lv)x LIFE and 2(+1 per 2Lv)x "
-                "ATK."
+                "will gigantify and get {life}x LIFE and {atk}x ATK."
             ),
             level=level,
             rank=3,
@@ -30,20 +30,34 @@ class Gigantify(DMBattleRoom):
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def effect_value(self) -> Tuple[float, float]:
+        """The value(s) of this room's effect.
 
-        self.game.subscribe_event("stat_calculation", self.notify)
+        Breakdown:
+        ----------
+        **life = b + (a * LV)**
+
+        **atk = b + (a * LV@10(6))**
+
+        In these functions:
+
+        - b is the base effectiveness.
+        - a is the additional effectiveness per level.
+        - LV is the level of this room.
+        - LV@10(6) represents every 10 levels after the 6th level.
+        """
+
+        life = float(2 + (1 * (self.level // 2)))  # Effectiveness every two levels
+        attack = float(2 + (1 * ((self.level - 6) // 10)))  # Effectiveness every 10 levels after 6
+
+        return life, attack
 
 ################################################################################
-    def notify(self, **kwargs) -> None:
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
-        for monster in self.monsters:
-            monster.mutate_stat("attack", self.effect_value())
-            monster.mutate_stat("life", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-
-        return 2 + (1 * self.level // 2)
+        for monster in self.monsters:  # (Only 1 monster can be deployed)
+            monster.increase_stat_pct("life", self.effect_value()[0])
+            monster.increase_stat_pct("attack", self.effect_value()[1])
 
 ################################################################################

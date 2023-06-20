@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import DMRoomType
 
 if TYPE_CHECKING:
-    from ...core    import DMGame
+    from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("Solitude",)
@@ -13,35 +15,47 @@ __all__ = ("Solitude",)
 ################################################################################
 class Solitude(DMBattleRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="BTL-110",
+            game, position,
+            _id="ROOM-117",
             name="Solitude",
             description=(
-                "ATK of monsters deployed in this room increases by 3 (+3 per Lv) "
-                "per number of facilities in the dungeon that are not battle rooms."
+                "ATK of monsters deployed in this room increases by {value} per "
+                "number of rooms in the dungeon that are not battle rooms."
             ),
             level=level,
             rank=2
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def effect_value(self) -> int:
+        """The value(s) of this room's effect.
 
-        self.game.subscribe_event("stat_calculation", self.notify)
+        Breakdown:
+        ----------
+        **effect = (e + (a * LV)) * T**
+
+        In this function:
+
+        - e is the base increase.
+        - a is the additional increase per level.
+        - LV is the level of this room.
+        - T is the number of non-battle rooms in the dungeon.
+        """
+
+        rooms = [
+            r for r in self.game.dungeon.all_rooms()
+            if r.room_type is not DMRoomType.Battle
+        ]
+        return (4 + (4 * self.level)) * len(rooms)
 
 ################################################################################
-    def notify(self, **kwargs) -> None:
+    def stat_adjust(self) -> None:
+        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.mutate_stat("attack", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-
-        return (4 + (4 * self.level)) * \
-            (len(self.game.dungeon.trap_rooms) + len(self.game.dungeon.facilities))
+            monster.increase_stat_flat("ATK", self.effect_value())
 
 ################################################################################

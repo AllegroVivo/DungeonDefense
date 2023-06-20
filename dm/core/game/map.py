@@ -42,6 +42,8 @@ class DMDungeonMap:
         
         self._init_map()
 
+        self.game.subscribe_event("reset_stats", self.refresh_stats)
+
 ################################################################################
     def _init_map(self):
 
@@ -65,7 +67,7 @@ class DMDungeonMap:
 
         # Fill in Boss, Entry, and starter Battle rooms.
         self.grid[1][0] = self.game.spawn(obj_id="BOSS-000")(self.game, Vector2(0, 1))
-        self.grid[1][3] = self.game.spawn(obj_id="BTL-101")(self.game, Vector2(3, 1))
+        self.grid[1][3] = self.game.spawn(obj_id="ROOM-101")(self.game, Vector2(3, 1))
         self.grid[1][5] = self.game.spawn(obj_id="ENTR-000")(self.game, Vector2(5, 1))
 
         self.boss_tile._init_dark_lord()
@@ -109,6 +111,12 @@ class DMDungeonMap:
     def width(self) -> int:
 
         return len(self.grid[0])
+
+###############################################################################
+    def refresh_stats(self) -> None:
+
+        for room in self.all_rooms(boss=True):
+            room.stat_adjust()
 
 ###############################################################################
     def get_room_at(self, pos: Vector2) -> Optional[DMRoom]:

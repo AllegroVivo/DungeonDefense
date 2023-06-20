@@ -23,7 +23,6 @@ class Goblin(DMMonster):
             life=50,
             attack=4,
             defense=1.0,
-            dex=1.0,
             rank=1
         )
 

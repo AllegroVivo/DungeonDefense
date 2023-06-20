@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional, Tuple
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Extraction",)
@@ -15,52 +18,61 @@ __all__ = ("Extraction",)
 ################################################################################
 class Extraction(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-118",
+            game, position,
+            _id="ROOM-138",
             name="Extraction",
             description=(
-                "Inflicts 1~3 (+0~2 per Lv) damage and collects 1 (+0.5 per Lv) "
-                "information from hero that entered the room. When 100 pieces "
-                "of information are collected, a random monster is upgraded."
+                "Inflicts {damage} damage and collect {value} information from "
+                "hero that entered the room. When 100 pieces of information are "
+                "collected, a random monster is upgraded."
             ),
             level=level,
             rank=3
         )
 
-        self._total_data: float = 0.0
+        self._information: float = 0
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                unit.damage(self.effect_value()[0])
+                self._information += self.effect_value()[1]
 
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            ctx.unit.damage(self.effect_value())
-            self._total_data += self.collect_amount()
-
-            if self._total_data >= 100.0:
-                self.game.dungeon.upgrade_random_monster()
-                self._total_data -= 100.0
+        if self._information >= 100:
+            self._information -= 100
+            self.game.dungeon.upgrade_random_monster(include_inventory=True)
 
 ################################################################################
-    def effect_value(self) -> int:
+    def effect_value(self) -> Tuple[int, float]:
+        """The value(s) of this room's effect.
 
-        data = random.randint(1, 3)
+        Breakdown:
+        ----------
+        **damage = (i to j) + ((x to y) * LV)**
+
+        **info = b + (a * LV)**
+
+        In this function:
+
+        - (i to j) is the base damage.
+        - (x to y) is the additional damage per level.
+        - b is the base info collected.
+        - a is the additional info collected per level.
+        - LV is the level of this room.
+        """
+
+        damage = random.randint(1, 3)
+        collect = 1
         for _ in range(self.level):
-            data += random.randint(0, 2)
+            damage += random.randint(0, 2)
+            collect += 0.5
 
-        return data
-
-################################################################################
-    def collect_amount(self) -> float:
-
-        return 1 + (0.5 * self.level)
+        return damage, collect
 
 ################################################################################

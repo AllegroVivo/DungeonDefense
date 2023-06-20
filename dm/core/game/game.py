@@ -8,6 +8,7 @@ from typing     import TYPE_CHECKING, Callable, List, Optional, Type, Union
 
 from ..battle.system        import DMBattleManager
 from .darklord              import DMDarkLord
+from .day                   import DMDay
 from .dungeon               import DMDungeon
 from .event_mgr             import DMEventManager
 from ..fates.fateboard      import DMFateBoard
@@ -43,7 +44,7 @@ class DMGame:
         "battle_mgr",
         "objpool",
         "relics",
-        "day",
+        "_day",
         "events",
         "dark_lord",
     )
@@ -57,7 +58,7 @@ class DMGame:
         self.clock = pygame.time.Clock()
         self.running: bool = True
 
-        self.day: int = 1
+        self._day: DMDay = DMDay(self)
 
         # Order is important here.
         self.events: DMEventManager = DMEventManager(self)
@@ -137,6 +138,12 @@ class DMGame:
     def all_heroes(self) -> List[DMHero]:
 
         return self.dungeon.heroes
+
+################################################################################
+    @property
+    def day(self) -> DMDay:
+
+        return self._day
 
 ################################################################################
     def spawn(
@@ -221,13 +228,16 @@ class DMGame:
         self.state_machine.current_state.set_text(text)  # type: ignore
 
 ################################################################################
-    def advance_day(self) -> None:
+    def advance_day(self, battle_type: Optional[str] = None) -> None:
 
-        self.day += 1
-
+        # Mana Grail retains mana between days
         relic = self.get_relic("Mana Grail")
         if relic is None:
-            self.dark_lord.current_mana = 0
+            # If it hasn't been obtained yet, reset the mana
+            self.dark_lord.consume_mana(self.dark_lord.current_mana)
+
+        self._day.advance(battle_type)
+        self.dispatch_event("day_advance", day=self.day)
 
         self.state_machine.switch_state("fate_select")
 
@@ -273,5 +283,15 @@ class DMGame:
         """Completely replaces the current state with the given state."""
 
         self.state_machine.switch_state(state)
+
+################################################################################
+    def add_relic(self, relic: Union[str, DMRelic]) -> None:
+
+        self.relics.add_relic(relic)
+
+################################################################################
+    def all_rooms(self, entry: bool = False, boss: bool = False, empty: bool = False) -> List[DMRoom]:
+
+        return self.dungeon.all_rooms(entry, boss, empty)
 
 ################################################################################

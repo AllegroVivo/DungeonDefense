@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import random
 
-from typing     import TYPE_CHECKING
+from pygame     import Vector2
+from typing     import TYPE_CHECKING, Optional
 
-from ..traproom import DMTrapRoom
+from ..traproom   import DMTrapRoom
+from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
-    from ...core    import DMGame, RoomChangeContext
+    from dm.core.game.game import DMGame
+    from ...core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("Rockslide",)
@@ -15,38 +18,51 @@ __all__ = ("Rockslide",)
 ################################################################################
 class Rockslide(DMTrapRoom):
 
-    def __init__(self, game: DMGame, row: int, col: int, level: int = 1):
+    def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
         super().__init__(
-            game, row, col,
-            _id="TRP-104",
+            game, position,
+            _id="ROOM-109",
             name="Rockslide",
             description=(
-                "Inflicts 1~16 (+0~15 per Lv) damage to the hero that entered "
-                "the room. If the hero is under effect of Slow, damage is tripled."
+                "Inflicts {damage} damage to the hero that entered the room. "
+                "If the hero is under effect of Slow, triple the damage will "
+                "be inflicted."
             ),
             level=level,
             rank=1
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
+        """A general event response function."""
 
-        self.game.subscribe_event("on_room_enter", self.notify)
-
-################################################################################
-    def notify(self, **kwargs) -> None:
-
-        ctx: RoomChangeContext = kwargs.get("ctx")
-        if ctx.target_room == self:
-            scalar = 1.0  # 100 % effectiveness
-            slow = ctx.unit.get_status("Slow")
-            if slow is not None:
-                scalar = 3.0  # 300 % effectiveness
-            ctx.unit.damage(self.effect_value() * scalar)
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                effect = self.effect_value()
+                slow = unit.get_status("Slow")
+                if slow is not None:
+                    effect *= 3.0  # Triple the damage.
+                unit.damage(effect)
 
 ################################################################################
     def effect_value(self) -> int:
+        """The value(s) of this room's effect.
+
+        A random value from the base effectiveness range is chosen, then a random
+        value from the additional effectiveness range is added to the total for
+        each level of this room.
+
+        Breakdown:
+        ----------
+        **effect = (a to b) + ((x to y) * LV)**
+
+        In this function:
+
+        - (a to b) is the base effectiveness.
+        - (x to y) is the additional effectiveness per level.
+        - LV is the level of this room.
+        """
 
         damage = random.randint(1, 16)
         for _ in range(self.level):

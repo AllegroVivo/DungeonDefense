@@ -30,6 +30,7 @@ TINTED      = (  0,   0,   0, 128)
 ROOM_BG     = (254, 239, 198, 255)
 CANCEL_BG   = ( 76,  45,   0, 255)
 CONFIRM_BG  = ( 30,  71,   1, 255)
+ZOOM_BORDER = ( 72,  60,  55, 255)
 
 TEXT_ACCENT = (126,  83,  17, 255)
 
