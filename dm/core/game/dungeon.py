@@ -57,6 +57,7 @@ class DMDungeon:
 ###############################################################################
     def get_room_at(self, pos: Union[Vector2, Tuple[int, int]]) -> Optional[DMRoom]:
 
+        print(pos)
         return self.map.get_room_at(Vector2(pos))
 
 ################################################################################
@@ -146,16 +147,12 @@ class DMDungeon:
     @property
     def deployed_monsters(self) -> List[DMMonster]:
 
-        return self.map.deployed_monsters
+        return self.game.inventory.deployed_monsters
 
 ################################################################################
     def upgrade_random_monster(self, include_inventory: bool = False) -> DMMonster:
 
-        monsters = self.deployed_monsters
-        if include_inventory:
-            monsters.extend(self.game.inventory.monsters)
-
-        choice = random.choice(monsters)
+        choice = random.choice(self.game.inventory.monsters)
         choice.upgrade()
 
         return choice

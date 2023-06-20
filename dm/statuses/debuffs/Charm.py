@@ -52,10 +52,10 @@ class Charm(DMStatus):
                     return
 
             # Reassign to a random ally in the same room.
-            if isinstance(ctx.attacker, DMHero):
-                options = self.game.dungeon.get_heroes_by_room(self.owner.room.position)
-            else:
-                options = self.game.dungeon.get_monsters_by_room(self.owner.room.position)
+            options = (
+                self.owner.room.heroes if isinstance(ctx.attacker, DMHero)
+                else self.owner.room.monsters
+            )
             ctx.reassign_defender(random.choice(options))
 
             # Reduce stacks and apply resist.

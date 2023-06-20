@@ -53,7 +53,7 @@ class _DebugState(DMState):
         hero = self.game.battle_mgr._encounters[0]._defender
 
         # if self.count == 1:
-        monster.add_status("Chained", stacks=3)
+        monster.add_status("Charm", stacks=3)
 
 ################################################################################
     def draw(self, screen: Surface) -> None:

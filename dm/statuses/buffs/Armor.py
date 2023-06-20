@@ -45,10 +45,10 @@ class Armor(DMStatus):
             # Determine whether stack count or damage total is lower
             effect_value = min(self.stacks, ctx.damage)
             # Check for antibuff
-            fragment = self.owner.get_status("Armor Fragment")
-            if fragment is not None:
+            resist = self.owner.get_status("Armor Fragment")
+            if resist is not None:
                 # If the antibuff outweighs the stacks, it's a no go.
-                if fragment.stacks > effect_value:
+                if resist.stacks > effect_value:
                     return
 
             # If it passed the antibuff check, we can execute the mitigation.

@@ -5,9 +5,8 @@ import random
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
-from ..battleroom   import DMBattleRoom
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
+from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -18,7 +17,7 @@ if TYPE_CHECKING:
 __all__ = ("Template",)
 
 ################################################################################
-class Template(DMBattleRoom):
+class Template(DMTrapRoom):
 
     def __init__(self, game: DMGame, position: Optional[Vector2] = None, level: int = 1):
 
@@ -30,7 +29,8 @@ class Template(DMBattleRoom):
                 "UrMom"
             ),
             level=level,
-            rank=4
+            rank=9,
+            unlock=UnlockPack.Myth
         )
 
 ################################################################################

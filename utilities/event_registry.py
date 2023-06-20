@@ -9,11 +9,12 @@ EVENT_REGISTRY = {
     ],
     "battle_end" : [  # [None]
         LifePotion, RegenerationOrb, ManaConverter, ElderDragon, Return,
+
     ],
     "battle_start" : [  # [None]
         IronPlate, LesserManaStone, BloodyCloth, CubeFromOtherworld, DemonicLamp,
         ElixirOfImmortality, ManaCollector, ManaStone, VoodooMask, PioneersEye,
-        Graveyard,
+        Graveyard, TreeOfLife, IronWall, SapplingOfYggdrasil,
     ],
     "before_attack" : [  # [None]
         Poison,
@@ -105,7 +106,7 @@ EVENT_REGISTRY = {
         Scorpion, DemonicFruit, TeardrinkerSword, MarkOfShadow,
         ShiningMarkOfShadow, StigmaOfAsceticism, FirstMarkOfAsceticism,
         SecondMarkOfAsceticism, ThirdMarkOfAsceticism, LastMarkOfAsceticism,
-        Sacrifice, Scream
+        Sacrifice, Scream, Prism, Dynamite,
     ],
     "on_heal" : [  # [HealingContext]
         Cake
@@ -118,7 +119,9 @@ EVENT_REGISTRY = {
     ],
     "room_enter" : [  # [DMUnit]
         BattleDrums, TurbanOfCharm, DMTrapRoom, Betrayal, DMChargeable,
-        Bloodthirst, Pressure, Haste, MirrorRoom, ShieldOfSteel,
+        Bloodthirst, Pressure, Haste, MirrorRoom, ShieldOfSteel, Gunpowder,
+        BloodPool, TreeOfLife, BiggerFight, Prism, IronWall, IronCurtain,
+        SteelThorn, InfinityClock
     ],
     "room_exit" : [  # [DMUnit][DMRoom]
         DragonKingsBelt
@@ -131,7 +134,7 @@ EVENT_REGISTRY = {
         AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability,
         GiantThorn, SmokedMeat, WoodenStaff, Rafflesia, Thunderbolt,
         FullMoonNecklace, HalfMoonNecklace, CrescentNecklace, StickyNet,
-        LittleSwampMonster,
+        LittleSwampMonster, DeathMist
 
     ],
     "soul_acquired" : [  # [SoulAcquiredContext]

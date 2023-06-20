@@ -44,7 +44,7 @@ class Thunder(DMTrapRoom):
 
 ################################################################################
     def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect.
+        """The value(s) of this room's effect(s).
 
         A random value from the base damage range is chosen, then a random value
         from the additional damage range is added to the total for each level of

@@ -131,7 +131,7 @@ class DMGame:
     @property
     def all_monsters(self) -> List[DMMonster]:
 
-        return self.dungeon.deployed_monsters + self.inventory.monsters
+        return self.deployed_monsters + self.inventory.monsters
 
 ################################################################################
     @property

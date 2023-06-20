@@ -34,7 +34,10 @@ class Warhorn(DMTrapRoom):
     def notify(self, unit: DMUnit) -> None:
         """A general event response function."""
 
-        pass
+        if unit.room == self:
+            if isinstance(unit, DMHero):
+                for monster in self.game.deployed_monsters:
+                    monster.add_status("Fury", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> int:

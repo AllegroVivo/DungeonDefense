@@ -122,7 +122,7 @@ class DMRoom(DMLevelable, DMChargeable):
     @property
     def monsters(self) -> List[DMMonster]:
 
-        return [m for m in self.game.all_monsters if m.room == self]
+        return [m for m in self.game.inventory.deployed_monsters if m.room == self]
 
 ################################################################################
     @property
@@ -280,5 +280,11 @@ class DMRoom(DMLevelable, DMChargeable):
 
         empty = self.game.spawn(obj_id="ROOM-000", init_obj=True, position=self.position)
         self.game.dungeon.replace_room(self, empty)  # type: ignore
+
+################################################################################
+    @property
+    def adjacent_rooms(self) -> List[DMRoom]:
+
+        return self.game.dungeon.get_adjacent_rooms(self.position)
 
 ################################################################################

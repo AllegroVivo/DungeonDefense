@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Optional, Type, TypeVar, Union
+from typing     import TYPE_CHECKING, Optional, Type, TypeVar
 from .object    import DMObject
 from utilities  import *
 
@@ -25,13 +25,13 @@ class DMSkill(DMObject):
     def __init__(
         self,
         state: DMGame,
-        parent: DMUnit,
+        parent: Optional[DMUnit] = None,
         *,
         _id: str,
         name: str,
         description: Optional[str],
         rank: int = 0,
-        unlock: Optional[UnlockPack] = None
+        unlock: Optional[UnlockPack] = None,
     ):
 
         super().__init__(state, _id, name, description, rank, unlock)
@@ -51,8 +51,8 @@ class DMSkill(DMObject):
         return self._parent
 
 ################################################################################
-    def passive_effect(self) -> None:
-        """Global effect always applied to this skill's owner."""
+    def on_acquire(self) -> None:
+        """Automatically called upon the skill's acquisition."""
 
         pass
 

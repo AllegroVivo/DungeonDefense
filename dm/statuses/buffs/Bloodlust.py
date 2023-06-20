@@ -6,9 +6,9 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
+    from dm.core.contexts import AttackContext
 ################################################################################
 
 __all__ = ("Bloodlust",)
@@ -46,7 +46,14 @@ class Bloodlust(DMStatus):
         if vampire is not None:
             self.owner.increase_stat_pct("dex", self.effect_value())
             self.owner.increase_stat_pct("attack", self.effect_value())
-            # Reduce stacks if activated
+
+################################################################################
+    def handle(self, ctx: AttackContext) -> None:
+        """Called in every iteration of the battle loop."""
+
+        # If we're completing an action
+        if self.owner == ctx.attacker:
+            # Reduce stacks
             self.reduce_stacks_by_half()
 
 ################################################################################

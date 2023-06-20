@@ -1,2 +1,26 @@
-
+from .BiggerRoom        import BiggerRoom
+from .Bloodthirst       import Bloodthirst
+from .Combustion        import Combustion
+from .CurtainOfDarkness import CurtainOfDarkness
+from .Disease           import Disease
+from .DoubleGiant       import DoubleGiant
+from .ElectricField     import ElectricField
+from .FirePillar        import FirePillar
+from .Haste             import Haste
+from .Icebolt           import Icebolt
+from .IcePit            import IcePit
+from .Laboratory        import Laboratory
+from .Library           import Library
+from .Lightning         import Lightning
+from .MirrorRoom        import MirrorRoom
+from .Multishot         import Multishot
+from .Necropolis        import Necropolis
+from .PoisonArrow       import PoisonArrow
+from .PoisonLeak        import PoisonLeak
+from .Pressure          import Pressure
+from .Scream            import Scream
+from .ShieldOfSteel     import ShieldOfSteel
+from .Skewer            import Skewer
+from .Slingshot         import Slingshot
+from .Warhorn           import Warhorn
 ################################################################################

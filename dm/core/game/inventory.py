@@ -24,7 +24,7 @@ class DMInventory:
         "_game",
         "_gold",
         "_soul",
-        "monsters",
+        "_monsters",
     )
 
     MONSTERS_PER_ROW = 8
@@ -34,7 +34,7 @@ class DMInventory:
 
         self._game: DMGame = game
 
-        self.monsters: List[DMMonster] = []
+        self._monsters: List[DMMonster] = []
         self._gold: int = 250
         self._soul: int = 0
 
@@ -46,9 +46,15 @@ class DMInventory:
         # self.monsters = [self._game.spawn(
         #     spawn_type=SpawnType.Monster, end_rank=3)(self._game) for _ in range(10)
         # ]
-        self.monsters = [self._game.spawn(
+        self._monsters = [self._game.spawn(
             obj_id="MON-XXX")(self._game) for _ in range(10)
         ]
+
+################################################################################
+    @property
+    def monsters(self) -> List[DMMonster]:
+
+        return self._monsters
 
 ################################################################################
     def handle_event(self, event: Event) -> None:
@@ -92,10 +98,9 @@ class DMInventory:
 
         if strongest:
             self.sort_monsters()
-            return self.monsters.pop(0)
+            return self.monsters[0]
         else:
             monster = random.choice(self.monsters)
-            self.monsters.remove(monster)
             return monster
 
 ################################################################################
@@ -114,7 +119,7 @@ class DMInventory:
             return (monster.life + monster.attack + monster.defense) * monster.level + monster.experience
 
         if sort_type == "strength":
-            self.monsters.sort(key=stat_score, reverse=True)
+            self._monsters.sort(key=stat_score, reverse=True)
 
 ################################################################################
     def add_gold(self, amount: int) -> None:
@@ -164,5 +169,11 @@ class DMInventory:
         if isinstance(item, DMMonster):
             self.add_monster(item)
         # etc...
+
+################################################################################
+    @property
+    def deployed_monsters(self) -> List[DMMonster]:
+
+        return [m for m in self.monsters if m._deployed]
 
 ################################################################################
