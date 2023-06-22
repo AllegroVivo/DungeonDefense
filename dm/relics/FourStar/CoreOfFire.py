@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,9 +31,9 @@ class CoreOfFire(DMRelic):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
-        pass
-        # for room in self.game.dungeon.all_rooms():
-        #     room.increase_stat_pct("recharge", self.effect_value())
+        for room in self.game.dungeon.all_rooms():
+            if room.chargeable:
+                room.boost_charge_rate(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

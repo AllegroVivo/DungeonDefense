@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusApplicationContext
 ################################################################################
 
 __all__ = ("PearlShell",)
@@ -32,14 +32,17 @@ class PearlShell(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_acquired", self.notify)
+        self.listen("status_applied")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusApplicationContext) -> None:
         """A general event response function."""
 
-        if status.name == "Slow":
-            if isinstance(status.owner, DMHero):
-                status.owner.add_status("Frostbite", 1)
+        # If the applied status is Slow
+        if ctx.status.name == "Slow":
+            # And it's being applied to a hero
+            if isinstance(ctx.target, DMHero):
+                # Apply Frostbite as well
+                ctx.add_status("Frostbite", 1)
 
 ################################################################################

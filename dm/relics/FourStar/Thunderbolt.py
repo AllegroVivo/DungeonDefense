@@ -5,9 +5,8 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import StatusExecutionContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.status    import DMStatus
 ################################################################################
 
 __all__ = ("Thunderbolt",)
@@ -30,7 +29,7 @@ class Thunderbolt(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute", self.notify)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,10 +38,10 @@ class Thunderbolt(DMRelic):
         return 0.75
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Shock":
-            status.increase_base_effect(self.effect_value())
+        if ctx.status.name == "Shock":
+            ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################

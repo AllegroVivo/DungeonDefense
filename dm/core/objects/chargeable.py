@@ -16,17 +16,25 @@ class DMChargeable:
     def __init__(self):
 
         self._enabled: bool = False
+        self._chargeable: bool = False
 
         # Default values. Must be setup to be enabled, and setup requires passing new values.
         self._current_charge: float = 0
         self._manual_charge: float = 0
         self._max_charge: float = 0
+        self._charge_scalar: float = 1
+
+################################################################################
+    @property
+    def chargeable(self) -> bool:
+
+        return self._chargeable
 
 ################################################################################
     def update(self, dt: float) -> None:
 
         if self._enabled:
-            self._current_charge += dt
+            self._current_charge += dt * self._charge_scalar
             self.check_activation()
 
 ################################################################################
@@ -67,6 +75,7 @@ class DMChargeable:
 
         # Mark it as good to go.
         self._enabled = True
+        self._chargeable = True
 
 ################################################################################
     def _reduce_charge(self) -> None:
@@ -79,7 +88,19 @@ class DMChargeable:
     def _room_enter(self, unit: DMUnit) -> None:
 
         if unit.room == self:
-            self._current_charge += self._manual_charge
+            self._current_charge += self._manual_charge * self._charge_scalar
             self.check_activation()
+
+################################################################################
+    def boost_charge_rate(self, rate: float) -> None:
+
+        if not isinstance(rate, float):
+            raise ArgumentTypeError(
+                "DMChargeable.set_charge_rate()",
+                type(rate),
+                type(float)
+            )
+
+        self._charge_scalar += rate
 
 ################################################################################

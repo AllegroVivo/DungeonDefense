@@ -4,7 +4,8 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import StatusExecutionContext
+    from dm.core.objects.monster import DMMonster
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -25,47 +26,18 @@ class Flowerpot(DMRelic):
             rank=4
         )
 
-        # Hmm, lots of Regeneration-based effects showing up.
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("status_execute")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        pass
+        if ctx.status.name == "Regeneration":
+            if isinstance(ctx.target, DMMonster):
+                ctx.add_status("Fury", ctx.stacks)  # Regeneration heals are equal to stacks.
 
 ################################################################################

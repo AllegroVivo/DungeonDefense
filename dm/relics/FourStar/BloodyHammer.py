@@ -30,7 +30,7 @@ class BloodyHammer(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_acquired", self.notify)
+        self.listen("status_applied")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -58,6 +58,6 @@ class BloodyHammer(DMRelic):
             # And the owner is a monster
             if isinstance(status.owner, DMMonster):
                 # Add Fury as well
-                status.owner.add_status("Fury", self.effect_value())
+                status.owner.add_status("Fury", self.effect_value(), self)
 
 ################################################################################

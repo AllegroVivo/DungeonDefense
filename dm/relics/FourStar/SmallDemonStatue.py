@@ -32,13 +32,13 @@ class SmallDemonStatue(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("room_enter", self.notify)
+        self.listen("boss_room_entered")
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
         """A general event response function."""
 
         if isinstance(unit, DMHero):
-            unit.add_status("Frostbite", 1)
+            unit.add_status("Frostbite", 1, self)
 
 ################################################################################

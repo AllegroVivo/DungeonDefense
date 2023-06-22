@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Optional
+from typing     import TYPE_CHECKING, List, Optional, Union
 
 from dm.core.contexts.context import Context
 
@@ -22,7 +22,7 @@ class StatusApplicationContext(Context):
         "_status",
         "_fail",
         "_stacks",
-
+        "_additional",
     )
 
 ################################################################################
@@ -35,6 +35,7 @@ class StatusApplicationContext(Context):
         self._stacks: int = status.stacks
 
         self._fail: bool = False
+        self._additional: List[DMStatus] = []
 
         self.game.dispatch_event("status_applied", self)
 
@@ -75,6 +76,25 @@ class StatusApplicationContext(Context):
         self._fail = value
 
 ################################################################################
+    @property
+    def additional_statuses(self) -> List[DMStatus]:
+
+        return self._additional
+
+################################################################################
+    def add_status(self, status: Union[DMStatus, str], stacks: int = 1) -> None:
+
+        if not isinstance(status, (DMStatus, str)):
+            raise TypeError(
+                f"Expected DMStatus or str, got {type(status).__name__}."
+            )
+
+        if isinstance(status, str):
+            status = self.game.spawn(status, stacks=stacks)
+
+        self._additional.append(status)
+
+################################################################################
     def reduce_stacks_flat(self, amount: int) -> None:
 
         self._stacks -= amount
@@ -101,7 +121,14 @@ class StatusApplicationContext(Context):
         if self.will_fail:
             return
 
+        # After all listeners have acted on the context, we can set the stack
+        # value of the parent status to the modified stack count before applying.
         self._status._stacks = self._stacks
+
+        # Apply any additional statuses that have been attached.
+        for s in self._additional:
+            # Use the private method to bypass event dispatch.
+            self.target._add_status(s)
 
         return self._status
 

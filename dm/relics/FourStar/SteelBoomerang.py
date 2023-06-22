@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import random
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
@@ -29,6 +28,6 @@ class SteelBoomerang(DMRelic):
         """Automatically called as part of all battle loops."""
 
         if ctx.source == self.game.dark_lord:
-            ctx.register_additional_target(random.choice(ctx.room.heroes))
+            ctx.register_additional_target(self.random.choice(ctx.room.heroes))
 
 ################################################################################

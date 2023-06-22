@@ -32,15 +32,16 @@ class AmethystChoker(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("hero_spawn", self.notify)
+        self.listen("hero_spawn")
 
 ################################################################################
     def notify(self, hero: DMHero) -> None:
         """A general event response function."""
 
-        # corrupted = self.game.dungeon.corrupted_heroes
-        corrupted = 0
-        if corrupted is not None:
-            hero.add_status("Corruption", corrupted)
+        corrupted = [m for m in self.game.deployed_monsters if m.corrupted]
+        if not corrupted:
+            return
+
+        hero.add_status("Corruption", len(corrupted), self)
 
 ################################################################################

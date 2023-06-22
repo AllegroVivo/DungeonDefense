@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING
+from typing     import TYPE_CHECKING, Union
 
 from dm.core.contexts.adjustable import AdjustableContext
 
@@ -20,7 +20,8 @@ class StatusExecutionContext(AdjustableContext):
         "_status",
         "_fail",
         "_stacks",
-        "_direct"
+        "_direct",
+        "_additional",
     )
 
 ################################################################################
@@ -32,6 +33,8 @@ class StatusExecutionContext(AdjustableContext):
         self._stacks: int = status.stacks
         self._fail: bool = False
         self._direct: bool = False
+
+        self._additional: list[DMStatus] = []
 
 ################################################################################
     @property
@@ -83,22 +86,30 @@ class StatusExecutionContext(AdjustableContext):
 ################################################################################
     def execute(self) -> None:
 
+        # Dispatch the event to all listeners.
+        self.game.dispatch_event("status_execute", self)
+
         # Update the stack count after all listeners have acted on it.
         self._status._stacks = self._stacks
 
-        # No point adding an empty status.
+        # No point executing an empty status.
         if self.will_fail:
             return
 
-        # Check for direct damage resulting from the Sharp Thorn relic.
+        # Check for direct damage resulting from a relic or something else.
         if self._direct:
             # This will bypass the status' potential damage reduction.
             self._status.owner._damage(self.status.stacks)
             return
 
-        # I think this needs to be damage().
-        # Use the internal method because we already have an instance of DMStatus
-        self.status.owner._add_status(self._status)
+        # Execute the status's main effect.
+        # self._status.execute
+
+        # Apply any newly attached statuses.
+        for s in self._additional:
+            # Use the internal method because we already have an instance of DMStatus
+            # and so we can bypass the event call.
+            self.status.owner._add_status(s)
 
 ################################################################################
     def reduce_stacks_flat(self, amount: int) -> None:
@@ -119,5 +130,13 @@ class StatusExecutionContext(AdjustableContext):
     def increase_stacks_pct(self, amount: float) -> None:
 
         self._stacks = int(self._stacks * (amount + 1))
+
+################################################################################
+    def add_status(self, status: Union[DMStatus, str],  stacks: int = 1) -> None:
+
+        if isinstance(status, str):
+            status = self.game.spawn(status, stacks=stacks)
+
+        self._additional.append(status)
 
 ################################################################################

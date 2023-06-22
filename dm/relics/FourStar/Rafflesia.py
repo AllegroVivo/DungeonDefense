@@ -5,7 +5,8 @@ from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts   import StatusExecutionContext
+    from dm.core.objects.hero    import DMHero
 ################################################################################
 
 __all__ = ("Rafflesia",)
@@ -29,13 +30,23 @@ class Rafflesia(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Poison":
-            status.owner.add_status("Corruption", 1)
+        ctx.register_after_execute(self.callback)
+
+################################################################################
+    def callback(self, ctx: StatusExecutionContext) -> None:
+        """A general event response function."""
+
+        # If the status is Poison
+        if ctx.status.name == "Poison":
+            # And it's being applied to a hero
+            if isinstance(ctx.target, DMHero):
+                # Apply Corruption as well
+                ctx.add_status("Corruption", 1)
 
 ################################################################################

@@ -30,7 +30,7 @@ class Blueprint(DMRelic):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
-        self.game.dark_lord.increase_stat_pct("defense", self.effect_value())
+        self.game.dark_lord.increase_stat_pct("def", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

@@ -21,6 +21,7 @@ class DMMonster(DMUnit):
     __slots__ = (
         "_highlighted",
         "_deployed",
+        "_corrupted",
     )
 
 ################################################################################
@@ -37,7 +38,8 @@ class DMMonster(DMUnit):
         life: int,
         attack: int,
         defense: float,
-        idle_frames: int = 5
+        idle_frames: int = 5,
+        corrupted: bool = False
     ):
 
         super().__init__(
@@ -47,6 +49,8 @@ class DMMonster(DMUnit):
 
         self._highlighted: bool = False
         self._deployed: bool = False
+
+        self._corrupted: bool = corrupted
 
 ################################################################################
     @property
@@ -59,6 +63,12 @@ class DMMonster(DMUnit):
     def highlighted(self) -> bool:
 
         return self.graphics._highlighted  # type: ignore
+
+################################################################################
+    @property
+    def corrupted(self) -> bool:
+
+        return self._corrupted
 
 ################################################################################
     def highlight(self, state: bool) -> None:

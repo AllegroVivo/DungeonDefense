@@ -27,7 +27,10 @@ class ShadowPriestsBook(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        shrines = [r for r in self.game.dungeon.all_rooms() if r.room_type is RoomType.Shrine]
+        shrines = [
+            r for r in self.game.dungeon.all_rooms()
+            if r.room_type is RoomType.Shrine
+        ]
         for room in shrines:
             room.remove()
 

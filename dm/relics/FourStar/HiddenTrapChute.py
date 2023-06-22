@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
+from ...core.objects.hero import DMHero
+from ...rooms.traproom import DMTrapRoom
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -26,47 +28,17 @@ class HiddenTrapChute(DMRelic):
             rank=4
         )
 
-        # needa implement traps and charging first.
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("on_death")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def notify(self, ctx: AttackContext) -> None:
 
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
-
-        pass
+        if isinstance(ctx.source, DMTrapRoom):
+            if isinstance(ctx.target, DMHero):
+                ctx.source.reactivate()
 
 ################################################################################

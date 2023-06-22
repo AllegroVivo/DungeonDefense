@@ -62,14 +62,15 @@ class DMTrapRoom(DMRoom):
         return []
 
 ################################################################################
-    def refresh_stats(self) -> None:
-        """For compatibility with :class:`AttackContext`."""
-        pass
-
-################################################################################
     def activate_first_time(self) -> None:
 
         self._activated_before = True
+
+################################################################################
+    def reactivate(self) -> None:
+
+        # Basically set the charge to immediately trigger when it's incremented next.
+        self._current_charge = self._max_charge - 0.01
 
 ################################################################################
     def _copy(self, **kwargs) -> DMTrapRoom:

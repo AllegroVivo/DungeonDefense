@@ -27,7 +27,7 @@ class BottomlessWallet(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("gold_acquired", self.notify)
+        self.listen("gold_acquired")
 
 ################################################################################
     def effect_value(self) -> float:

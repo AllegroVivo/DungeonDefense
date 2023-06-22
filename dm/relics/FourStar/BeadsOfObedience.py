@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 
 from ...core.objects.hero import DMHero
@@ -38,15 +36,14 @@ class BeadsOfObedience(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_used", self.notify)
+        self.listen("boss_skill_used")
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
         if isinstance(ctx.target, DMHero):
-            chance = random.random()
-            if chance <= 0.06:
-                ctx.target.add_status("Obey", 1)
+            if self.random.chance(6):
+                ctx.target.add_status("Obey", 1, self)
 
 ################################################################################

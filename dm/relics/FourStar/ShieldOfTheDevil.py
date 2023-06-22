@@ -32,13 +32,12 @@ class ShieldOfTheDevil(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("room_enter", self.notify)
+        self.listen("boss_room_entered")
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
         """A general event response function."""
 
-        if unit.room == self.game.dark_lord.room:
-            self.game.dark_lord.add_status("Shield", 1)
+        self.game.dark_lord.add_status("Shield", 1, self)
 
 ################################################################################

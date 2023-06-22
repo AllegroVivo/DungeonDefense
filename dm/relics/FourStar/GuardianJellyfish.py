@@ -29,7 +29,7 @@ class GuardianJellyfish(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if ctx.target == self.game.dark_lord:
+        if self.game.dark_lord == ctx.target:
             ctx.mitigate_pct(self.effect_value())
 
 ################################################################################

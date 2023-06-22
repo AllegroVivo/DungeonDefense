@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -31,10 +30,10 @@ class SagesBrush(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("book_read", self.notify)
+        self.listen("book_completed")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, book) -> None:
         """A general event response function."""
 
         self.game.dark_lord.level_up(1)

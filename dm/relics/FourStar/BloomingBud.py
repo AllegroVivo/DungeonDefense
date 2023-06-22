@@ -29,17 +29,17 @@ class BloomingBud(DMRelic):
         )
 
 ################################################################################
-    def on_acquire(self) -> None:
+    def handle(self, ctx: AttackContext) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("after_attack", self.notify)
+        if isinstance(ctx.target, DMMonster):
+            ctx.register_after_execute(self.callback)
 
 ################################################################################
-    def notify(self, ctx: AttackContext) -> None:
+    def callback(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.target, DMMonster):
-            if ctx.damage > 0:
-                ctx.target.add_status("Regeneration", ctx.target.defense * 1.00)
+        if ctx.damage > 0:
+            ctx.target.add_status("Regeneration", ctx.target.defense * 1.00)
 
 ################################################################################

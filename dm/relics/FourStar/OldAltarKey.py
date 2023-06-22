@@ -27,7 +27,6 @@ class OldAltarKey(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        # Need to implement altars first I think.
         pass
 
 ################################################################################

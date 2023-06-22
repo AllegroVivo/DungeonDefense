@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("BlackCatStatue",)
@@ -32,14 +32,14 @@ class BlackCatStatue(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Immortality":
-            if isinstance(status.owner, DMMonster):
-                status.owner.add_status("Fury", status.owner.attack * 1.00)
+        if ctx.status.name == "Immortality":
+            if isinstance(ctx.target, DMMonster):
+                ctx.target.add_status("Fury", ctx.target.attack * 1.00, self)
 
 ################################################################################

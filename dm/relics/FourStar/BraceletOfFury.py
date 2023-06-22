@@ -32,14 +32,21 @@ class BraceletOfFury(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        # If the defender is the Dark Lord
-        if ctx.target == self.game.dark_lord:
-            # And the Dark Lord is under the effect of Fury
-            fury = ctx.target.get_status("Fury")
-            if fury is not None:
-                # Reduce the Fury stacks by 50 % of the damage received
-                fury.reduce_stacks_flat(int(ctx.damage * 0.50))
-                # Mark the attack as a failure so it doesn't reduce LIFE.
-                ctx.will_fail = True
+        ctx.register_after_execute(self.callback)
+
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
+
+        # If damage was inflicted
+        if ctx.damage > 0:
+            # If the defender is the Dark Lord
+            if ctx.target == self.game.dark_lord:
+                # And the Dark Lord is under the effect of Fury
+                fury = ctx.target.get_status("Fury")
+                if fury is not None:
+                    # Reduce the Fury stacks by 50 % of the damage received
+                    fury.reduce_stacks_flat(int(ctx.damage * 0.50))
+                    # Mark the attack as a failure so it doesn't reduce LIFE.
+                    ctx.will_fail = True
 
 ################################################################################
