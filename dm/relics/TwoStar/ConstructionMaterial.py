@@ -4,6 +4,7 @@ from typing     import TYPE_CHECKING
 
 from dm.core.objects.room import DMRoom
 from ...core.objects.relic import DMRelic
+from utilities import EXPSource
 
 if TYPE_CHECKING:
     from dm.core.contexts   import ExperienceContext
@@ -32,18 +33,18 @@ class ConstructionMaterial(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("experience_awarded", self.notify)
+        self.listen("exp_awarded")
 
 ################################################################################
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
         # If the target of the experience is a room
-        if isinstance(ctx.target, DMRoom):
-            # Might need to add a check here for where the EXP is coming from.
-
-            # Increase experience
-            ctx.amplify_pct(self.effect_value())
+        if isinstance(ctx.object, DMRoom):
+            # Ensure the EXP is from facility enhancement
+            if ctx.source == EXPSource.Battle:
+                # Increase experience
+                ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

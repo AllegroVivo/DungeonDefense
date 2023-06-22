@@ -38,9 +38,9 @@ class DMFacilityRoom(DMRoom):
 
 ################################################################################
     @property
-    def room_type(self) -> DMRoomType:
+    def room_type(self) -> RoomType:
 
-        return DMRoomType.Facility
+        return RoomType.Facility
 
 ################################################################################
     def _copy(self, **kwargs) -> DMFacilityRoom:

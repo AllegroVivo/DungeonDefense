@@ -44,9 +44,9 @@ class DMTrapRoom(DMRoom):
 
 ################################################################################
     @property
-    def room_type(self) -> DMRoomType:
+    def room_type(self) -> RoomType:
 
-        return DMRoomType.Trap
+        return RoomType.Trap
 
 ################################################################################
     @property

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities import DMRoomType
+from utilities import RoomType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -47,7 +47,7 @@ class CommandersGauntlet(DMRelic):
         """
 
         battle_rooms = [
-            r for r in self.game.dungeon.all_rooms() if r.room_type is DMRoomType.Battle
+            r for r in self.game.dungeon.all_rooms() if r.room_type is RoomType.Battle
         ]
         return 0.02 * len(battle_rooms)
 

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities import DMRoomType, UnlockPack
+from utilities import RoomType, UnlockPack
 
 if TYPE_CHECKING:
+    from dm.core.contexts import RoomChangeContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.room import DMRoom
+    from dm.core.objects.hero import DMHero
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
@@ -32,15 +33,20 @@ class DragonKingsBelt(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("room_exit", self.notify)
+        self.listen("room_change")
 
 ################################################################################
-    def notify(self, unit: DMUnit, room: DMRoom) -> None:
-        """A general event response function."""
+    def notify(self, ctx: RoomChangeContext) -> None:
 
-        if room.room_type is DMRoomType.Battle:
-            dull = unit.get_status("Dull")
-            if dull is None:
-                unit.add_status("Dull")
+        # If the unit is a hero.
+        if isinstance(ctx.unit, DMHero):
+            # Since the unit is switching rooms, that means they just left
+            # a room. So check if the room they just left was a Battle Room.
+            if ctx.previous.room_type == RoomType.Battle:
+                # If so, check for dull
+                dull = ctx.unit.get_status("Dull")
+                if dull is None:
+                    # And add if not present.
+                    ctx.unit.add_status("Dull", 1, self)
 
 ################################################################################

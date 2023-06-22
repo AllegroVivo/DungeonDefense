@@ -6,7 +6,8 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts   import StatusExecutionContext
+    from dm.core.objects.monster import DMMonster
 ################################################################################
 
 __all__ = ("SoulOrb",)
@@ -29,14 +30,15 @@ class SoulOrb(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Immortality":
-            if status.stacks > 0:
-                status.owner.add_status("Shield", stacks=1)
+        if ctx.status.name == "Immortality":
+            if isinstance(ctx.target, DMMonster):
+                if not ctx.will_fail:
+                    ctx.status.owner.add_status("Shield", 1, self)
 
 ################################################################################

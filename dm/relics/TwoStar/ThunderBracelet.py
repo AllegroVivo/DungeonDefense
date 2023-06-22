@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
@@ -38,15 +36,14 @@ class ThunderBracelet(DMRelic):
         # If we're a hero
         if isinstance(ctx.target, DMHero):
             # And the damage is greater than 0
-            if ctx.damage > 0:
+            if not ctx.will_fail:
                 # And the defender has the shock status
                 shock = ctx.target.get_status("Shock")
                 if shock is not None:
                     if shock.stacks > 0:
                         # 25% chance to stun
-                        chance = random.random()
-                        if chance <= 0.25:
+                        if self.random.chance(25):
                             # Add 1 stun
-                            ctx.target.add_status("Stun", stacks=1)
+                            ctx.target.add_status("Stun", 1, self)
 
 ################################################################################

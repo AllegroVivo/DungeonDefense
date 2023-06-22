@@ -5,7 +5,7 @@ from ...core.objects.monster import DMMonster
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts   import StatusExecutionContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -28,15 +28,15 @@ class RingOfDefense(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Defense":
-            if isinstance(status.owner, DMMonster):
-                status.increase_base_effect(self.effect_value())  # Base effect of 50% + 20% (of 50%) = 60%
+        if isinstance(ctx.target, DMMonster):
+            if ctx.status.name == "Defense":
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

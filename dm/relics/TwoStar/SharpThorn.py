@@ -4,8 +4,9 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import StatusExecutionContext
     from dm.core.game.game import DMGame
+    from dm.core.objects.hero import DMHero
 ################################################################################
 
 __all__ = ("SharpThorn",)
@@ -23,36 +24,18 @@ class SharpThorn(DMRelic):
             rank=2
         )
 
-        # Umm... Not sure on this one.
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("status_execute")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of the effect corresponding to this relic."""
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        pass
+        if isinstance(ctx.target, DMHero):
+            if ctx.status.name == "Thorn":
+                ctx.set_direct_damage(True)
 
 ################################################################################

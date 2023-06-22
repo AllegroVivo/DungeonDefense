@@ -87,9 +87,9 @@ class DMRoom(DMLevelable, DMChargeable):
 ################################################################################
     @property
     @abstractmethod
-    def room_type(self) -> DMRoomType:
+    def room_type(self) -> RoomType:
 
-        raise DMRoomType.Empty
+        raise RoomType.Empty
 
 ################################################################################
     @property

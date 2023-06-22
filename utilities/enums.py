@@ -3,7 +3,7 @@ from enum   import Enum
 
 __all__ = (
     "DMType",
-    "DMRoomType",
+    "RoomType",
     "UnlockPack",
     "DMSpawnType",
     "HeroState",
@@ -14,7 +14,8 @@ __all__ = (
     "AttackType",
     "DMPurchaseType",
     "DMAdjustmentType",
-    "DMSkillType"
+    "DMSkillType",
+    "EXPSource"
 )
 
 ################################################################################
@@ -31,7 +32,7 @@ class DMType(Enum):
     Skill = 8
 
 ################################################################################
-class DMRoomType(Enum):
+class RoomType(Enum):
 
     Empty = 0
     Battle = 1
@@ -148,5 +149,11 @@ class DMSkillType(Enum):
     Common = 1
     Monster = 2
     Hero = 3
+
+################################################################################
+class EXPSource(Enum):
+
+    Battle = 1
+    Enhancement = 2
 
 ################################################################################

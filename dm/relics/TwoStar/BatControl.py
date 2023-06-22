@@ -29,7 +29,7 @@ class BatControl(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_vampiric_impulse", self.notify)
+        self.listen("boss_skill_vampiric_impulse")
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:

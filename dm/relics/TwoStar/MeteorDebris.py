@@ -32,7 +32,7 @@ class MeteorDebris(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_acquire", self.notify)
+        self.listen("status_applied")
 
 ################################################################################
     def notify(self, status: DMStatus) -> None:

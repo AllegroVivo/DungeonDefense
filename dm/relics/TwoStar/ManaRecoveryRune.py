@@ -33,7 +33,7 @@ class ManaRecoveryRune(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_death", self.notify)
+        self.listen("on_death")
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
@@ -42,8 +42,7 @@ class ManaRecoveryRune(DMRelic):
         # If the defeated was a hero
         if isinstance(ctx.target, DMHero):
             # Run chances
-            chance = random.random()
-            if chance <= 10:
+            if self.random.chance(10):
                 # And restore mana if passed
                 self.game.dark_lord.restore_mana(1)
 

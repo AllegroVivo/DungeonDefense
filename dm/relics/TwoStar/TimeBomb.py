@@ -24,7 +24,9 @@ class TimeBomb(DMRelic):
             state,
             _id="REL-168",
             name="Time Bomb",
-            description="Has a small chance of increasing the damage area of a trap.",
+            description=(
+                "Has a small chance of increasing the damage area of a trap."
+            ),
             rank=2
         )
 
@@ -32,22 +34,21 @@ class TimeBomb(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
+        ctx.register_after_execute(self.after_attack)
+
+################################################################################
+    def after_attack(self, ctx: AttackContext) -> None:
+
         # If a Trap Room is attacking
         if isinstance(ctx.source, DMTrapRoom):
             # And a hero is defending
             if isinstance(ctx.target, DMHero):
-                # There's a small chance (I'm going to say 15%)
-                chance = random.random()
-                # If it passes the check
-                if chance <= 0.15:
+                # There's a small chance (I'm going to say 10%)
+                if self.random.chance(10):
                     # Get all the adjacent heroes:
                     rooms = self.game.dungeon.get_adjacent_rooms(ctx.target.room.position, include_current=True)
-                    heroes = []
                     for room in rooms:
-                        heroes.extend(room.heroes)
-
-                    # Apply damage to all these units as well
-                    for hero in heroes:
-                        hero.damage(ctx.damage)
+                        for hero in room.heroes:
+                            hero.damage(ctx.damage)
 
 ################################################################################

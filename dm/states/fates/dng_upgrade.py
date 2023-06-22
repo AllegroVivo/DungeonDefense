@@ -58,7 +58,7 @@ class DungeonUpgradeFate(DungeonSelectState):
 
         room = self.game.dungeon.get_highlighted_room()
         print(room.room_type)
-        if room.room_type in (DMRoomType.Empty, DMRoomType.Entrance, DMRoomType.Boss):
+        if room.room_type in (RoomType.Empty, RoomType.Entrance, RoomType.Boss):
             return
 
         if room.upgrades == 10:

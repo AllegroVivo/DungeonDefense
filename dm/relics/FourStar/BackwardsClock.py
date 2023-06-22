@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities       import DMRoomType
+from utilities       import RoomType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -28,7 +28,7 @@ class BackwardsClock(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        shrines = [r for r in self.game.dungeon.all_rooms() if r.room_type is DMRoomType.Shrine]
+        shrines = [r for r in self.game.dungeon.all_rooms() if r.room_type is RoomType.Shrine]
         choice = random.choice(shrines)
         choice.remove()
 

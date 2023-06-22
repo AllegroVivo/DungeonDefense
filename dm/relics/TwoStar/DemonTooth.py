@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -30,7 +30,7 @@ class DemonTooth(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_bite", self.notify)
+        self.listen("boss_skill_bite")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,10 +39,16 @@ class DemonTooth(DMRelic):
         return 1 + (0.20 * self.game.dark_lord.level)
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        # Implement after I figure out boss skills.
-        pass
+        ctx.register_after_execute(self.after_skill)
+
+################################################################################
+    def after_skill(self, ctx: BossSkillContext) -> None:
+
+        for status in ctx.statuses:
+            if status.name == "Vampire":
+                status.increase_stacks_flat(int(self.effect_value()))
 
 ################################################################################

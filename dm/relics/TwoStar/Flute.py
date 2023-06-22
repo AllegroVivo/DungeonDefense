@@ -6,6 +6,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.game.game import DMGame
     from dm.core.objects.status import DMStatus
 ################################################################################
@@ -30,15 +31,18 @@ class Flute(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusExecutionContext) -> None:
 
-        if status.name == "Absorption":
-            if isinstance(status.owner, DMMonster):
-                if status.stacks > 0:
-                    status.owner.add_status("Focus", stacks=3)
+        # If we're a monster
+        if isinstance(ctx.target, DMMonster):
+            # Receiving the effect of Absorption
+            if ctx.status.name == "Absorption":
+                # And it will succeed
+                if ctx.stacks > 0:
+                    # Add 3 Focus
+                    ctx.target.add_status("Focus", 3, self)
 
 ################################################################################

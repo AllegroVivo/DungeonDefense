@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
+from utilities import RoomType
 
 if TYPE_CHECKING:
+    from dm.core.contexts   import RoomChangeContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
@@ -30,15 +32,15 @@ class BattleDrums(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("room_enter", self.notify)
+        self.listen("room_change")
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def notify(self, ctx: RoomChangeContext) -> None:
 
-        # Add Fury to all monsters in the same room.
-        for monster in unit.room.monsters:
-            monster.add_status("Fury", stacks=monster.attack * self.effect_value())
+        if ctx.room.room_type == RoomType.Battle:
+            # Add Fury to all monsters in the same room.
+            for monster in ctx.room.monsters:
+                monster.add_status("Fury", monster.attack * self.effect_value(), self)
 
 ################################################################################
     def effect_value(self) -> float:

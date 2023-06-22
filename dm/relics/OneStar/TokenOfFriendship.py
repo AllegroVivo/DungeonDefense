@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
+from ...core.objects.monster import DMMonster
 
 if TYPE_CHECKING:
     from dm.core.contexts   import ExperienceContext
@@ -33,9 +34,11 @@ class TokenOfFriendship(DMRelic):
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        # Only monsters gain experience from battles. So no additional checks are
-        # needed here.
-        ctx.amplify_pct(self.effect_value())
+        # Since we can get experience from multiple sources, we need to check
+        # that the source is a monster.
+        if isinstance(ctx.object, DMMonster):
+            # Increase experience
+            ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

@@ -27,7 +27,7 @@ class Grapes(DMRelic):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.game.deployed_monsters:
-            monster.increase_stat_pct("defense", self.effect_value())
+            monster.increase_stat_pct("def", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

@@ -60,9 +60,9 @@ class DMBattleRoom(DMRoom):
 
 ################################################################################
     @property
-    def room_type(self) -> DMRoomType:
+    def room_type(self) -> RoomType:
 
-        return DMRoomType.Battle
+        return RoomType.Battle
 
 ################################################################################
     def set_monster_cap(self, value: int) -> None:

@@ -42,8 +42,8 @@ class BossRoom(DMBattleRoom):
 
 ################################################################################
     @property
-    def room_type(self) -> DMRoomType:
+    def room_type(self) -> RoomType:
 
-        return DMRoomType.Boss
+        return RoomType.Boss
 
 ################################################################################

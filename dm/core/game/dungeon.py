@@ -185,7 +185,7 @@ class DMDungeon:
     def get_monsters_by_room(self, pos: Vector2) -> List[DMHero]:
 
         room = self.get_room_at(pos)
-        if room.room_type is not DMRoomType.Battle:
+        if room.room_type is not RoomType.Battle:
             return []
 
         return room.monsters  # type: ignore

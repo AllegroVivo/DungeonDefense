@@ -5,8 +5,9 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import StatusApplicationContext
     from dm.core.game.game import DMGame
+    from dm.core.objects.monster import DMMonster
 ################################################################################
 
 __all__ = ("DawnDew",)
@@ -31,41 +32,14 @@ class DawnDew(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("status_applied")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: StatusApplicationContext) -> None:
         """A general event response function."""
 
-        pass
+        if ctx.status.name == "Absorption":
+            if isinstance(ctx.target, DMMonster):
+                ctx.target.add_status("Defense", 2, self)
 
 ################################################################################

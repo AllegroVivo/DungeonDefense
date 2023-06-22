@@ -5,6 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -31,13 +32,13 @@ class Furball(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_fury_explosion", self.notify)
+        self.listen("boss_skill_fury_explosion")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Merciless", stacks=1)
+            monster.add_status("Merciless", 1, self)
 
 ################################################################################

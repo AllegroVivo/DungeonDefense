@@ -23,6 +23,16 @@ class ArmorOfPower(DMRelic):
             rank=2
         )
 
-        # Will have to plan for in the boss skill
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("boss_skill_climax")
+
+################################################################################
+    def notify(self, ctx: BossSkillContext) -> None:
+
+        pass
+        # # (Basically)
+        # ctx.register_after_execute(self.add_hatred)
 
 ################################################################################

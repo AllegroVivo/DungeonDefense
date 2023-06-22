@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import DMRoomType
+from utilities import RoomType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -47,7 +47,7 @@ class Solitude(DMBattleRoom):
 
         rooms = [
             r for r in self.game.dungeon.all_rooms()
-            if r.room_type is not DMRoomType.Battle
+            if r.room_type is not RoomType.Battle
         ]
         return (4 + (4 * self.level)) * len(rooms)
 

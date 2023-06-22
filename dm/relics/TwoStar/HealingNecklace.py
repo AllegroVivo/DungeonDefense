@@ -5,6 +5,7 @@ from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
+    from dm.core.contexts import HealingContext
 ################################################################################
 
 __all__ = ("HealingNecklace",)
@@ -24,6 +25,20 @@ class HealingNecklace(DMRelic):
             rank=2
         )
 
-        # Implemented in Dark Lord healing calculations.
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("on_heal")
+
+################################################################################
+    def notify(self, ctx: HealingContext) -> None:
+
+        if self.game.dark_lord == ctx.target:
+            ctx.amplify_pct(self.effect_value())
+
+################################################################################
+    def effect_value(self) -> float:
+
+        return 0.25
 
 ################################################################################

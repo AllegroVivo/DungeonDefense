@@ -32,7 +32,7 @@ class StrawberryPudding(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("before_battle", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -55,6 +55,6 @@ class StrawberryPudding(DMRelic):
     def notify(self) -> None:
         """A general event response function."""
 
-        self.game.dark_lord.add_status("Fury", stacks=self.effect_value())
+        self.game.dark_lord.add_status("Fury", self.effect_value(), self)
 
 ################################################################################

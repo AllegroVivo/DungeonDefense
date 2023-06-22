@@ -177,7 +177,7 @@ class DMDungeonMap:
                     room = self.grid[col][row]
                     if room is not None:
                         # Try to deploy a monster here if it's a battle room.
-                        if room.room_type is DMRoomType.Battle:
+                        if room.room_type is RoomType.Battle:
                             if not room.is_full:  # type: ignore
                                 # Try to get a monster from the inventory
                                 monster = self.game.inventory.get_random_inventory_monster()
@@ -201,13 +201,13 @@ class DMDungeonMap:
 
         for i, room in enumerate(ret):
             if not entry:
-                if room.room_type is DMRoomType.Entrance:
+                if room.room_type is RoomType.Entrance:
                     ret.pop(i)
             if not boss:
-                if room.room_type is DMRoomType.Boss:
+                if room.room_type is RoomType.Boss:
                     ret.pop(i)
             if not empty:
-                if room.room_type is DMRoomType.Empty:
+                if room.room_type is RoomType.Empty:
                     ret.pop(i)
 
         return ret
@@ -216,7 +216,7 @@ class DMDungeonMap:
     def reset_monster_deployment(self) -> None:
 
         for room in self.all_rooms(False, False, False):
-            if room.room_type is DMRoomType.Battle and room.monsters:  # type: ignore
+            if room.room_type is RoomType.Battle and room.monsters:  # type: ignore
                 room.reset_monster_deployment()  # type: ignore
 
 ################################################################################

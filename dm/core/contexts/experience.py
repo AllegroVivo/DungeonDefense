@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing     import TYPE_CHECKING
 
 from .adjustable  import AdjustableContext
+from utilities import EXPSource
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -15,15 +16,28 @@ __all__ = ("ExperienceContext",)
 ################################################################################
 class ExperienceContext(AdjustableContext):
 
-    def __init__(self, state: DMGame, obj: DMLevelable):
+    __slots__ = (
+        "_source",
+    )
+
+################################################################################
+    def __init__(self, state: DMGame, obj: DMLevelable, source: EXPSource):
 
         super().__init__(state, _obj=obj)
+
+        self._source: EXPSource = source
 
 ################################################################################
     @property
     def room(self) -> DMRoom:
 
         return self.object.room
+
+################################################################################
+    @property
+    def source(self) -> EXPSource:
+
+        return self._source
 
 ################################################################################
     def execute(self) -> None:

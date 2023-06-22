@@ -6,8 +6,8 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
 ################################################################################
 
 __all__ = ("DeepSeaBracelet",)
@@ -30,20 +30,20 @@ class DeepSeaBracelet(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Dull":
-            if isinstance(status.owner, DMHero):
-                status.increase_base_effect(self.effect_value())
+        if ctx.status.name == "Dull":
+            if isinstance(ctx.status.owner, DMHero):
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
         """The value of this relic's effect."""
 
-        return 2.00
+        return 2.00  # Additional 200 % to equal 300 %.
 
 ################################################################################

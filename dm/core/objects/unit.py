@@ -10,7 +10,7 @@ from typing     import (
     Union
 )
 
-from ..contexts.status_apply import StatusApplicationContext
+from ..contexts import HealingContext, StatusApplicationContext
 from ..game.movement import MovementComponent
 from ..graphics._graphical import GraphicalComponent
 from ...core.objects.levelable import DMLevelable
@@ -500,6 +500,12 @@ class DMUnit(DMLevelable):
 
 ################################################################################
     def heal(self, amount: Union[int, float]) -> None:
+
+        ctx = HealingContext(self.game, self, amount)
+        self.game.dispatch_event("on_heal", ctx)
+
+################################################################################
+    def _heal(self, amount: Union[int, float]) -> None:
 
         self.stats.heal(int(amount))
 
