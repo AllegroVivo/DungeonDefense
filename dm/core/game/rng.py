@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Any, Dict, List, Optional
+from typing     import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -154,6 +154,11 @@ class DMGenerator:
         return 0
 
 ################################################################################
+    def from_range(self, start: int, stop: int) -> int:
+
+        return self.choice([i for i in range(start, stop + 1)])
+
+################################################################################
     def hero(self, room: Optional[DMRoom] = None, *, exclude: Optional[DMHero] = None) -> Optional[DMHero]:
         """Return a random hero from the provided room, or from the dungeon if
         no room is provided.
@@ -219,5 +224,22 @@ class DMGenerator:
 
         # Otherwise, we'll choose a monster from the dungeon overall.
         return self.choice(self._state.dungeon.deployed_monsters)
+
+################################################################################
+    def chance(self, n: Union[int, float]) -> bool:
+        """Return True with a probability of n/100. If n is greater than 1, it
+        will be divided by 100.
+
+        Parameters:
+        -----------
+        n : Union[:class:`int`, :class:`float`]
+            The probability of returning True. For readability, it can be an
+            integer (will be divided by 100) or a float (used as is).
+        """
+
+        if n > 1:
+            n /= 100
+
+        return self.next() <= n
 
 ################################################################################

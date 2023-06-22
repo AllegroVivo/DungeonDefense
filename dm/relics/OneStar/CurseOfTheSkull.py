@@ -30,13 +30,12 @@ class CurseOfTheSkull(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_room_entered", self.notify)
+        self.listen("boss_room_entered")
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
 
-        for hero in unit.game.all_heroes:
-            hero.add_status("Curse")  # Adds 1 stack by default
+        for hero in self.game.all_heroes:
+            hero.add_status("Curse", 1, self)
 
 ################################################################################

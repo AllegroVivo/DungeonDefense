@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from uuid       import UUID, uuid4
-from typing     import TYPE_CHECKING, Callable, Optional, Type, TypeVar
+from typing     import TYPE_CHECKING, Callable, Optional, Type, TypeVar, Union
 
+from ..contexts import StatusApplicationContext
 from utilities  import *
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.objects.room import DMRoom
     from dm.core.game.rng import DMGenerator
+    from dm.core.objects.unit import DMUnit
+    from dm.core.objects.status import DMStatus
 ################################################################################
 
 __all__ = ("DMObject", )
@@ -98,13 +101,8 @@ class DMObject:
         pass
 
 ################################################################################
-    def apply_status_to(self, target: DMObject, status: str, stacks: int = 1) -> None:
-
-        target.add_status(self, status, stacks)  # type: ignore
-
-################################################################################
     def _copy(self, **kwargs) -> DMObject:
-        """Returns a clean copy of the current room type with any given
+        """Returns a clean copy of the current object type with any given
         kwargs substituted in. The UUID **is** regenerated.
 
         Returns:

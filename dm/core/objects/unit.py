@@ -10,7 +10,7 @@ from typing     import (
     Union
 )
 
-from ..contexts.status import StatusAcquireContext
+from ..contexts.status_apply import StatusApplicationContext
 from ..game.movement import MovementComponent
 from ..graphics._graphical import GraphicalComponent
 from ...core.objects.levelable import DMLevelable
@@ -184,13 +184,12 @@ class DMUnit(DMLevelable):
         if isinstance(status, str):
             status = self.game.spawn(status, parent=self, stacks=int(stacks))
 
-        # Create a context and dispatch the event.
-        ctx = StatusAcquireContext(self.game, source, self, status)  # type: ignore
-        self.game.dispatch_event("status_applied", ctx=ctx)
+        # Create a context and dispatch the event for interaction.
+        ctx = StatusApplicationContext(self.game, source, self, status)  # type: ignore
+        self.game.dispatch_event("status_applied", ctx)
 
-        # No other steps required, once the event finishes dispatching, the
-        # context should have been acted upon by all relevant listeners.
-        ctx.execute()
+        # After the context has been acted on, we can add the resulting status.
+        self._add_status(ctx.execute())
 
 ################################################################################
     def _add_status(self, status: DMStatus) -> None:
@@ -214,7 +213,7 @@ class DMUnit(DMLevelable):
         # Trigger any immediate effects
         status.on_acquire()
 
-        self.game.dispatch_event("status_acquired", status=status)
+        self.game.dispatch_event("status_acquired", )
 
 ################################################################################
     def handle_curse(self, status: DMStatus) -> DMStatus:

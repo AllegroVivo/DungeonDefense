@@ -4,7 +4,6 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext, Context
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -27,14 +26,14 @@ class CateyeStone(DMRelic):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("burn_activated", self.notify)
+        self.listen("recovery_canceled_by_burn")
 
 ################################################################################
-    def notify(*args) -> None:
+    def notify(self, amount: int) -> None:
         """A general event response function."""
 
-        pass
+        for hero in self.game.all_heroes:
+            hero.damage(amount)
 
 ################################################################################

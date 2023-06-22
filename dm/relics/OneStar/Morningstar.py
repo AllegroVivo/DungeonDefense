@@ -32,10 +32,13 @@ class Morningstar(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.target, DMHero):
-            if isinstance(ctx.source, DMMonster):
-                thorn = ctx.target.get_status("Thorn")
+        # If we're a monster attacking a hero
+        if isinstance(ctx.source, DMMonster):
+            if isinstance(ctx.target, DMHero):
+                # And the monster has Thorn
+                thorn = ctx.source.get_status("Thorn")
                 if thorn is not None:
+                    # Amplify the damage by the amount of Thorn stacks
                     ctx.amplify_flat(thorn.stacks)
 
 ################################################################################

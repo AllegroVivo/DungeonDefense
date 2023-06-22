@@ -28,11 +28,13 @@ class GravityBracelet(DMRelic):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+        """Automatically called upon dispatch of the `on_attack` event."""
 
         # If a hero is taking the hit, increase damage by 25%
         if isinstance(ctx.target, DMHero):
-            ctx.amplify_pct(self.effect_value())
+            obey = ctx.target.get_status("Obey")
+            if obey is not None:
+                ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

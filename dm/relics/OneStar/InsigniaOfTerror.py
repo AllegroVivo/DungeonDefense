@@ -29,13 +29,11 @@ class InsigniaOfTerror(DMRelic):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("trap_activated", self.notify)
+        self.listen("trap_activated")
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
-        """A general event response function."""
 
         # If we're a hero
         if isinstance(ctx.target, DMHero):
@@ -44,7 +42,7 @@ class InsigniaOfTerror(DMRelic):
                 #  And the trap hasn't been activated before
                 if not ctx.source.activated_before:
                     # Add status effect
-                    ctx.target.add_status("Panic")
+                    ctx.target.add_status("Panic", 1, self)
                     # Remember to mark the trap as activated.
                     ctx.source.activate_first_time()
 

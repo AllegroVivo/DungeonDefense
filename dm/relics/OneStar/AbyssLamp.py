@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
-from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
@@ -33,18 +30,14 @@ class AbyssLamp(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("on_target")
+        self.listen("on_target_acquire")
 
 ################################################################################
     def notify(self, ctx: TargetingContext) -> None:
 
         # Check for activation at a 10% chance.
-        chance = random.random()
-        if chance <= 0.10:
-            if isinstance(ctx.source, DMHero):
-                target = self.random.hero(ctx.room)
-            else:
-                target = self.random.monster(ctx.room)
-            ctx.override(target)
+        if self.random.chance(10):
+            source = ctx.room.get_heroes_or_monsters(ctx.target)
+            ctx.override(self.random.choice(source))
 
 ################################################################################

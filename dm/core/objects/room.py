@@ -17,14 +17,13 @@ from utilities  import *
 
 from .chargeable import DMChargeable
 from ..graphics import RoomGraphical
+from .hero import DMHero
+from .monster import DMMonster
 from .levelable import DMLevelable
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.game.game import DMGame
-    from dm.core.objects.hero import DMHero
-    from dm.core.objects.monster import DMMonster
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
@@ -332,5 +331,28 @@ class DMRoom(DMLevelable, DMChargeable):
     def adjacent_rooms(self) -> List[DMRoom]:
 
         return self.game.dungeon.get_adjacent_rooms(self.position)
+
+################################################################################
+    def get_heroes_or_monsters(self, unit: DMUnit) -> List[DMUnit]:
+        """Returns the room's heroes or monsters depending on the type of unit
+        provided.
+
+        Parameters:
+        -----------
+        unit: :class:`DMUnit`
+            The unit whose type is to be returned.
+
+        Returns:
+        --------
+        List[:class:`DMUnit`]
+            The list of units of the same type as the given unit.
+        """
+
+        if isinstance(unit, DMHero):
+            return self.heroes
+        elif isinstance(unit, DMMonster):
+            return self.monsters
+        else:
+            return []
 
 ################################################################################

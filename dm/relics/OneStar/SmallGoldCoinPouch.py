@@ -26,12 +26,10 @@ class SmallGoldCoinPouch(DMRelic):
             unlock=UnlockPack.Advanced
         )
 
-        self.count = 1
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.inventory.add_gold(random.randint(100, 500))
+        self.game.inventory.add_gold(self.random.from_range(100, 500))
 
 ################################################################################

@@ -20,7 +20,8 @@ class IronPlate(DMRelic):
             _id="REL-115",
             name="Iron Plate",
             description=(
-                "All monsters gain 20 % of max LIFE as Armor at the start of battle."
+                "All monsters gain 20 % of max LIFE as Armor at the "
+                "start of battle."
             ),
             rank=1
         )
@@ -29,13 +30,13 @@ class IronPlate(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
     def notify(self, *args) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Armor", stacks=monster.max_life * self.effect_value())
+            monster.add_status("Armor", monster.max_life * self.effect_value(), self)
 
 ################################################################################
     def effect_value(self) -> float:

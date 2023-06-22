@@ -36,7 +36,8 @@ class BloodyMeteorite(DMRelic):
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        # Need to implement specifics for the skill first I think.
+        # Need to register a post execution callback to get the amount of life
+        # recovered.
         pass
 
 ################################################################################

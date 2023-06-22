@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
@@ -32,7 +30,7 @@ class MagicGear(DMRelic):
         if len(options) == 0:
             return
 
-        results = random.choices(options, k=2)
+        results = self.random.choices(options, k=2)
         for room in results:
             room.upgrade()
 

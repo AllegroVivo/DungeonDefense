@@ -3,8 +3,17 @@
 # informational. It denotes all subscribers to all registered events.
 ################################################################################
 EVENT_REGISTER = {
-    "on_target": [  # -> TargetingContext
-
+    "boss_skill_blood_lord": [  # -> BossSkillContext
+        BloodStaff, BloodyMeteorite,
+    ],
+    "egg_hatch": [  # -> EggHatchContext
+        AdvancedIncubator,
+    ],
+    "on_target_acquire": [  # -> TargetingContext
+        AbyssLamp,
+    ],
+    "stat_refresh": [  # -> None
+        DMRelic,
     ],
 }
 ################################################################################

@@ -31,20 +31,23 @@ class VampiricMonster(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_bite", self.notify)
+        self.listen("boss_skill_bite")
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        ctx.register_after_execute(self.restore_life)  # type: ignore
+        ctx.register_after_execute(self.restore_life)
 
 ################################################################################
     def restore_life(self, ctx: BossSkillContext) -> None:
 
+        # If damage was inflicted
         if ctx.damage > 0:
+            # Check if the Dark Lord has the Vampire status
             vampire = self.game.dark_lord.get_status("Vampire")
             if vampire is not None:
+                # If so, heal the Dark Lord by the amount of Vampire stacks
                 self.game.dark_lord.heal(vampire.stacks)
 
 ################################################################################

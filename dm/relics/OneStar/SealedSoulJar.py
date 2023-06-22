@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
@@ -28,6 +26,6 @@ class SealedSoulJar(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.inventory.add_soul(random.randint(30, 100))
+        self.game.inventory.add_soul(self.random.from_range(30, 100))
 
 ################################################################################

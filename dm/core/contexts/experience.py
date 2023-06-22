@@ -7,6 +7,7 @@ from .adjustable  import AdjustableContext
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.objects.levelable import DMLevelable
+    from dm.core.objects.room import DMRoom
 ################################################################################
 
 __all__ = ("ExperienceContext",)
@@ -17,6 +18,12 @@ class ExperienceContext(AdjustableContext):
     def __init__(self, state: DMGame, obj: DMLevelable):
 
         super().__init__(state, _obj=obj)
+
+################################################################################
+    @property
+    def room(self) -> DMRoom:
+
+        return self.object.room
 
 ################################################################################
     def execute(self) -> None:

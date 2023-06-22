@@ -29,7 +29,7 @@ class UndeadGrip(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_death", self.notify)
+        self.listen("on_death")
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
@@ -41,6 +41,6 @@ class UndeadGrip(DMRelic):
             if isinstance(ctx.source, DMMonster):
                 # Then assign all monsters the buff.
                 for monster in self.game.deployed_monsters:
-                    monster.add_status("Immortality", stacks=2)
+                    monster.add_status("Immortality", 2, self)
 
 ################################################################################

@@ -27,13 +27,15 @@ class TokenOfFriendship(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_exp_assigned", self.notify)
+        self.listen("exp_awarded")
 
 ################################################################################
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        pass
+        # Only monsters gain experience from battles. So no additional checks are
+        # needed here.
+        ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

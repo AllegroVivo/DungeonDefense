@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
 
 if TYPE_CHECKING:
-    from dm.core.contexts.status import StatusAcquireContext
+    from dm.core.contexts.status_apply import StatusApplicationContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
@@ -32,7 +32,7 @@ class Blindsense(CommonSkill):
         self.listen("status_acquire")
 
 ################################################################################
-    def notify(self, ctx: StatusAcquireContext) -> None:
+    def notify(self, ctx: StatusApplicationContext) -> None:
         """A general event response function."""
 
         if self.owner == ctx.target:

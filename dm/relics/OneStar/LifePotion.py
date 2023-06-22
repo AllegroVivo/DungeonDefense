@@ -32,15 +32,15 @@ class LifePotion(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_death", self.notify)
-        self.game.subscribe_event("battle_end", self.reset)
+        self.listen("on_death")
+        self.listen("battle_end", self.reset)
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
         # If the Dark Lord was killed
-        if ctx.target == self.game.dark_lord:
+        if self.game.dark_lord == ctx.target:
             # Make sure the effect hasn't already been triggered.
             if not self._used:
                 # Set the stat directly to avoid triggering a healing event. Just in case.

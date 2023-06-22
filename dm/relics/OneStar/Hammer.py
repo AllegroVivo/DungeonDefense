@@ -4,9 +4,9 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext, Context
+    from dm.core.contexts   import StatusApplicationContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.objects.hero import DMHero
 ################################################################################
 
 __all__ = ("Hammer",)
@@ -28,12 +28,15 @@ class Hammer(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("dull_applied", self.notify)
+        self.listen("status_applied")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusApplicationContext) -> None:
 
-        status.increase_stacks_flat(1)
+        if isinstance(ctx.target, DMHero):
+            if ctx.status == "Dull":
+                stun = ctx.target.get_status("Stun")
+                if stun is not None:
+                    ctx.status.increase_stacks_flat(1)
 
 ################################################################################

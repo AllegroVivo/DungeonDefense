@@ -35,20 +35,10 @@ class DMRelic(DMObject):
 
         self._count: int = 1
 
-################################################################################~
-    def __iadd__(self, other: Union[int, DMRelic]) -> DMRelic:
-
-        if not isinstance(other, (int, DMRelic)):
-            raise ArgumentTypeError(
-                "DMRelic.__iadd__().",
-                type(other),
-                type(int), type(DMRelic)
-            )
-
-        if isinstance(other, int):
-            self._count += other
-        else:
-            self._count += other._count
+        # Subscribe to the events we'll be listening for most.
+        self.listen("relic_acquired", self.on_acquire)
+        self.listen("stat_refresh", self.stat_adjust)
+        self.listen("on_attack", self.handle)
 
 ################################################################################
     @property
@@ -58,7 +48,7 @@ class DMRelic(DMObject):
 
 ################################################################################
     @property
-    def number_owned(self) -> int:
+    def count(self) -> int:
 
         return self._count
 
@@ -70,13 +60,13 @@ class DMRelic(DMObject):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+        """Automatically called when the `on_attack` event is fired."""
 
         pass
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
+        """Automatically called when the `stat_refresh` event is fired."""
 
         pass
 

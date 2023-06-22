@@ -9,7 +9,7 @@ from typing     import (
 )
 
 from .context  import Context
-from .status   import StatusAcquireContext
+from .status_apply   import StatusApplicationContext
 from .targeting import TargetingContext
 from utilities  import *
 
@@ -168,7 +168,7 @@ class AttackContext(Context):
                 raise ArgumentMissingError("AttackContext.__init__()", "base_damage", type(int))
 
         self._damage: DamageComponent = DamageComponent(base_damage)
-        self._statuses: List[StatusAcquireContext] = []
+        self._statuses: List[StatusApplicationContext] = []
 
         self._hit_chance: float = 1.0
         self._fail: bool = False
@@ -212,7 +212,7 @@ class AttackContext(Context):
 
 ################################################################################
     @property
-    def source(self) -> DMUnit:
+    def source(self) -> Union[DMUnit, DMTrapRoom]:
         """Note: This technically returns a DMObject, since most any scriptable
         game object could potentially be the offensive unit (ie. Skills, Statuses,
         Relics, etc...). However since most of the functionality will be geared
@@ -461,16 +461,5 @@ class AttackContext(Context):
             )
 
         self._addl_targets.append(unit)
-
-################################################################################
-    def add_status(self, status: Union[DMStatus, str], stacks: Optional[int] = None) -> None:
-
-        if isinstance(status, str):
-            status = self._state.spawn(status, parent=self, stacks=int(stacks or 1))
-
-        ctx = StatusAcquireContext(self._state, self._source, self._target, status)  # type: ignore
-        self._state.dispatch_event("status_acquire", ctx=ctx)
-
-        self._statuses.append(ctx)
 
 ################################################################################
