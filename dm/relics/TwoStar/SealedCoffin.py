@@ -35,11 +35,11 @@ class SealedCoffin(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're a monster
-        if isinstance(ctx.attacker, DMMonster):
+        if isinstance(ctx.source, DMMonster):
             # Attacking a hero
-            if isinstance(ctx.defender, DMHero):
+            if isinstance(ctx.target, DMHero):
                 # And our health is below 10%
-                if ctx.attacker.life < ctx.attacker.max_life * 0.10:
+                if ctx.source.life < ctx.source.max_life * 0.10:
                     # Increase our damage by 100%
                     ctx.amplify_pct(1.00)
 

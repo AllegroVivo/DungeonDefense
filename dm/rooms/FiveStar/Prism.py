@@ -75,7 +75,7 @@ class Prism(DMBattleRoom):
     def on_death(self, ctx: AttackContext) -> None:
 
         if ctx.room == self:
-            if isinstance(ctx.defender, DMHero):
+            if isinstance(ctx.target, DMHero):
                 self.game.dark_lord.add_status("Mirror", 1)
 
 ################################################################################

@@ -36,9 +36,9 @@ class LittleCoin(DMRelic):
         """A general event response function."""
 
         # If a trap is attacking
-        if isinstance(ctx.attacker, DMTrapRoom):
+        if isinstance(ctx.source, DMTrapRoom):
             # And a hero was defending
-            if isinstance(ctx.defender, DMHero):
+            if isinstance(ctx.target, DMHero):
                 # Add gold
                 self.game.inventory.add_gold(1)
 

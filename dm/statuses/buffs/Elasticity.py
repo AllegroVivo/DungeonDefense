@@ -40,7 +40,7 @@ class Elasticity(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Effective for up to 10% of max LIFE.
             effect_value = min(ctx.damage, int(self.owner.max_life * 0.10))
             # Perform the adjustment

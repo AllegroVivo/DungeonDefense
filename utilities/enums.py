@@ -13,7 +13,8 @@ __all__ = (
     "BattleState",
     "AttackType",
     "DMPurchaseType",
-    "DMAdjustmentType"
+    "DMAdjustmentType",
+    "DMSkillType"
 )
 
 ################################################################################
@@ -128,6 +129,7 @@ class AttackType(Enum):
     Attack = 1
     Skill = 2
     Trap = 3
+    Effect = 4
 
 ################################################################################
 class DMPurchaseType(Enum):
@@ -137,7 +139,14 @@ class DMPurchaseType(Enum):
 ################################################################################
 class DMAdjustmentType(Enum):
 
-        Gold = 1
-        Soul = 2
+    Gold = 1
+    Soul = 2
+
+################################################################################
+class DMSkillType(Enum):
+
+    Common = 1
+    Monster = 2
+    Hero = 3
 
 ################################################################################

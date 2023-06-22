@@ -35,8 +35,8 @@ class GhostAmulet(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.attacker, DMHero):
-            if isinstance(ctx.defender, DMMonster):
-                ctx.attacker.add_status("Panic", 3)
+        if isinstance(ctx.source, DMHero):
+            if isinstance(ctx.target, DMMonster):
+                ctx.source.add_status("Panic", 3)
 
 ################################################################################

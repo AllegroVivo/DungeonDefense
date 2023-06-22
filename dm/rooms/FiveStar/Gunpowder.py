@@ -56,7 +56,7 @@ class Gunpowder(DMBattleRoom):
 
         if ctx.room == self:
             # Appears to apply to all units.
-            burn = ctx.defender.get_status("Burn")
+            burn = ctx.target.get_status("Burn")
             if burn is not None:
                 for hero in self.heroes:
                     hero.damage(self.effect_value() * burn.stacks)

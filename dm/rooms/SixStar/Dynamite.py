@@ -36,7 +36,7 @@ class Dynamite(DMBattleRoom):
         """A general event response function."""
 
         if ctx.room == self:
-            burn = ctx.defender.get_status("Burn")
+            burn = ctx.target.get_status("Burn")
             if burn is not None:
                 targets = []
                 for room in self.adjacent_rooms:

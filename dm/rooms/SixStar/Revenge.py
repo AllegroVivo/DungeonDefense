@@ -56,12 +56,12 @@ class Revenge(DMFacilityRoom):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             adj_monsters = []
             for room in self.adjacent_rooms:
                 adj_monsters.extend(room.monsters)
 
-            if ctx.defender in adj_monsters:
-                ctx.defender.add_status("Fury", self.effect_value() * ctx.defender.attack)
+            if ctx.target in adj_monsters:
+                ctx.target.add_status("Fury", self.effect_value() * ctx.target.attack)
 
 ################################################################################

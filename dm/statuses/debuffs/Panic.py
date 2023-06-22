@@ -41,7 +41,7 @@ class Panic(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're attacking
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # If the attack is a skill
             if ctx.type is AttackType.Skill:
                 # Check resistance

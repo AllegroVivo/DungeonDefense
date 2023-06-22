@@ -41,7 +41,7 @@ class Shock(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Add damage
             ctx.amplify_flat(self.stacks)
 

@@ -39,16 +39,16 @@ class StatueOfLiberatedRage(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # Doesn't apply to traps.
-        if isinstance(ctx.attacker, DMTrapRoom):
+        if isinstance(ctx.source, DMTrapRoom):
             return
 
         # Add Fury to the attacker.
-        ctx.attacker.add_status("Fury", ctx.attacker.attack * self.effect_value())
+        ctx.source.add_status("Fury", ctx.source.attack * self.effect_value())
 
         # Low chance to attack allies. 5% seems reasonable like before.
         chance = random.random()
         if chance <= 0.05:
-            if isinstance(ctx.attacker, DMHero):
+            if isinstance(ctx.source, DMHero):
                 source = ctx.room.heroes
             else:
                 source = ctx.room.monsters

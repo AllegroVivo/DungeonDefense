@@ -38,14 +38,14 @@ class InsigniaOfTerror(DMRelic):
         """A general event response function."""
 
         # If we're a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And we're being attacked by a trap
-            if isinstance(ctx.attacker, DMTrapRoom):
+            if isinstance(ctx.source, DMTrapRoom):
                 #  And the trap hasn't been activated before
-                if not ctx.attacker.activated_before:
+                if not ctx.source.activated_before:
                     # Add status effect
-                    ctx.defender.add_status("Panic")
+                    ctx.target.add_status("Panic")
                     # Remember to mark the trap as activated.
-                    ctx.attacker.activate_first_time()
+                    ctx.source.activate_first_time()
 
 ################################################################################

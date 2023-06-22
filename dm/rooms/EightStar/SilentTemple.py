@@ -62,9 +62,9 @@ class SilentTemple(DMFacilityRoom):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMMonster):
+        if isinstance(ctx.source, DMMonster):
             if ctx.room in self.adjacent_rooms:
-                focus = ctx.attacker.get_status("Focus")
+                focus = ctx.source.get_status("Focus")
                 if focus is not None:
                     ctx.amplify_pct(focus.stacks * 0.05)
 

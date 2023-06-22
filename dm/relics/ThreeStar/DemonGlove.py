@@ -38,9 +38,9 @@ class DemonGlove(DMRelic):
         """A general event response function."""
 
         # If the defender is a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # Check if the defender has the Obey status
-            obey = ctx.defender.get_status("Obey")
+            obey = ctx.target.get_status("Obey")
             if obey is not None:
                 # If so, add 1 Hatred to the Dark Lord
                 self.game.dark_lord.add_status("Hatred", 1)

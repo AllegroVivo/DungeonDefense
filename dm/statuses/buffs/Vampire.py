@@ -40,7 +40,7 @@ class Vampire(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Pretty straightforward
             heal_amt = self.stacks
             # Check for the corresponding relic  (If present, doubles healing effect)

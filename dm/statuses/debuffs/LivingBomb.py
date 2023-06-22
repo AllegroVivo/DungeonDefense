@@ -48,7 +48,7 @@ class LivingBomb(DMStatus):
         """A general event response function."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # And receiving damage
             if ctx.damage > 0:
                 # Check for Burn status

@@ -4,8 +4,8 @@
 # that event, for convenience.
 ################################################################################
 EVENT_REGISTRY = {
-    "after_attack" : [  # [None]
-        DMStatus, BloomingBud
+    "after_attack" : [  # [AttackContext]
+        DMStatus, BloomingBud, SwiftMoves,
     ],
     "battle_end" : [  # [None]
         LifePotion, RegenerationOrb, ManaConverter, ElderDragon, Return,
@@ -126,9 +126,12 @@ EVENT_REGISTRY = {
     "room_exit" : [  # [DMUnit][DMRoom]
         DragonKingsBelt
     ],
+    "stack_reduction" : [  # [StackReductionContext]
+
+    ],
     "status_acquired" : [  # [DMStatus]
         Regeneration, Despair, PearlShell, DarkCube, AcceleratingWatch,
-        CursedPocketWatch,
+        CursedPocketWatch, Blindsense, BlackGuardian, BlueGuardian
     ],
     "status_execute" : [  # [DMStatus]
         AbyssThorn, Net, RingOfDefense, RingOfWeakness, RuneOfVulnerability,

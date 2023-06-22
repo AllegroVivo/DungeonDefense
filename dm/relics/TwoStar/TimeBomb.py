@@ -33,15 +33,15 @@ class TimeBomb(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a Trap Room is attacking
-        if isinstance(ctx.attacker, DMTrapRoom):
+        if isinstance(ctx.source, DMTrapRoom):
             # And a hero is defending
-            if isinstance(ctx.defender, DMHero):
+            if isinstance(ctx.target, DMHero):
                 # There's a small chance (I'm going to say 15%)
                 chance = random.random()
                 # If it passes the check
                 if chance <= 0.15:
                     # Get all the adjacent heroes:
-                    rooms = self.game.dungeon.get_adjacent_rooms(ctx.defender.room.position, include_current=True)
+                    rooms = self.game.dungeon.get_adjacent_rooms(ctx.target.room.position, include_current=True)
                     heroes = []
                     for room in rooms:
                         heroes.extend(room.heroes)

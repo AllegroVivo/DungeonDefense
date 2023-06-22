@@ -44,9 +44,9 @@ class DodgeTrap(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # And being attacked by a trap
-            if isinstance(ctx.attacker, DMTrapRoom):
+            if isinstance(ctx.source, DMTrapRoom):
                 # Check the associated relic.
                 relic = self.game.get_relic("Fake Map")
                 if relic is not None:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, List, Optional, TypeVar
+from typing     import TYPE_CHECKING, List, Optional, Tuple
 
 from dm.core.objects.room import DMRoom
 from utilities      import *
@@ -14,13 +14,12 @@ if TYPE_CHECKING:
 
 __all__ = ("DMTrapRoom",)
 
-R = TypeVar("R")
-
 ################################################################################
 class DMTrapRoom(DMRoom):
 
     __slots__ = (
         "_activated_before",
+        "_damage_range",
     )
 
 ################################################################################
@@ -28,20 +27,20 @@ class DMTrapRoom(DMRoom):
         self,
         state: DMGame,
         position: Vector2,
+        dmg_range: Optional[Tuple[int, int]] = None,
+        *,
         _id: str,
         name: str,
         description: str,
         rank: int,
         level: int = 1,
-        unlock: Optional[UnlockPack] = None,
+        unlock: Optional[UnlockPack] = None
     ):
 
         super().__init__(state, position, _id, name, description, rank, level, unlock)
 
         self._activated_before: bool = False
-
-        # Subscribe to room enter events since those are most likely to trigger traps.
-        self.listen("room_enter")
+        self._damage_range: Optional[Tuple[int, int]] = dmg_range
 
 ################################################################################
     @property
@@ -71,24 +70,6 @@ class DMTrapRoom(DMRoom):
     def activate_first_time(self) -> None:
 
         self._activated_before = True
-
-################################################################################
-    def attack(self, unit: DMUnit) -> None:
-
-        self.game.battle_mgr.trap_attack(self, unit)
-
-################################################################################
-    def activate(self, unit: DMUnit) -> None:
-        """A general event response function."""
-
-        pass
-
-################################################################################
-    def notify(self, unit: DMUnit) -> None:
-
-        # This is where the automatic listener call goes to.
-        if unit.room == self:
-            self.activate(unit)
 
 ################################################################################
     def _copy(self, **kwargs) -> DMTrapRoom:

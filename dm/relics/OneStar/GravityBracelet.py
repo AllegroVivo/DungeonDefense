@@ -31,7 +31,7 @@ class GravityBracelet(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a hero is taking the hit, increase damage by 25%
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             ctx.amplify_pct(self.effect_value())
 
 ################################################################################

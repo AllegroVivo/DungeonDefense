@@ -36,8 +36,8 @@ class JewelOfTheDeepSea(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMTrapRoom):
-            if ctx.attacker.name in self.SLOW_TRAPS:
+        if isinstance(ctx.source, DMTrapRoom):
+            if ctx.source.name in self.SLOW_TRAPS:
                 ctx.amplify_pct(self.effect_value())
 
 ################################################################################

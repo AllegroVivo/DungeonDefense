@@ -32,11 +32,11 @@ class BrokenPromise(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a hero is attacking...
-        if isinstance(ctx.attacker, DMHero):
+        if isinstance(ctx.source, DMHero):
             # Check if the attacker has charm.
-            charm = ctx.attacker.get_status("Charm")
+            charm = ctx.source.get_status("Charm")
             if charm is not None:
                 # If so, add 1 Obey.
-                ctx.attacker.add_status("Obey", stacks=1)
+                ctx.source.add_status("Obey", stacks=1)
 
 ################################################################################

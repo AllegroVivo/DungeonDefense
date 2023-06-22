@@ -40,7 +40,7 @@ class Revenge(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if ctx.target == self.owner:
             # Check against the owner's resist first
             resist = self.owner.get_status("Calmness")
             if resist is not None:

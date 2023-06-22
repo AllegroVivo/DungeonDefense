@@ -4,7 +4,7 @@ import pygame
 import sys
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Callable, List, Optional, Type, Union
+from typing     import TYPE_CHECKING, Any, Callable, List, Optional, Type, Union
 
 from ..battle.system        import DMBattleManager
 from .darklord              import DMDarkLord
@@ -15,6 +15,7 @@ from ..fates.fateboard      import DMFateBoard
 from .inventory             import DMInventory
 from .objpool               import DMObjectPool
 from .relic_mgr             import DMRelicManager
+from .rng                   import DMGenerator
 from ..states.state_manager import DMStateMachine
 from utilities              import *
 
@@ -47,6 +48,7 @@ class DMGame:
         "_day",
         "events",
         "dark_lord",
+        "_rng"
     )
 
 ################################################################################
@@ -61,6 +63,7 @@ class DMGame:
         self._day: DMDay = DMDay(self)
 
         # Order is important here.
+        self._rng: DMGenerator = DMGenerator(self)
         self.events: DMEventManager = DMEventManager(self)
         self.objpool: DMObjectPool = DMObjectPool(self)
         self.fateboard: DMFateBoard = DMFateBoard(self)
@@ -242,9 +245,9 @@ class DMGame:
         self.state_machine.switch_state("fate_select")
 
 ################################################################################
-    def dispatch_event(self, event_type: str, **payload) -> None:
+    def dispatch_event(self, event_type: str, *context) -> None:
 
-        self.events.dispatch(event_type, **payload)
+        self.events.dispatch(event_type, *context)
 
 ################################################################################
     def subscribe_event(self, event_type: str, callback: Callable) -> None:

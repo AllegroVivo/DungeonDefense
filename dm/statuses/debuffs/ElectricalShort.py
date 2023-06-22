@@ -49,7 +49,7 @@ class ElectricalShort(DMStatus):
         """A general event response function."""
 
         # If owner was the one killed
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Get proper units depending on type.
             if isinstance(self.owner, DMHero):
                 units = self.owner.room.heroes

@@ -7,7 +7,7 @@ from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import TargetingContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -30,17 +30,21 @@ class AbyssLamp(DMRelic):
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def on_acquire(self) -> None:
+        """Called automatically when a relic is added to the player's inventory."""
 
-        # If a hero is attacking
-        if isinstance(ctx.attacker, DMHero):
-            # 10% chance to activate
-            chance = random.random()
-            if chance <= 0.10:
-                # Reassign the target to another hero in the same room.
-                ctx.reassign_defender(random.choice(
-                    self.game.dungeon.get_heroes_by_room(ctx.attacker.room.position)
-                ))
+        self.listen("on_target")
+
+################################################################################
+    def notify(self, ctx: TargetingContext) -> None:
+
+        # Check for activation at a 10% chance.
+        chance = random.random()
+        if chance <= 0.10:
+            if isinstance(ctx.source, DMHero):
+                target = self.random.hero(ctx.room)
+            else:
+                target = self.random.monster(ctx.room)
+            ctx.override(target)
 
 ################################################################################

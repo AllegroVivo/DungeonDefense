@@ -37,8 +37,8 @@ class SwordOfCharm(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.attacker, DMHero):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMHero):
+            if isinstance(ctx.target, DMHero):
                 ctx.amplify_pct(self.effect_value())
 
 ################################################################################

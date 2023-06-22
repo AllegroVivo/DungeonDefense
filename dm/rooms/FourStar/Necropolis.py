@@ -37,7 +37,7 @@ class Necropolis(DMBattleRoom):
         """A general event response function."""
 
         if ctx.room == self:
-            if ctx.defender in self.monsters:
+            if ctx.target in self.monsters:
                 for monster in self.game.deployed_monsters:
                     monster.add_status("Immortality", self.effect_value()[1])
 

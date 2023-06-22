@@ -52,7 +52,7 @@ class Bloodlust(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're completing an action
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Reduce stacks
             self.reduce_stacks_by_half()
 

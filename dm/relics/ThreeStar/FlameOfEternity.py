@@ -33,9 +33,9 @@ class FlameOfEternity(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're attacking a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And they have the Burn status
-            burn = ctx.defender.get_status("Burn")
+            burn = ctx.target.get_status("Burn")
             if burn is not None:
                 # Increase the damage they take by 15%
                 ctx.amplify_pct(self.effect_value())

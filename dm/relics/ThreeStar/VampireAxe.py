@@ -62,7 +62,7 @@ class VampireAxe(DMRelic):
     def activate(self, ctx: BossSkillContext) -> None:
 
         # If we've killed the defender...
-        if not ctx.defender.is_alive:
+        if not ctx.target.is_alive:
             # Add Vampire to all monsters.
             for monster in self.game.deployed_monsters:
                 monster.add_status("Vampire", self.effect_value())

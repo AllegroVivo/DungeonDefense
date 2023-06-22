@@ -68,15 +68,15 @@ class BloodyMist(DMBattleRoom):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             if ctx.room in self.adjacent_rooms:
                 ctx.register_after_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
-        if ctx.defender.is_alive:
+        if ctx.target.is_alive:
             if ctx.damage > 0:
-                ctx.defender.add_status("Vampire", self.effect_value()[1] * ctx.defender.attack)
+                ctx.target.add_status("Vampire", self.effect_value()[1] * ctx.target.attack)
 
 ################################################################################

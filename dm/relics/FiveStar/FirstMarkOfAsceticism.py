@@ -53,8 +53,8 @@ class FirstMarkOfAsceticism(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.defender, DMHero):
-            if ctx.attacker == self.game.dark_lord:
+        if isinstance(ctx.target, DMHero):
+            if ctx.source == self.game.dark_lord:
                 self._kills += 1
 
         if self._kills >= 250:

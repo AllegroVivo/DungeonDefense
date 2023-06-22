@@ -42,9 +42,9 @@ class Mirror(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Change attack target to the attacker
-            ctx.reassign_defender(ctx.attacker)
+            ctx.reassign_defender(ctx.source)
 
             # Reduce stacks and apply antibuff
             self.reduce_stacks_by_one()

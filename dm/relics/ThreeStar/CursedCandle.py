@@ -33,9 +33,9 @@ class CursedCandle(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're attacking a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And they have the Panic status
-            panic = ctx.defender.get_status("Panic")
+            panic = ctx.target.get_status("Panic")
             if panic is not None:
                 # Increase the damage dealt by 30%
                 ctx.amplify_pct(self.effect_value())

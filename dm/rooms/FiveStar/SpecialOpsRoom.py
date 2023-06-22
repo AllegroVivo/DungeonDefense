@@ -54,7 +54,7 @@ class SpecialOpsRoom(DMFacilityRoom):
         """Automatically called as part of all battle loops."""
 
         rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-        if ctx.attacker in rooms:
+        if ctx.source in rooms:
             ctx.amplify_pct(self.effect_value())
 
 ################################################################################

@@ -40,7 +40,7 @@ class Blind(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every battle loop iteration."""
 
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Check against resist first and return if it exceeds self.stacks.
             resist = self.owner.get_status("Blind Resist")
             if resist is not None:

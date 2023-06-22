@@ -41,7 +41,7 @@ class Chained(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're attacking (since this is a debuff)
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # If we haven't used a skill
             if ctx.type == AttackType.Attack:
                 # First check resistance

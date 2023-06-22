@@ -41,7 +41,7 @@ class Stun(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're attacking
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Check resistance first
             resist = self.owner.get_status("Stun Resist")
             if resist is not None:

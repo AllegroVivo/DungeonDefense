@@ -46,13 +46,13 @@ class Betray(DMStatus):
         """Called in every battle loop iteration."""
 
         # Statuses can't be held by trap rooms, so that eliminates traps from this equation.
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # If we're not a hero fighting a hero, return.
             if isinstance(self, DMHero):
-                if not isinstance(ctx.defender, DMHero):
+                if not isinstance(ctx.target, DMHero):
                     return
             # Or monster fighting monster
-            elif not isinstance(ctx.defender, DMMonster):
+            elif not isinstance(ctx.target, DMMonster):
                 return
 
             # If we passed the checks, double the damage

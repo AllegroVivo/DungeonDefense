@@ -32,13 +32,13 @@ class MonsterHorn(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a hero is being attacked...
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # By a monster...
-            if isinstance(ctx.attacker, DMMonster):
+            if isinstance(ctx.source, DMMonster):
                 # And the monster has the Stun status...
-                stun = ctx.defender.get_status("Stun")
+                stun = ctx.target.get_status("Stun")
                 if stun is not None:
                     # Add 1 Merciless to the attacker.
-                    ctx.attacker.add_status("Merciless", 1)
+                    ctx.source.add_status("Merciless", 1)
 
 ################################################################################

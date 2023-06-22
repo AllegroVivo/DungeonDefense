@@ -38,14 +38,14 @@ class PhoenixClaw(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If the attacker is a monster and the defender is a hero...
-        if isinstance(ctx.attacker, DMMonster):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMMonster):
+            if isinstance(ctx.target, DMHero):
                 # Check if the defender is in Burn state.
-                burn = ctx.defender.get_status("Burn")
+                burn = ctx.target.get_status("Burn")
                 if burn is not None:
                     # If so, roll a 20 % chance to add 2 Acceleration.
                     chance = random.random()
                     if chance <= 0.20:
-                        ctx.attacker.add_status("Acceleration", 2)
+                        ctx.source.add_status("Acceleration", 2)
 
 ################################################################################

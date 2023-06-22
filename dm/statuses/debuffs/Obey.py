@@ -49,14 +49,14 @@ class Obey(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             ctx.amplify_pct(self.effect_value())
 
             # Reduce stacks
             self.reduce_stacks_by_one()
 
             # Apply buff to opponent
-            ctx.attacker.add_status("Pleasure", stacks=ctx.attacker.attack)
+            ctx.source.add_status("Pleasure", stacks=ctx.source.attack)
 
 ################################################################################
     def effect_value(self) -> float:

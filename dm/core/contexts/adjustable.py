@@ -20,6 +20,7 @@ class AdjustableContext(Context):
         "_base",
         "_scalar",
         "_flat_adjustment",
+        "_fail",
     )
 
 ################################################################################
@@ -33,6 +34,8 @@ class AdjustableContext(Context):
         self._scalar: float = 1.0
         self._flat_adjustment: int = 0
 
+        self._fail: bool = False
+
 ################################################################################
     @property
     def object(self) -> Optional[DMObject]:
@@ -44,6 +47,18 @@ class AdjustableContext(Context):
     def execute(self) -> None:
 
         raise NotImplementedError
+
+################################################################################
+    @property
+    def will_fail(self) -> bool:
+
+        return self.calculate() == 0 or self._fail
+
+################################################################################
+    @will_fail.setter
+    def will_fail(self, value: bool) -> None:
+
+        self._fail = value
 
 ################################################################################
     def reduce_flat(self, value: int) -> None:

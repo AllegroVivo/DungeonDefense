@@ -55,13 +55,13 @@ class DMEventManager:
         self.subscribers[event_type].remove(callback)
 
 ################################################################################
-    def dispatch(self, event_type: str, **payload) -> None:
+    def dispatch(self, event_type: str, *context) -> None:
 
         # Might just make this a pass depending on if I go crazy making event types
         if event_type not in self.subscribers:
             raise TypeError(f"Invalid event name `{event_type}` passed to EventManager.dispatch().")
 
         for callback in self.subscribers[event_type]:
-            callback(**payload)
+            callback(*context)
 
 ################################################################################

@@ -41,15 +41,15 @@ class CorpseFlower(DMRelic):
         """A general event response function."""
 
         # If a hero has been killed
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # Check both required statuses
-            c_expl = ctx.defender.get_status("CorpseExplosion")
-            burn = ctx.defender.get_status("Burn")
+            c_expl = ctx.target.get_status("CorpseExplosion")
+            burn = ctx.target.get_status("Burn")
             if c_expl is None or burn is None:
                 return
 
             # If the check passes, deal damage to nearby enemies
-            targets = self.game.dungeon.get_heroes_by_room(ctx.defender.room.position)
+            targets = self.game.dungeon.get_heroes_by_room(ctx.target.room.position)
             for hero in targets:
                 hero.damage(burn.stacks * 0.50)
 

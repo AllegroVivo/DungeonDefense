@@ -37,8 +37,8 @@ class DemonicFruit(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.defender, DMHero):
-            charm = ctx.defender.get_status("Charm")
+        if isinstance(ctx.target, DMHero):
+            charm = ctx.target.get_status("Charm")
             if charm is not None:
                 self.game.dark_lord.heal(self.effect_value())
 

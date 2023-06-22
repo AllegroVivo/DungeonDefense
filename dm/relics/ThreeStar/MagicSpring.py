@@ -35,8 +35,8 @@ class MagicSpring(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If the attacker is a trap room and the defender is a hero...
-        if isinstance(ctx.attacker, DMTrapRoom):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMTrapRoom):
+            if isinstance(ctx.target, DMHero):
                 # ...amplify the damage by a random amount.
                 ctx.amplify_pct(self.effect_value())
 

@@ -35,7 +35,7 @@ class LastMarkOfAsceticism(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If the Dark Lord is defending
-        if ctx.defender == self.game.dark_lord:
+        if ctx.target == self.game.dark_lord:
             # 50% damage reduction
             ctx.mitigate_pct(self.effect_value())
 

@@ -29,9 +29,9 @@ class ArmorOfMadness(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a monster is defending
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             # And has the Rampage status
-            rampage = ctx.defender.get_status("Rampage")
+            rampage = ctx.target.get_status("Rampage")
             if rampage is not None:
                 # Reduce the damage received by 20%
                 ctx.mitigate_pct(self.effect_value())

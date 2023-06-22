@@ -32,10 +32,10 @@ class ManEatingPlant(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're being attacked by a trap
-        if isinstance(ctx.attacker, DMTrapRoom):
+        if isinstance(ctx.source, DMTrapRoom):
             # Check for low health. Not sure what that constitutes in the
             # original, but I'm going to say 30% seems reasonable. May adjust.
-            if ctx.defender.life < ctx.defender.max_life * 0.30:
+            if ctx.target.life < ctx.target.max_life * 0.30:
                 # Increase damage.
                 ctx.amplify_pct(self.effect_value())
 

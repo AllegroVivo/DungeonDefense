@@ -47,7 +47,7 @@ class Rebound(DMStatus):
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # If the status owner is going to take damage
             if ctx.damage > 0:
                 # Add Fury.

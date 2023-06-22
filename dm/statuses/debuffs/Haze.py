@@ -43,7 +43,7 @@ class Haze(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're attacking
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Check resist
             resist = self.owner.get_status("Haze Resist")
             if resist is not None:

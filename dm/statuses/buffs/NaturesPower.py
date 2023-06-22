@@ -41,7 +41,7 @@ class NaturesPower(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             ctx.amplify_flat(int(self.effect_value()))
 
 ################################################################################

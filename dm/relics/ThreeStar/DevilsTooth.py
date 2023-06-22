@@ -55,7 +55,7 @@ class DevilsTooth(DMRelic):
         """A general event response function."""
 
         # If the defender is a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And the attack would kill the hero
             if ctx.would_kill():
                 # Increase the Dark Lord's ATK

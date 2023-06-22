@@ -42,7 +42,7 @@ class FullMoonNecklace(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # Monsters gain and additional 15% mitigation
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             ctx.mitigate_pct(0.15)
 
 ################################################################################

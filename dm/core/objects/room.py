@@ -59,6 +59,10 @@ class DMRoom(DMLevelable, DMChargeable):
         self._position: Vector2 = position or Vector2(-1, -1)
         self._graphics: RoomGraphical = RoomGraphical(self)
 
+        # Subscribe to relevant events.
+        self.listen("room_enter", self._room_entered)
+        self.listen("stat_recalculation", self.stat_adjust)
+
 ################################################################################
     def __repr__(self) -> str:
 
@@ -129,6 +133,48 @@ class DMRoom(DMLevelable, DMChargeable):
     def center(self) -> Vector2:
 
         return self.graphics.center()
+
+################################################################################
+    def _room_entered(self, unit: DMUnit) -> None:
+        """Called when the "room_enter" event is fired and fires this object's
+        `on_enter()` method if the room entered was this one."""
+
+        if unit.room == self:
+            self.on_enter(unit)
+
+################################################################################
+    def _on_attack(self, ctx: AttackContext) -> None:
+        """Called when the "attack" event is fired and fires this object's
+        `on_enter()` method if this is the room where the attack took place."""
+
+        if ctx.room == self:
+            self.on_attack(ctx)
+
+################################################################################
+    def on_enter(self, unit: DMUnit) -> None:
+        """Called when a unit enters this room specifically. Intended to be
+        overridden by subclasses.
+
+        Parameters:
+        -----------
+        unit: :class:`DMUnit`
+           The unit that entered this room.
+        """
+
+        pass
+
+################################################################################
+    def on_attack(self, ctx: AttackContext) -> None:
+        """Called when an attack is made in this room specifically. Intended to be
+        overridden by subclasses.
+
+        Parameters:
+        -----------
+        ctx: :class:`AttackContext`
+            The context of the attack.
+        """
+
+        pass
 
 ################################################################################
     def _copy(self, **kwargs) -> DMRoom:

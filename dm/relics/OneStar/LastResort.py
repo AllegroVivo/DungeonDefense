@@ -31,7 +31,7 @@ class LastResort(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If the Dark Lord is defending
-        if ctx.defender == self.game.dark_lord:
+        if ctx.target == self.game.dark_lord:
             # And there are no other monsters in the boss room
             if len(self.game.dungeon.map.boss_tile.monsters) == 1:  # Remember, Dark Lord counts:
                 # Reduce damage

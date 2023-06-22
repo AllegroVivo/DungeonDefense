@@ -32,9 +32,9 @@ class LoopOfFate(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMMonster):
-            if isinstance(ctx.defender, DMHero):
-                if ctx.defender.life == ctx.defender.max_life:
+        if isinstance(ctx.source, DMMonster):
+            if isinstance(ctx.target, DMHero):
+                if ctx.target.life == ctx.target.max_life:
                     ctx.amplify_pct(self.effect_value())
 
 ################################################################################

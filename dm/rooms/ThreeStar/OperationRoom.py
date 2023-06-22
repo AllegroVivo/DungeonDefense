@@ -58,8 +58,8 @@ class OperationRoom(DMFacilityRoom):
         """Automatically called as part of all battle loops."""
 
         # Need to figure this out a little more when I actually make traps attack.
-        if isinstance(ctx.attacker, DMTrapRoom):
-            ctx.attacker.attack_power += self.effect_value()
+        if isinstance(ctx.source, DMTrapRoom):
+            ctx.source.attack_power += self.effect_value()
 
         # Also need to reduce effectiveness somehow?
 

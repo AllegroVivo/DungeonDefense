@@ -40,7 +40,7 @@ class Dodge(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Check against the resist first.
             resist = self.owner.get_status("Dodge Resist")
             if resist is not None:

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
@@ -34,8 +32,14 @@ class Template(DMTrapRoom):
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
+        """Called when a unit enters this room specifically."""
+
+        pass
+
+################################################################################
+    def on_attack(self, ctx: AttackContext) -> None:
+        """Called when an attack is made in this room specifically."""
 
         pass
 
@@ -59,6 +63,12 @@ class Template(DMTrapRoom):
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
+
+        pass
+
+################################################################################
+    def notify(self, *args) -> None:
+        """A general event response function."""
 
         pass
 

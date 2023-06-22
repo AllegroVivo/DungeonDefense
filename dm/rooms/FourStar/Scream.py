@@ -57,7 +57,7 @@ class Scream(DMBattleRoom):
     def on_death(self, ctx: AttackContext) -> None:
 
         if ctx.room == self:
-            if isinstance(ctx.defender, DMHero):
+            if isinstance(ctx.target, DMHero):
                 for hero in self.game.all_heroes:
                     hero.add_status("Panic", self.effect_value())
 

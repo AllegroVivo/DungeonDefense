@@ -43,7 +43,7 @@ class Frostbite(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Increase damage:
             ctx.amplify_pct(self.effect_value())
             # Reduce stacks

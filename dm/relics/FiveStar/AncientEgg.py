@@ -43,7 +43,7 @@ class AncientEgg(DMRelic):
     def callback(self, ctx: AttackContext) -> None:
 
         # If the Dark Lord is targeted
-        if ctx.defender == self.game.dark_lord:
+        if ctx.target == self.game.dark_lord:
             # And the attack hits
             if ctx.damage > 0:
                 # Increment the hit counter

@@ -41,7 +41,7 @@ class Hatred(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Boom, simple.
             ctx.amplify_pct(self.effect_value())
 

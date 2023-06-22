@@ -30,8 +30,8 @@ class AssassinsDagger(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMHero):
-            charm = ctx.defender.get_status("Charm")
+        if isinstance(ctx.target, DMHero):
+            charm = ctx.target.get_status("Charm")
             if charm is not None:
                 ctx.amplify_pct(self.effect_value())
 

@@ -42,7 +42,7 @@ class Absorption(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # And if the attack's damage will exceed 10% of max LIFE
             if ctx.damage > self.owner.max_life * 0.10:
                 # Do a hard override to 10% of LIFE.

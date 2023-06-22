@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from uuid       import UUID, uuid4
-from typing     import TYPE_CHECKING, Optional, Type, TypeVar
+from typing     import TYPE_CHECKING, Callable, Optional, Type, TypeVar
 
 from utilities  import *
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
+    from dm.core.objects.room import DMRoom
+    from dm.core.game.rng import DMGenerator
 ################################################################################
 
 __all__ = ("DMObject", )
@@ -69,15 +71,36 @@ class DMObject:
         return self._state
 
 ################################################################################
-    def listen(self, event: str) -> None:
-        """Automatically listens to the provided event with `self.notify`."""
+    @property
+    def room(self) -> DMRoom:
+        """Returns the room where this object is located, if applicable."""
 
-        self.game.subscribe_event(event, self.notify)
+        raise NotImplementedError
+
+################################################################################
+    @property
+    def random(self) -> DMGenerator:
+
+        return self._state._rng
+
+################################################################################
+    def listen(self, event: str, callback: Optional[Callable] = None) -> None:
+        """Automatically listens to the given event with the provided
+         method, or if the provided callback is none, it will default to
+         `self.notify`."""
+
+        self.game.subscribe_event(event, callback or self.notify)
 
 ################################################################################
     def notify(self, *args) -> None:
+        """Predefined notification method for listening to events."""
 
         pass
+
+################################################################################
+    def apply_status_to(self, target: DMObject, status: str, stacks: int = 1) -> None:
+
+        target.add_status(self, status, stacks)  # type: ignore
 
 ################################################################################
     def _copy(self, **kwargs) -> DMObject:

@@ -36,7 +36,7 @@ class SecondHeart(DMRelic):
         """A general event response function."""
 
         # If the dark lord is killed
-        if ctx.defender == self.game.dark_lord:
+        if ctx.target == self.game.dark_lord:
             # Revive will full life
             self.game.dark_lord.heal(self.game.dark_lord.max_life)
             # And unsubscribe so it only happens once.

@@ -43,9 +43,9 @@ class Dull(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # And a trap is attacking
-            if isinstance(ctx.attacker, DMTrapRoom):
+            if isinstance(ctx.source, DMTrapRoom):
                 # Increase damage by 100%
                 ctx.amplify_pct(self.base_effect)
                 # Reduce by one

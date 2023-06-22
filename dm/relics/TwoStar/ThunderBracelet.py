@@ -36,17 +36,17 @@ class ThunderBracelet(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And the damage is greater than 0
             if ctx.damage > 0:
                 # And the defender has the shock status
-                shock = ctx.defender.get_status("Shock")
+                shock = ctx.target.get_status("Shock")
                 if shock is not None:
                     if shock.stacks > 0:
                         # 25% chance to stun
                         chance = random.random()
                         if chance <= 0.25:
                             # Add 1 stun
-                            ctx.defender.add_status("Stun", stacks=1)
+                            ctx.target.add_status("Stun", stacks=1)
 
 ################################################################################

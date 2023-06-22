@@ -32,8 +32,8 @@ class InfinitelyRotatingBlade(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMTrapRoom):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMTrapRoom):
+            if isinstance(ctx.target, DMHero):
                 chance = random.random()
                 if chance <= 0.10:
                     ctx.amplify_pct(1.00)  # 100% additional damage

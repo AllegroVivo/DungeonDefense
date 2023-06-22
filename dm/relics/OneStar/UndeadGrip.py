@@ -36,9 +36,9 @@ class UndeadGrip(DMRelic):
         """A general event response function."""
 
         # If a hero was killed
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # By a monster
-            if isinstance(ctx.attacker, DMMonster):
+            if isinstance(ctx.source, DMMonster):
                 # Then assign all monsters the buff.
                 for monster in self.game.deployed_monsters:
                     monster.add_status("Immortality", stacks=2)

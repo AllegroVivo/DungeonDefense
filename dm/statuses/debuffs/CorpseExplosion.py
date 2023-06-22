@@ -48,7 +48,7 @@ class CorpseExplosion(DMStatus):
         """A general event response function."""
 
         # If the status owner was the one killed
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Get units based on owner type
             if isinstance(self.owner, DMHero):
                 units = self.game.dungeon.get_heroes_by_room(self.owner.room.position)

@@ -41,7 +41,7 @@ class Pleasure(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # Apply the appropriate stat
-        status = "Fury" if ctx.attacker == self.owner else "Regeneration"
+        status = "Fury" if ctx.source == self.owner else "Regeneration"
         self.owner.add_status(status, stacks=self.stacks)
 
         # Reduce stacks, but check for Ecstasy first.

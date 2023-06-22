@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing     import (
     TYPE_CHECKING,
-    Callable,
     List,
     Optional,
     TypeVar,
@@ -10,11 +9,14 @@ from typing     import (
 )
 
 from .context  import Context
+from .status   import StatusAcquireContext
+from .targeting import TargetingContext
 from utilities  import *
 
 if TYPE_CHECKING:
     from ...core.game.game  import DMGame
     from ...core.objects.unit import DMUnit
+    from ...core.objects.object import DMObject
     from ...core.objects.room import DMRoom
     from ...rooms.traproom import DMTrapRoom
     from ...core.objects.status import DMStatus
@@ -131,64 +133,57 @@ class AttackContext(Context):
 
     __slots__ = (
         "_type",
-        "_attacker",
-        "_defender",
+        "_source",
+        "_target",
         "_damage",
         "_hit_chance",
         "_fail",
-        "_skill",
         "_running",
         "_addl_targets",
         "_statuses",
+        "_raw_modifications",
     )
 
 ################################################################################
     def __init__(
         self,
         state: DMGame,
-        attacker: Union[DMUnit, DMTrapRoom],
+        attacker: DMObject,
         defender: DMUnit,
         base_damage: Optional[int] = None,
-        statuses: Optional[List[DMStatus]] = None,
+        attack_type: AttackType = AttackType.Attack
     ):
 
         super().__init__(state)
 
-        if attacker is None or defender is None:
-            atk_name = attacker.name if attacker is not None else None
-            def_name = defender.name if defender is not None else None
-
-            raise ArgumentMissingError(
-                "AttackContext.__init__()",
-                "attacker'/'defender",
-                type(DMUnit),
-                additional_info=(
-                    "Must have a valid attacker and defender attached to AttackContext.\n"
-                    f"<Attacker: {atk_name} || Defender: {def_name}>"
-                )
-            )
-
-        self._attacker: Union[DMUnit, DMTrapRoom] = attacker
-        self._defender: DMUnit = defender
+        self._source: Union[DMUnit, DMTrapRoom] = attacker  # type: ignore
+        # Use a TargetingContext so we can broadcast the targeting event.
+        self._target: DMUnit = TargetingContext(state, defender).execute()  # type: ignore
         self._addl_targets: List[DMUnit] = []
 
-        self._damage: DamageComponent = DamageComponent(base_damage or attacker.attack)
-        # self._skill: DMSkill = skill
-        self._statuses: List[DMStatus] = statuses or []
+        if base_damage is None:
+            try:
+                base_damage = self._source.attack  # type: ignore
+            except AttributeError:
+                raise ArgumentMissingError("AttackContext.__init__()", "base_damage", type(int))
+
+        self._damage: DamageComponent = DamageComponent(base_damage)
+        self._statuses: List[StatusAcquireContext] = []
 
         self._hit_chance: float = 1.0
         self._fail: bool = False
 
         self._running = True
 
-        self._type: AttackType = AttackType.Attack
+        self._type: AttackType = attack_type
+        self._raw_modifications: List[str] = []
 
 ################################################################################
     def __repr__(self) -> str:
 
         return(
             "<AttackContext:\n"
-            f"attacker: {self.attacker}, defender: {self.defender}\n"
+            f"attacker: {self.source}, defender: {self.target}\n"
             f"cur dmg: {self.damage}>"
         )
 
@@ -210,28 +205,39 @@ class AttackContext(Context):
     @property
     def room(self) -> DMRoom:
 
-        if isinstance(self._attacker, DMTrapRoom):
-            return self._attacker
+        if isinstance(self._source, DMTrapRoom):
+            return self._source
 
-        return self._state.get_room_at(self._attacker._room)
-
-################################################################################
-    @property
-    def attacker(self) -> Union[DMUnit, DMTrapRoom]:
-
-        return self._attacker
+        return self._state.get_room_at(self._source._room)  # type: ignore
 
 ################################################################################
     @property
-    def defender(self) -> DMUnit:
+    def source(self) -> DMUnit:
+        """Note: This technically returns a DMObject, since most any scriptable
+        game object could potentially be the offensive unit (ie. Skills, Statuses,
+        Relics, etc...). However since most of the functionality will be geared
+        toward use by a DMUnit I'm leaving it as such for now so the type checker
+        has more information."""
 
-        return self._defender
+        return self._source  # type: ignore
+
+################################################################################
+    @property
+    def target(self) -> DMUnit:
+
+        return self._target
 
 ################################################################################
     @property
     def type(self) -> AttackType:
 
         return self._type
+
+################################################################################
+    @property
+    def modifications(self) -> List[str]:
+
+        return self._raw_modifications
 
 ################################################################################
     def override_damage(self, amount: Union[int, float]) -> None:
@@ -242,10 +248,9 @@ class AttackContext(Context):
     def execute(self) -> None:
 
         # Publish before attack event
-        self._state.dispatch_event("before_attack", ctx=self)
-        # Reset stats so statuses can do their newly scaled effects (after stack removal last turn)
-        self._attacker.refresh_stats()
-        self._defender.refresh_stats()
+        self._state.dispatch_event("before_attack", self)
+
+
 
         # Factor in relic effects
         for relic in self._state.relics:
@@ -253,8 +258,8 @@ class AttackContext(Context):
 
         # Handle status conditions
         # Apply defensive buffs and debuffs first to give advantage ♥
-        defender_statuses = [s for s in self._defender.statuses if s.type is DMStatusType.Buff]
-        defender_statuses.extend([s for s in self._defender.statuses if s.type is DMStatusType.Debuff])
+        defender_statuses = [s for s in self._target.statuses if s.type is DMStatusType.Buff]
+        defender_statuses.extend([s for s in self._target.statuses if s.type is DMStatusType.Debuff])
 
         # `status.handle()` specifically applies any mid-battle effects.
         for status in defender_statuses:
@@ -264,12 +269,16 @@ class AttackContext(Context):
             if self.will_fail:
                 break
 
+        # Process defensive skills
+        for skill in self.target.skills:  # type: ignore
+            skill._defensive_callback(self)  # This is a private method intended specifically for this purpose.
+
         # Avoid status processing if we've already marked the attack as failed.
         if not self.will_fail:
             # Then offensive buffs and debuffs :(
             # (unit.statuses is a blank list on Traps, so this will effectively just pass)
-            attacker_statuses = [s for s in self._attacker.statuses if s.type is DMStatusType.Buff]
-            attacker_statuses.extend([s for s in self._attacker.statuses if s.type is DMStatusType.Debuff])
+            attacker_statuses = [s for s in self._source.statuses if s.type is DMStatusType.Buff]  # type: ignore
+            attacker_statuses.extend([s for s in self._source.statuses if s.type is DMStatusType.Debuff])  # type: ignore
 
             for status in attacker_statuses:
                 status.handle(self)
@@ -277,17 +286,20 @@ class AttackContext(Context):
                 if self.will_fail:
                     break
 
+        # Process attacker's skills
+        for skill in self.source.skills:  # type: ignore
+            skill._offensive_callback(self)
+
         # Finalize the damage.
-        self.defender.damage(self.damage)
+        self.target.damage(self.damage)
 
         # Damage the additional targets too
         for target in self._addl_targets:
             target.damage(self.damage)
 
         # Apply any status effects.
-        for status in self._statuses:
-            # Use the internal method here since we have an instance of DMStatus already.
-            self.defender._add_status(status)
+        for ctx in self._statuses:
+            ctx.execute()
 
         # Run any post-execution callbacks:
         for callback in self._post_execution_callbacks:
@@ -298,23 +310,6 @@ class AttackContext(Context):
 
         # End this attack
         self._running = False
-
-################################################################################
-    def add_status(self, status: DMStatus) -> None:
-
-        if not isinstance(status, DMStatus):
-            raise ArgumentTypeError(
-                "AttackContext.apply_status()",
-                type(status),
-                type(DMStatus)
-            )
-
-        for s in self._statuses:
-            if s.name == status.name:
-                s.increase_stacks_flat(status.stacks)
-                return
-
-        self._statuses.append(status)
 
 ################################################################################
     def mitigate_flat(self, value: int) -> None:
@@ -446,14 +441,14 @@ class AttackContext(Context):
 
         # Select the CTX's defender as the default check.
         if unit is None:
-            unit = self.defender
+            unit = self.target
 
         return unit.life + unit.defense - self.damage <= 0
 
 ################################################################################
     def reassign_defender(self, unit: DMUnit) -> None:
 
-        self._defender = unit
+        self._target = unit
 
 ################################################################################
     def register_additional_target(self, unit: DMUnit) -> None:
@@ -466,5 +461,16 @@ class AttackContext(Context):
             )
 
         self._addl_targets.append(unit)
+
+################################################################################
+    def add_status(self, status: Union[DMStatus, str], stacks: Optional[int] = None) -> None:
+
+        if isinstance(status, str):
+            status = self._state.spawn(status, parent=self, stacks=int(stacks or 1))
+
+        ctx = StatusAcquireContext(self._state, self._source, self._target, status)  # type: ignore
+        self._state.dispatch_event("status_acquire", ctx=ctx)
+
+        self._statuses.append(ctx)
 
 ################################################################################

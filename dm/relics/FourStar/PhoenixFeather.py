@@ -33,8 +33,8 @@ class PhoenixFeather(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMMonster):
-            acceleration = ctx.defender.get_status("Acceleration")
+        if isinstance(ctx.target, DMMonster):
+            acceleration = ctx.target.get_status("Acceleration")
             if acceleration is not None:
                 ctx.mitigate_pct(self.effect_value())
 

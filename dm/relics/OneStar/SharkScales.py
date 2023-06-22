@@ -32,8 +32,8 @@ class SharkScales(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMHero):
-            stun = ctx.defender.get_status("Stun")
+        if isinstance(ctx.target, DMHero):
+            stun = ctx.target.get_status("Stun")
             if stun is not None:
                 ctx.amplify_pct(self.effect_value())
 

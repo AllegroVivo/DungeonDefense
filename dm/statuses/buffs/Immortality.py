@@ -40,13 +40,13 @@ class Immortality(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             ctx.register_after_execute(self.notify)
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
 
-        if not ctx.defender.is_alive:
+        if not ctx.target.is_alive:
             # Check resistance
             resist = self.owner.get_status("Regenerated Body")
             if resist is not None:

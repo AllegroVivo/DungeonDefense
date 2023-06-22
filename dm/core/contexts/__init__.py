@@ -8,4 +8,6 @@ from .healing       import HealingContext
 from .purchase      import PurchaseContext
 from .room_change   import RoomChangeContext
 from .room_spawn    import RoomSpawnContext
+from .status        import StatusAcquireContext
+from .targeting     import TargetingContext
 ################################################################################

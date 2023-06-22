@@ -28,7 +28,7 @@ class SteelBoomerang(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if ctx.attacker == self.game.dark_lord:
+        if ctx.source == self.game.dark_lord:
             ctx.register_additional_target(random.choice(ctx.room.heroes))
 
 ################################################################################

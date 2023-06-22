@@ -46,7 +46,7 @@ class Thorn(DMStatus):
     def notify(self, ctx: AttackContext) -> None:
 
         # If we're defending.
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # And damage will occur
             if ctx.damage > 0:
                 damage = self.stacks
@@ -57,7 +57,7 @@ class Thorn(DMStatus):
                     damage *= 2
 
                 # Apply final damage and reduce stacks
-                ctx.attacker.damage(damage)
+                ctx.source.damage(damage)
                 self.reduce_stacks_by_half()
 
 ################################################################################

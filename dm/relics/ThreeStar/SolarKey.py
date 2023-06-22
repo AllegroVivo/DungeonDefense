@@ -33,9 +33,9 @@ class SolarKey(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMHero):
-            blind = ctx.defender.get_status("Blind")
+        if isinstance(ctx.target, DMHero):
+            blind = ctx.target.get_status("Blind")
             if blind is not None:
-                ctx.defender.add_status("Recharge", 2)
+                ctx.target.add_status("Recharge", 2)
 
 ################################################################################

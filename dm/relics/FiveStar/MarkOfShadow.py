@@ -54,7 +54,7 @@ class MarkOfShadow(DMRelic):
 ################################################################################
     def on_death(self, ctx: AttackContext) -> None:
 
-        vulnerable = ctx.defender.get_status("Vulnerable")
+        vulnerable = ctx.target.get_status("Vulnerable")
         if vulnerable is not None:
             self._kills += 1
 

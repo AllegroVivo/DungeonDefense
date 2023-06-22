@@ -39,7 +39,7 @@ class Taunt(DMStatus):
 
         if self.owner.room == ctx.room:
             # Force change the defending unit to the owner of this status.
-            if self.owner != ctx.defender:
+            if self.owner != ctx.target:
                 ctx.reassign_defender(self.owner)
 
         # Register callback to reduce stacks if damage is actually done
@@ -48,7 +48,7 @@ class Taunt(DMStatus):
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             if ctx.damage > 0:
                 self.reduce_stacks_by_one()
 

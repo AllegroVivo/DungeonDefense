@@ -44,7 +44,7 @@ class Charm(DMStatus):
         """Called in every battle loop iteration."""
 
         # If we're attacking
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Check resist before executing the effect
             resist = self.owner.get_status("Charm Resist")
             if resist is not None:
@@ -53,7 +53,7 @@ class Charm(DMStatus):
 
             # Reassign to a random ally in the same room.
             options = (
-                self.owner.room.heroes if isinstance(ctx.attacker, DMHero)
+                self.owner.room.heroes if isinstance(ctx.source, DMHero)
                 else self.owner.room.monsters
             )
             ctx.reassign_defender(random.choice(options))

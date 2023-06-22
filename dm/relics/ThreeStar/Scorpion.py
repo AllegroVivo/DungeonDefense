@@ -39,15 +39,15 @@ class Scorpion(DMRelic):
         """A general event response function."""
 
         # If we've killed a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # And if a monster is the one attacking
-            if isinstance(ctx.attacker, DMMonster):
+            if isinstance(ctx.source, DMMonster):
                 # Check if for Poison status
-                poison = ctx.defender.get_status("Poison")
+                poison = ctx.target.get_status("Poison")
                 if poison is None:
                     return
 
                 # If present, add Regeneration to the attacker
-                ctx.attacker.add_status("Regeneration", poison.stacks)
+                ctx.source.add_status("Regeneration", poison.stacks)
 
 ################################################################################

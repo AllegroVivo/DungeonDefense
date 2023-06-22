@@ -32,8 +32,8 @@ class StatueOfControlledAnger(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMMonster):
-            ctx.attacker.add_status("Fury", ctx.attacker.attack * self.effect_value())
+        if isinstance(ctx.source, DMMonster):
+            ctx.source.add_status("Fury", ctx.source.attack * self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

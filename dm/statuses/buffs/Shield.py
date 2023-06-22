@@ -40,7 +40,7 @@ class Shield(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if ctx.defender == self.owner:
+        if ctx.target == self.owner:
             # Check against resist and return if it's too high.
             resist = self.owner.get_status("Inattention")
             if resist is not None:

@@ -44,9 +44,9 @@ class BeadsOfObedience(DMRelic):
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             chance = random.random()
             if chance <= 0.06:
-                ctx.defender.add_status("Obey", 1)
+                ctx.target.add_status("Obey", 1)
 
 ################################################################################

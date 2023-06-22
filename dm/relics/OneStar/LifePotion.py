@@ -40,7 +40,7 @@ class LifePotion(DMRelic):
         """A general event response function."""
 
         # If the Dark Lord was killed
-        if ctx.defender == self.game.dark_lord:
+        if ctx.target == self.game.dark_lord:
             # Make sure the effect hasn't already been triggered.
             if not self._used:
                 # Set the stat directly to avoid triggering a healing event. Just in case.

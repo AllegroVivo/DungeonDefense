@@ -38,8 +38,8 @@ class BloomingBud(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             if ctx.damage > 0:
-                ctx.defender.add_status("Regeneration", ctx.defender.defense * 1.00)
+                ctx.target.add_status("Regeneration", ctx.target.defense * 1.00)
 
 ################################################################################

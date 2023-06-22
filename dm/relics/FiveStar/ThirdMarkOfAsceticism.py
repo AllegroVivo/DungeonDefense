@@ -44,9 +44,9 @@ class ThirdMarkOfAsceticism(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If a hero is attacking
-        if isinstance(ctx.attacker, DMHero):
+        if isinstance(ctx.source, DMHero):
             # And the Dark Lord is defending
-            if ctx.defender == self.game.dark_lord:
+            if ctx.target == self.game.dark_lord:
                 # 35% chance to dodge
                 chance = random.random()
                 if chance <= 0.35:
@@ -57,8 +57,8 @@ class ThirdMarkOfAsceticism(DMRelic):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.defender, DMHero):
-            if ctx.attacker == self.game.dark_lord:
+        if isinstance(ctx.target, DMHero):
+            if ctx.source == self.game.dark_lord:
                 self._kills += 1
 
         if self._kills >= 1000:

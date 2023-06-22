@@ -30,7 +30,7 @@ class Thurible(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             ctx.mitigate_pct(self.effect_value())
 
 ################################################################################

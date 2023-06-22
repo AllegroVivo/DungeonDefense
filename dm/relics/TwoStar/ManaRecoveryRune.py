@@ -40,7 +40,7 @@ class ManaRecoveryRune(DMRelic):
         """A general event response function."""
 
         # If the defeated was a hero
-        if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.target, DMHero):
             # Run chances
             chance = random.random()
             if chance <= 10:

@@ -47,7 +47,7 @@ class Spore(DMStatus):
     def notify(self, ctx: AttackContext) -> None:
         """A general event response function."""
 
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             if isinstance(self.owner, DMHero):
                 units = self.owner.room.heroes
             else:

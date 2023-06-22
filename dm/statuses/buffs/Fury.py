@@ -40,7 +40,7 @@ class Fury(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every iteration of the battle loop."""
 
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Add damage equal to stacks
             ctx.amplify_flat(self.stacks)
             # Reduce if not under the effect of Merciless (prevents Fury reduction)

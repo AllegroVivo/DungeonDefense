@@ -43,7 +43,7 @@ class Defense(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're defending
-        if self.owner == ctx.defender:
+        if self.owner == ctx.target:
             # Adjust CTX damage.
             ctx.mitigate_pct(self.effect_value())
             # And reduce stacks.

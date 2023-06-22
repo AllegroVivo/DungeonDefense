@@ -51,7 +51,7 @@ class BlossomingFlame(DMFacilityRoom):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if ctx.attacker in self.adjacent_rooms:
+        if ctx.source in self.adjacent_rooms:
             # Outgoing burn damage is increased
             pass
 

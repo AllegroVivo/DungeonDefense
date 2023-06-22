@@ -42,7 +42,7 @@ class Focus(DMStatus):
         """Called in every iteration of the battle loop."""
 
         # If we're attacking
-        if self.owner == ctx.attacker:
+        if self.owner == ctx.source:
             # Boost that damage
             ctx.amplify_pct(self.effect_value())
             # And reduce stacks

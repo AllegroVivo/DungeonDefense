@@ -31,8 +31,8 @@ class TraitorsDagger(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If the attacker is a hero and the defender is a hero...
-        if isinstance(ctx.attacker, DMHero):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMHero):
+            if isinstance(ctx.target, DMHero):
                 # Increase the damage by 100%
                 ctx.amplify_pct(self.effect_value())
 

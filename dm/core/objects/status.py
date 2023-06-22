@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .unit import DMUnit
     from ..game.game import DMGame
     from ..contexts.attack import AttackContext
+    from dm.core.contexts.stacks import StackContext
 ################################################################################
 
 __all__ = ("DMStatus",)
@@ -54,6 +55,7 @@ class DMStatus(DMObject):
         self._base_effect: Optional[float] = base_effect
         self._base_scalar: float = 1.0
 
+        # This is being subscribed to in order for stacks to be recalculated after every round.
         self.game.subscribe_event("after_attack", self.calculate)
 
 ################################################################################
@@ -191,7 +193,10 @@ class DMStatus(DMObject):
                 type(int)
             )
 
-        self._stacks -= amount
+        ctx = StackContext(self.game, self, amount)
+        self._state.dispatch_event("stack_reduction", ctx=ctx)
+
+        ctx.execute()
 
 ################################################################################
     def reduce_stacks_pct(self, amount: float) -> None:
@@ -238,6 +243,11 @@ class DMStatus(DMObject):
     def reduce_stacks_by_half(self) -> None:
 
         self.reduce_stacks_pct(0.50)
+
+################################################################################
+    def deplete_all_stacks(self) -> None:
+
+        self._stacks = 0
 
 ################################################################################
     def _copy(self, **kwargs) -> DMStatus:

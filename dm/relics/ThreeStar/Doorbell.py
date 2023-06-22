@@ -35,7 +35,7 @@ class Doorbell(DMRelic):
         # If we're in the boss room
         if ctx.room == self.game.dungeon.map.boss_tile:
             # And the defender is the dark lord
-            if ctx.defender == self.game.dark_lord:
+            if ctx.target == self.game.dark_lord:
                 # Mitigate the damage.
                 ctx.mitigate_pct(self.effect_value())
 

@@ -29,8 +29,8 @@ class Rose(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.attacker, DMTrapRoom):
-            if isinstance(ctx.defender, DMHero):
+        if isinstance(ctx.source, DMTrapRoom):
+            if isinstance(ctx.target, DMHero):
                 ctx.amplify_pct(self.effect_value())
 
 ################################################################################

@@ -10,6 +10,7 @@ from typing     import (
     Union
 )
 
+from ..contexts.status import StatusAcquireContext
 from ..game.movement import MovementComponent
 from ..graphics._graphical import GraphicalComponent
 from ...core.objects.levelable import DMLevelable
@@ -21,6 +22,7 @@ from utilities              import *
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.objects.skill import DMSkill
+    from dm.core.objects.object import DMObject
 ################################################################################
 
 __all__ = ("DMUnit",)
@@ -171,9 +173,24 @@ class DMUnit(DMLevelable):
         return self._equip
 
 ################################################################################
-    def add_status(self, name: str, stacks: Union[int, float] = 1) -> None:
+    def add_status(
+        self,
+        status: Union[DMStatus, str],
+        stacks: Union[int, float],
+        source: DMObject,
+    ) -> None:
 
-        self._add_status(self.game.spawn(name, parent=self, stacks=int(stacks)))  # type: ignore
+        # Create a DMStatus object if we don't have one already.
+        if isinstance(status, str):
+            status = self.game.spawn(status, parent=self, stacks=int(stacks))
+
+        # Create a context and dispatch the event.
+        ctx = StatusAcquireContext(self.game, source, self, status)  # type: ignore
+        self.game.dispatch_event("status_applied", ctx=ctx)
+
+        # No other steps required, once the event finishes dispatching, the
+        # context should have been acted upon by all relevant listeners.
+        ctx.execute()
 
 ################################################################################
     def _add_status(self, status: DMStatus) -> None:
@@ -485,7 +502,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def heal(self, amount: Union[int, float]) -> None:
 
-        self.stats.damage(-int(amount))
+        self.stats.heal(int(amount))
 
 ################################################################################
     def damage(self, amount: Union[int, float]) -> None:
@@ -496,7 +513,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def immobilize(self, duration: float) -> None:
         """Adds `duration` amount of time to the unit's move_penalty. Duration is
-        a float representing the total duration of a second. (1.0 = 100%)
+        a float representing the total duration of a second. (1.0 = 1 second)
         """
 
         self._move_penalty += duration

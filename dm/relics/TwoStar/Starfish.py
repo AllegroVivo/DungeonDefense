@@ -33,9 +33,9 @@ class Starfish(DMRelic):
         """Automatically called as part of all battle loops."""
 
         # If we're a monster
-        if isinstance(ctx.defender, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             # And we have the pleasure status
-            pleasure = ctx.defender.get_status("Pleasure")
+            pleasure = ctx.target.get_status("Pleasure")
             if pleasure is not None:
                 # Reduce incoming damage by 25%
                 ctx.mitigate_pct(0.25)
