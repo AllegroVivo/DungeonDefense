@@ -27,7 +27,6 @@ class Rose(DMRelic):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         if isinstance(ctx.source, DMTrapRoom):
             if isinstance(ctx.target, DMHero):

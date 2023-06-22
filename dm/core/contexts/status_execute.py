@@ -91,9 +91,9 @@ class StatusExecutionContext(AdjustableContext):
             return
 
         # Check for direct damage resulting from the Sharp Thorn relic.
-        if self.status.name == "Thorn" and self._direct:
+        if self._direct:
             # This will bypass the status' potential damage reduction.
-            self._status.owner.damage(self.status.stacks)
+            self._status.owner._damage(self.status.stacks)
             return
 
         # I think this needs to be damage().

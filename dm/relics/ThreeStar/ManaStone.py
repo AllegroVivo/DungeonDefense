@@ -27,10 +27,10 @@ class ManaStone(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self) -> None:
         """A general event response function."""
 
         self.game.dark_lord.restore_mana(3)

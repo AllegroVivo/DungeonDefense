@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
@@ -34,16 +32,17 @@ class MagicSpring(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        # If the attacker is a trap room and the defender is a hero...
+        # If the attacker is a trap room
         if isinstance(ctx.source, DMTrapRoom):
+            # And the target is a hero
             if isinstance(ctx.target, DMHero):
-                # ...amplify the damage by a random amount.
+                # Amplify the damage by a random amount.
                 ctx.amplify_pct(self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
         """The value of this relic's effect."""
 
-        return random.randint(1, 30) / 100
+        return self.random.from_range(0.01, 0.30)
 
 ################################################################################

@@ -154,7 +154,7 @@ class DMGenerator:
         return 0
 
 ################################################################################
-    def from_range(self, start: int, stop: int) -> int:
+    def from_range(self, start: Union[int, float], stop: Union[int, float]) -> int:
 
         return self.choice([i for i in range(start, stop + 1)])
 

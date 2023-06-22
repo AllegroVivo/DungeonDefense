@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -31,13 +30,13 @@ class DemonicLamp(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
     def notify(self) -> None:
         """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Mirror", 2)
+            monster.add_status("Mirror", 2, self)
 
 ################################################################################

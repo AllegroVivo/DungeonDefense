@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts.boss_skill import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,13 +32,13 @@ class BloodyHourglass(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_hemokinesis", self.notify)
+        self.listen("boss_skill_hemokinesis")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Bloodlust", 2)
+            monster.add_status("Bloodlust", 2, self)
 
 ################################################################################

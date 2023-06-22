@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 from ...core.objects.monster import DMMonster
-from utilities import UnlockPack
+from utilities import UnlockPack, EXPSource
 
 if TYPE_CHECKING:
     from dm.core.contexts   import ExperienceContext
@@ -33,7 +33,7 @@ class WarriorsBlood(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("experience_awarded", self.notify)
+        self.listen("exp_awarded")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -55,7 +55,8 @@ class WarriorsBlood(DMRelic):
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.target, DMMonster):
-            ctx.scale(self.effect_value())
+        if isinstance(ctx.object, DMMonster):
+            if ctx.source == EXPSource.Battle:
+                ctx.amplify_pct(self.effect_value())
 
 ################################################################################

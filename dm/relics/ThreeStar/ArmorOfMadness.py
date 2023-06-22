@@ -26,7 +26,6 @@ class ArmorOfMadness(DMRelic):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         # If a monster is defending
         if isinstance(ctx.target, DMMonster):

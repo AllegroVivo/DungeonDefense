@@ -31,13 +31,12 @@ class DemonsScale(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_harvest", self.notify)
+        self.listen("boss_skill_harvest")
 
 ################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
+    def notify(self, ctx: BossSkillContext) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Elasticity", 3)
+            monster.add_status("Elasticity", 3, self)
 
 ################################################################################

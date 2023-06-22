@@ -32,7 +32,7 @@ class AncientCoin(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_purchase", self.notify)
+        self.listen("on_purchase")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -54,6 +54,6 @@ class AncientCoin(DMRelic):
     def notify(self, ctx: PurchaseContext) -> None:
         """A general event response function."""
 
-        ctx.scale(-self.effect_value())
+        ctx.reduce_pct(self.effect_value())
 
 ################################################################################

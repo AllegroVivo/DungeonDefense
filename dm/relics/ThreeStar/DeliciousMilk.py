@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,10 +32,10 @@ class DeliciousMilk(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_rallying_cry", self.notify)
+        self.listen("boss_skill_rallying_cry")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
         # Heal all monsters by 1% of their max life.

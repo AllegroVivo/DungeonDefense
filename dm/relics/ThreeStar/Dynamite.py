@@ -30,7 +30,7 @@ class Dynamite(DMRelic):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
-        self.game.dark_lord.increase_stat_pct("attack", self.effect_value())
+        self.game.dark_lord.increase_stat_pct("atk", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

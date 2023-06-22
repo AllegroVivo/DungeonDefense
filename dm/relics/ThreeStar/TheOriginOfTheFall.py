@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import PurchaseContext
+    from dm.core.contexts   import CorruptionContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,7 +32,7 @@ class TheOriginOfTheFall(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("corruption_start", self.notify)
+        self.listen("corruption_start")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -51,9 +51,9 @@ class TheOriginOfTheFall(DMRelic):
         return 0.01 * (0.99 ** self._count)
 
 ################################################################################
-    def notify(self, ctx: PurchaseContext) -> None:
+    def notify(self, ctx: CorruptionContext) -> None:
         """A general event response function."""
 
-        ctx.scale(-self.effect_value())
+        ctx.reduce_pct(self.effect_value())
 
 ################################################################################

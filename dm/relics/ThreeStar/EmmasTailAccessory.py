@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,7 +32,7 @@ class EmmasTailAccessory(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_split", self.notify)
+        self.listen("boss_skill_split")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -41,7 +41,7 @@ class EmmasTailAccessory(DMRelic):
         pass
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
         # Need to implement skills first. :(

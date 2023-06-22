@@ -33,7 +33,7 @@ class MagicalSoil(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("experience_awarded", self.notify)
+        self.listen("exp_awarded")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -55,7 +55,7 @@ class MagicalSoil(DMRelic):
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        if isinstance(ctx.target, DMRoom):
-            ctx.scale(self.effect_value())
+        if isinstance(ctx.object, DMRoom):
+            ctx.amplify_pct(self.effect_value())
 
 ################################################################################

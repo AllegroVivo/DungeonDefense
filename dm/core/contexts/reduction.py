@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 
-from .stacks import StackContext
+from .stacks import StackReductionContext
 
 if TYPE_CHECKING:
     from dm.core.game.game    import DMGame
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 __all__ = ("StackReductionContext",)
 
 ################################################################################
-class StackReductionContext(StackContext):
+class StackReductionContext(StackReductionContext):
     """Mediates the loss of stacks from a status effect."""
 
     def __init__(self, state: DMGame, _obj: DMStatus, base_amt: int):

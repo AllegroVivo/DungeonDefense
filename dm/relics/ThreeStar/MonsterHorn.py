@@ -35,10 +35,10 @@ class MonsterHorn(DMRelic):
         if isinstance(ctx.target, DMHero):
             # By a monster...
             if isinstance(ctx.source, DMMonster):
-                # And the monster has the Stun status...
+                # And the hero has the Stun status...
                 stun = ctx.target.get_status("Stun")
                 if stun is not None:
                     # Add 1 Merciless to the attacker.
-                    ctx.source.add_status("Merciless", 1)
+                    ctx.source.add_status("Merciless", 1, self)
 
 ################################################################################

@@ -33,7 +33,7 @@ class SmokedMeat(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
     def notify(self, status: DMStatus) -> None:

@@ -27,12 +27,12 @@ class RustyBlade(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("hero_spawn", self.notify)
+        self.listen("hero_spawn")
 
 ################################################################################
     def notify(self, unit: DMHero) -> None:
         """A general event response function."""
 
-        unit.add_status("Weak", 1)
+        unit.add_status("Weak", 1, self)
 
 ################################################################################

@@ -6,7 +6,7 @@ from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm .core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("GiantThorn",)
@@ -28,23 +28,24 @@ class GiantThorn(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusExecutionContext) -> None:
+
+        ctx.register_after_execute(self.callback)
+
+################################################################################
+    def callback(self, ctx: StatusExecutionContext) -> None:
 
         # If we have a valid Thorn status
-        if status.name == "Thorn":
-            # If the owner is a hero
-            if isinstance(status.owner, DMHero):
-                if status.stacks > 0:
-                    # Get all the heroes in the room
-                    targets = self.game.dungeon.get_heroes_by_room(status.owner.room.position)
-                    # Remove the status owner because they're going to be damaged already.
-                    targets.remove(status.owner)  # type: ignore
-                    # Apply the damage to all the targets
-                    for hero in targets:
-                        hero.damage(status.stacks)
+        if ctx.status.name == "Thorn":
+            # And it was successful
+            if ctx.stacks > 0:
+                # And if the owner is a hero
+                if isinstance(ctx.target, DMHero):
+                    # Damage all the heroes in the room.
+                    for hero in self.room.heroes:
+                        hero.damage(ctx.stacks)
 
 ################################################################################

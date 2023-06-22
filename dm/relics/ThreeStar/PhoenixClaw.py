@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 
 from ...core.objects.hero import DMHero
@@ -44,8 +42,7 @@ class PhoenixClaw(DMRelic):
                 burn = ctx.target.get_status("Burn")
                 if burn is not None:
                     # If so, roll a 20 % chance to add 2 Acceleration.
-                    chance = random.random()
-                    if chance <= 0.20:
-                        ctx.source.add_status("Acceleration", 2)
+                    if self.random.chance(20):
+                        ctx.source.add_status("Acceleration", 2, self)
 
 ################################################################################

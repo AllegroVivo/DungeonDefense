@@ -28,7 +28,7 @@ class Cake(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_heal", self.notify)
+        self.listen("on_heal")
 
 ################################################################################
     def notify(self, ctx: HealingContext) -> None:
@@ -37,6 +37,6 @@ class Cake(DMRelic):
         # If the heal target is a monster...
         if isinstance(ctx.target, DMMonster):
             # Add 1 Defense.
-            ctx.target.add_status("Defense", 1)
+            ctx.target.add_status("Defense", 1, self)
 
 ################################################################################

@@ -34,7 +34,7 @@ class CorpseFlower(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_death", self.notify)
+        self.listen("on_death")
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
@@ -43,14 +43,13 @@ class CorpseFlower(DMRelic):
         # If a hero has been killed
         if isinstance(ctx.target, DMHero):
             # Check both required statuses
-            c_expl = ctx.target.get_status("CorpseExplosion")
+            c_expl = ctx.target.get_status("Corpse Explosion")
             burn = ctx.target.get_status("Burn")
             if c_expl is None or burn is None:
                 return
 
             # If the check passes, deal damage to nearby enemies
-            targets = self.game.dungeon.get_heroes_by_room(ctx.target.room.position)
-            for hero in targets:
+            for hero in ctx.room.heroes:
                 hero.damage(burn.stacks * 0.50)
 
 ################################################################################

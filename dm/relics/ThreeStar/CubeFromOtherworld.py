@@ -31,13 +31,13 @@ class CubeFromOtherworld(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
     def notify(self) -> None:
         """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Elasticity", 5)
+            monster.add_status("Elasticity", 5, self)
 
 ################################################################################

@@ -31,7 +31,7 @@ class DemonGlove(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_whip", self.notify)
+        self.listen("boss_skill_whip")
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
@@ -43,6 +43,6 @@ class DemonGlove(DMRelic):
             obey = ctx.target.get_status("Obey")
             if obey is not None:
                 # If so, add 1 Hatred to the Dark Lord
-                self.game.dark_lord.add_status("Hatred", 1)
+                self.game.dark_lord.add_status("Hatred", 1, self)
 
 ################################################################################

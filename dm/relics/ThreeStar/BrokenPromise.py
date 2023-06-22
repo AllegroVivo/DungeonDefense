@@ -37,6 +37,6 @@ class BrokenPromise(DMRelic):
             charm = ctx.source.get_status("Charm")
             if charm is not None:
                 # If so, add 1 Obey.
-                ctx.source.add_status("Obey", stacks=1)
+                ctx.source.add_status("Obey", 1, self)
 
 ################################################################################

@@ -69,6 +69,11 @@ class DMDarkLord(DMUnit):
         self._current_mana = max(self._current_mana - amount, 0)
 
 ################################################################################
+    def reset_mana(self) -> None:
+
+        self._current_mana = 0
+
+################################################################################
     def restore_mana(self, amount: int) -> None:
 
         self._current_mana = min(self._current_mana + amount, self._max_mana)

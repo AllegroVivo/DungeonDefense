@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
@@ -33,10 +32,10 @@ class VampireAxe(DMRelic):
 
         # Might need to change this to `on_death` instead, but I don't have
         # a way to track Boss Skills in that event yet.
-        self.game.subscribe_event("boss_skill_used", self.notify)
+        self.listen("boss_skill_used")
 
 ################################################################################
-    def effect_value(self) -> float:
+    def effect_value(self) -> int:
         """The value of this relic's effect.
 
         Breakdown:
@@ -50,7 +49,7 @@ class VampireAxe(DMRelic):
         - l is the Dark Lord's level.
         """
 
-        return 20.0 + (1.0 * self.game.dark_lord.level)
+        return 20 + (1 * self.game.dark_lord.level)
 
 ################################################################################
     def notify(self, ctx: BossSkillContext) -> None:
@@ -65,6 +64,6 @@ class VampireAxe(DMRelic):
         if not ctx.target.is_alive:
             # Add Vampire to all monsters.
             for monster in self.game.deployed_monsters:
-                monster.add_status("Vampire", self.effect_value())
+                monster.add_status("Vampire", self.effect_value(), self)
 
 ################################################################################

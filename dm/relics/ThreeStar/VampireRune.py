@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import BossSkillContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -27,13 +27,15 @@ class VampireRune(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_vampiric_impulse", self.notify)
+        self.listen("boss_skill_vampiric_impulse")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        # Need to implement boss skills first I think.
-        pass
+        # If Focus is attached to the context.
+        focus = ctx.get_status("Focus")
+        if focus is not None:  # Shouldn't be None since it's linked directly to the skill.
+            focus.increase_stacks_flat(1)
 
 ################################################################################

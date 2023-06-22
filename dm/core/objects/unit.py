@@ -512,7 +512,11 @@ class DMUnit(DMLevelable):
 ################################################################################
     def damage(self, amount: Union[int, float]) -> None:
 
-        print(f"Damaging unit for {amount}")
+        self.stats.damage(int(amount))
+
+################################################################################
+    def _damage(self, amount: Union[int, float]) -> None:
+
         self.stats.damage(int(amount))
 
 ################################################################################

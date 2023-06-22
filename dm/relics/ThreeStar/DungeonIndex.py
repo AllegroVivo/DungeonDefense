@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import RoomSpawnContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -23,47 +23,23 @@ class DungeonIndex(DMRelic):
             rank=3
         )
 
-        # Will need to implement specifics as I figure out reward logic
+        self._upgrades: int = 2
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("room_spawn")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of this relic's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (e * s)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
-        """
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: RoomSpawnContext) -> None:
         """A general event response function."""
 
-        pass
+        if self._upgrades > 0:
+            ctx.room.upgrade()
+            self._upgrades -= 1
+
+        if self._upgrades <= 0:
+            self.game.unsubscribe_event("room_spawn", self.notify)
 
 ################################################################################

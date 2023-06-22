@@ -33,9 +33,19 @@ class SolarKey(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.target, DMHero):
-            blind = ctx.target.get_status("Blind")
-            if blind is not None:
-                ctx.target.add_status("Recharge", 2)
+        ctx.register_after_execute(self.callback)
+
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
+
+        # Check against fail conditions.
+        if not ctx.will_fail:
+            # If the defender is a hero
+            if isinstance(ctx.target, DMHero):
+                # Check for Blind status.
+                blind = ctx.target.get_status("Blind")
+                if blind is not None:
+                    # If present, add 2 Recharge.
+                    ctx.target.add_status("Recharge", 2, self)
 
 ################################################################################

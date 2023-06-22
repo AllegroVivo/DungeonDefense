@@ -30,16 +30,22 @@ class TraitorsDagger(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        # If the attacker is a hero and the defender is a hero...
-        if isinstance(ctx.source, DMHero):
-            if isinstance(ctx.target, DMHero):
-                # Increase the damage by 100%
-                ctx.amplify_pct(self.effect_value())
+        ctx.register_after_execute(self.callback)
 
 ################################################################################
     def effect_value(self) -> float:
         """The value of this relic's effect."""
 
         return 1.00
+
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
+
+        if not ctx.will_fail:
+            # If the attacker is a hero and the defender is a hero...
+            if isinstance(ctx.source, DMHero):
+                if isinstance(ctx.target, DMHero):
+                    # Increase the damage by 100%
+                    ctx.amplify_pct(self.effect_value())
 
 ################################################################################

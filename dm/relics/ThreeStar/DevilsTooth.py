@@ -31,7 +31,7 @@ class DevilsTooth(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("boss_skill_bite", self.notify)
+        self.listen("boss_skill_bite")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -59,6 +59,6 @@ class DevilsTooth(DMRelic):
             # And the attack would kill the hero
             if ctx.would_kill():
                 # Increase the Dark Lord's ATK
-                self.game.dark_lord.increase_stat_flat("attack", int(self.effect_value()))
+                self.game.dark_lord.increase_stat_flat("atk", int(self.effect_value()))
 
 ################################################################################

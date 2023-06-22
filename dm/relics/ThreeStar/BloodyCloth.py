@@ -4,7 +4,6 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -30,7 +29,7 @@ class BloodyCloth(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -42,6 +41,6 @@ class BloodyCloth(DMRelic):
     def notify(self, *args) -> None:
         """A general event response function."""
 
-        self.game.dark_lord.add_status("Vampire", self.effect_value())
+        self.game.dark_lord.add_status("Vampire", self.effect_value(), self)
 
 ################################################################################

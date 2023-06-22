@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.fates import DMFateCard
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -30,13 +30,14 @@ class StaffOfReign(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("dungeon_fate", self.notify)
+        self.listen("fate_selected")
 
 ################################################################################
-    def notify(self) -> None:
+    def notify(self, fate: DMFateCard) -> None:
         """A general event response function."""
 
-        for monster in self.game.all_monsters:
-            monster.level_up(3)
+        if fate.__class__.__name__ == "DungeonFate":
+            for monster in self.game.all_monsters:
+                monster.level_up(3)
 
 ################################################################################

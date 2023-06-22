@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts   import StatusExecutionContext
 ################################################################################
 
 __all__ = ("WoodenStaff",)
@@ -30,17 +30,17 @@ class WoodenStaff(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
         # If we're a monster
-        if isinstance(status.owner, DMMonster):
+        if isinstance(ctx.target, DMMonster):
             # And the Regeneration status was executed
-            if status.name == "Regeneration":
+            if ctx.status.name == "Regeneration":
                 # Add 20 % of the LIFE healed by Regeneration as Armor.
-                status.owner.add_status("Armor", status.stacks * 0.20)
+                ctx.target.add_status("Armor", ctx.stacks * 0.20, self)
 
 ################################################################################

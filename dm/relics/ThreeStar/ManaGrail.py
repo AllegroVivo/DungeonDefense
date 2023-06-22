@@ -4,6 +4,7 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
+    from dm.core.contexts import DayAdvanceContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -25,6 +26,16 @@ class ManaGrail(DMRelic):
             rank=3
         )
 
-        # Handled in the day advancement logic.
+################################################################################
+    def on_acquire(self) -> None:
+        """Called automatically when a relic is added to the player's inventory."""
+
+        self.listen("day_advance")
+
+################################################################################
+    def notify(self, ctx: DayAdvanceContext) -> None:
+        """A general event response function."""
+
+        ctx.toggle_mana_reset(False)
 
 ################################################################################

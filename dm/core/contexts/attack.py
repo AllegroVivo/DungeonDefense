@@ -245,12 +245,10 @@ class AttackContext(Context):
         self._damage.override(amount)
 
 ################################################################################
-    def execute(self) -> None:
+    def execute(self) -> int:  # Returns damage dealt
 
         # Publish before attack event
         self._state.dispatch_event("before_attack", self)
-
-
 
         # Factor in relic effects
         for relic in self._state.relics:
@@ -290,10 +288,7 @@ class AttackContext(Context):
         for skill in self.source.skills:  # type: ignore
             skill._offensive_callback(self)
 
-        # Finalize the damage.
-        self.target.damage(self.damage)
-
-        # Damage the additional targets too
+        # Damage the additional targets now that we've processed everything.
         for target in self._addl_targets:
             target.damage(self.damage)
 
@@ -306,10 +301,10 @@ class AttackContext(Context):
             callback(self)
 
         # Publish after attack event
-        self._state.dispatch_event("after_attack", ctx=self)
+        self._state.dispatch_event("after_attack", self)
 
-        # End this attack
-        self._running = False
+        # Finalize the damage.
+        return self.damage
 
 ################################################################################
     def mitigate_flat(self, value: int) -> None:

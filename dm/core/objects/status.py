@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .unit import DMUnit
     from ..game.game import DMGame
     from ..contexts.attack import AttackContext
-    from dm.core.contexts.stacks import StackContext
+    from dm.core.contexts.stacks import StackReductionContext
 ################################################################################
 
 __all__ = ("DMStatus",)
@@ -193,7 +193,7 @@ class DMStatus(DMObject):
                 type(int)
             )
 
-        ctx = StackContext(self.game, self, amount)
+        ctx = StackReductionContext(self.game, self, amount)
         self._state.dispatch_event("stack_reduction", ctx=ctx)
 
         ctx.execute()

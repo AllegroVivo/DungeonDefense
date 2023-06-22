@@ -33,15 +33,15 @@ class MysteriousQuill(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("book_acquired", self.notify)
+        self.listen("book_acquired")
 
 ################################################################################
     def notify(self, *args) -> None:
         """A general event response function."""
 
         # Need to implement books first.
-        self._uses += 1
-        if self._uses >= 2:
+        self._uses -= 1
+        if self._uses <= 0:
             self.game.unsubscribe_event("book_acquired", self.notify)
 
 ################################################################################

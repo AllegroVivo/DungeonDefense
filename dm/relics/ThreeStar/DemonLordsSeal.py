@@ -33,7 +33,7 @@ class DemonLordsSeal(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.source, DMHero):
+        if isinstance(ctx.source, DMHero) and isinstance(ctx.target, DMHero):
             atk_obey = ctx.source.get_status("Obey")
             def_obey = ctx.target.get_status("Obey")
             if atk_obey is None or def_obey is None:

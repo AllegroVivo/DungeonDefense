@@ -4,7 +4,6 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -30,7 +29,7 @@ class ManaConverter(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_end", self.notify)
+        self.listen("battle_end")
 
 ################################################################################
     def effect_value(self) -> float:

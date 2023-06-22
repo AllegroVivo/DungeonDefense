@@ -27,19 +27,19 @@ class VoodooMask(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("battle_start", self.notify)
+        self.listen("battle_start")
 
 ################################################################################
-    def effect_value(self) -> float:
+    def effect_value(self) -> int:
         """The value of this relic's effect."""
 
-        return 20.0
+        return 20
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self) -> None:
         """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Rampage", self.effect_value())
+            monster.add_status("Rampage", self.effect_value(), self)
 
 ################################################################################

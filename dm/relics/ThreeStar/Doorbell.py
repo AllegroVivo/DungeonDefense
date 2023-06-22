@@ -30,7 +30,6 @@ class Doorbell(DMRelic):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         # If we're in the boss room
         if ctx.room == self.game.dungeon.map.boss_tile:

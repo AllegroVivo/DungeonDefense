@@ -32,7 +32,7 @@ class Scorpion(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("on_death", self.notify)
+        self.listen("on_death")
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
@@ -44,10 +44,8 @@ class Scorpion(DMRelic):
             if isinstance(ctx.source, DMMonster):
                 # Check if for Poison status
                 poison = ctx.target.get_status("Poison")
-                if poison is None:
-                    return
-
-                # If present, add Regeneration to the attacker
-                ctx.source.add_status("Regeneration", poison.stacks)
+                if poison is not None:
+                    # If present, add Regeneration to the attacker
+                    ctx.source.add_status("Regeneration", poison.stacks, self)
 
 ################################################################################

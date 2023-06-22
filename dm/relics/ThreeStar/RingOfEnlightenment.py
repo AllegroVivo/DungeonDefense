@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,10 +31,10 @@ class RingOfEnlightenment(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("book_read", self.notify)
+        self.listen("book_completed")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, book: DMBook) -> None:  # type: ignore
         """A general event response function."""
 
         for monster in self.game.all_monsters:
