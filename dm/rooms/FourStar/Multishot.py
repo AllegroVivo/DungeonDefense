@@ -33,7 +33,7 @@ class Multishot(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        options = self.get_heroes_or_monsters(unit)
+        options = self.units_of_type(unit)
         targets = self.random.sample(options, 3)
         for target in targets:
             target.damage(self.damage)

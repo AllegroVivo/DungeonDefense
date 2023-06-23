@@ -42,7 +42,7 @@ class Dynamite(DMBattleRoom):
             if burn is not None:
                 targets = []
                 for room in self.adjacent_rooms:
-                    targets.extend(room.get_heroes_or_monsters(ctx.target))
+                    targets.extend(room.units_of_type(ctx.target))
 
                 for target in targets:
                     target.damage(burn.stacks * (self.effects["Burn"] / 100))

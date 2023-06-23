@@ -284,6 +284,15 @@ class AttackContext(Context):
         for skill in self.source.skills:  # type: ignore
             skill._callback(self)  # This private method is specifically for use for this purpose.
 
+        # Execute the late callback if it's registered. This is a single
+        # callable that will be executed after all other objects and events
+        # have been processed, but prior to damage application. Useful for
+        # things like checking at the last second to see if we're attacking
+        # an ally so a skill effect can intervene, etc...
+        # (See: `EyeOfTruth` skill)
+        if self._late_callback is not None:
+            self._late_callback(self)
+
         # Damage the additional targets now that we've processed everything.
         for target in self._addl_targets:
             target.damage(self.damage)

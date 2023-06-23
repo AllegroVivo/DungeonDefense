@@ -43,7 +43,7 @@ class StatueOfLiberatedRage(DMRelic):
 
         # Low chance to attack allies. 5% seems reasonable like before.
         if self.random.chance(5):
-            source = ctx.room.get_heroes_or_monsters(ctx.source)
+            source = ctx.room.units_of_type(ctx.source)
             ctx.reassign_defender(self.random.choice(source))
 
 ################################################################################

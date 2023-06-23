@@ -42,7 +42,7 @@ class Revenge(DMFacilityRoom):
         """Automatically called as part of all battle loops."""
 
         if ctx.room in self.adjacent_rooms:
-            ctx.register_after_execute(self.callback)
+            ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

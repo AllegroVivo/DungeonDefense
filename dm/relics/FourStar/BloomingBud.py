@@ -33,7 +33,7 @@ class BloomingBud(DMRelic):
         """Called automatically when a relic is added to the player's inventory."""
 
         if isinstance(ctx.target, DMMonster):
-            ctx.register_after_execute(self.callback)
+            ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

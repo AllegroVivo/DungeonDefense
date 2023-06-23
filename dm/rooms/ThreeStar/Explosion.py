@@ -36,7 +36,7 @@ class Explosion(DMTrapRoom):
         targets = []
         # compile a list of targets in those rooms
         for room in self.adjacent_rooms + [self]:
-            targets.extend(room.get_heroes_or_monsters(unit))
+            targets.extend(room.units_of_type(unit))
 
         # Deal damage to all targets in the affected rooms
         for target in targets:

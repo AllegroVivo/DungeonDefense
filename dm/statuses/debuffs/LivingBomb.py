@@ -41,7 +41,7 @@ class LivingBomb(DMStatus):
     def handle(self, ctx: AttackContext) -> None:
         """Called in every battle loop iteration."""
 
-        ctx.register_after_execute(self.notify)
+        ctx.register_post_execute(self.notify)
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:

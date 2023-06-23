@@ -37,7 +37,7 @@ class VampiricMonster(DMRelic):
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        ctx.register_after_execute(self.restore_life)
+        ctx.register_post_execute(self.restore_life)
 
 ################################################################################
     def restore_life(self, ctx: BossSkillContext) -> None:

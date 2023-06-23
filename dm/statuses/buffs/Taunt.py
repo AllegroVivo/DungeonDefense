@@ -43,7 +43,7 @@ class Taunt(DMStatus):
                 ctx.reassign_defender(self.owner)
 
         # Register callback to reduce stacks if damage is actually done
-        ctx.register_after_execute(self.notify)
+        ctx.register_post_execute(self.notify)
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:

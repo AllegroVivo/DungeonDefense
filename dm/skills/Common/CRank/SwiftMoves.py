@@ -32,7 +32,7 @@ class SwiftMoves(CommonSkill):
     def execute(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.target:
-            ctx.register_after_execute(self.callback)
+            ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

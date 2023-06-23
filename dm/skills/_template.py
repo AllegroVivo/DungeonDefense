@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills._monster import MonsterSkill
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 __all__ = ("Template",)
 
 ################################################################################
-class Template(CommonSkill):
+class Template(MonsterSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 

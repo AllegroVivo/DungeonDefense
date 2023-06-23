@@ -17,6 +17,7 @@ class Context(ABC):
     __slots__ = (
         "_id",
         "_state",
+        "_late_callback",
         "_post_execution_callbacks"
     )
 
@@ -25,6 +26,8 @@ class Context(ABC):
 
         self._id: UUID = uuid4()
         self._state: DMGame = state
+
+        self._late_callback: Optional[Callable] = None
         self._post_execution_callbacks: List[Callable] = []
 
 ################################################################################
@@ -54,7 +57,15 @@ class Context(ABC):
         raise NotImplementedError
 
 ################################################################################
-    def register_after_execute(self, callback: Callable) -> None:
+    def register_late_callback(self, callback: Callable) -> None:
+
+        if self._late_callback is not None:
+            raise RuntimeError("Late callback already registered.")
+
+        self._late_callback = callback
+
+################################################################################
+    def register_post_execute(self, callback: Callable) -> None:
 
         self._post_execution_callbacks.append(callback)
 

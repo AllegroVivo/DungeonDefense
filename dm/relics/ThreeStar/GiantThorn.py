@@ -33,7 +33,7 @@ class GiantThorn(DMRelic):
 ################################################################################
     def notify(self, ctx: StatusExecutionContext) -> None:
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: StatusExecutionContext) -> None:

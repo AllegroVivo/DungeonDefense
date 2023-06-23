@@ -55,7 +55,7 @@ class VampireAxe(DMRelic):
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        ctx.register_after_execute(self.activate)
+        ctx.register_post_execute(self.activate)
 
 ################################################################################
     def activate(self, ctx: BossSkillContext) -> None:

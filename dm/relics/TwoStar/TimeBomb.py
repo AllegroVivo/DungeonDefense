@@ -34,7 +34,7 @@ class TimeBomb(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        ctx.register_after_execute(self.after_attack)
+        ctx.register_post_execute(self.after_attack)
 
 ################################################################################
     def after_attack(self, ctx: AttackContext) -> None:

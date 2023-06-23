@@ -10,10 +10,10 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Vampire",)
+__all__ = ("VampireSkill",)
 
 ################################################################################
-class Vampire(CommonSkill):
+class VampireSkill(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 

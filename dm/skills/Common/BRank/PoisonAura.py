@@ -34,7 +34,7 @@ class PoisonAura(CommonSkill):
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

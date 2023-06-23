@@ -53,7 +53,7 @@ class BloodyMist(DMBattleRoom):
 
         if ctx.room in self.adjacent_rooms:
             if isinstance(ctx.target, DMMonster):
-                ctx.register_after_execute(self.callback)
+                ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

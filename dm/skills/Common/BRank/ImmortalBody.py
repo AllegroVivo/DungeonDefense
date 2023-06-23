@@ -9,10 +9,10 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Template",)
+__all__ = ("ImmortalBody",)
 
 ################################################################################
-class Template(CommonSkill):
+class ImmortalBody(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 

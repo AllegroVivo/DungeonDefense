@@ -40,7 +40,7 @@ class ThornBush(DMBattleRoom):
 
         targets = []
         for room in self.adjacent_rooms:
-            targets.extend(room.get_heroes_or_monsters(unit, inverse=True))
+            targets.extend(room.units_of_type(unit, inverse=True))
 
         for target in targets:
             target.add_status("Armor", self.effects["Armor"], self)

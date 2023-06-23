@@ -31,7 +31,7 @@ class MagicShield(CommonSkill):
     def execute(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.source:
-            target = self.random.choice(ctx.room.get_heroes_or_monsters(self.owner))
+            target = self.random.choice(ctx.room.units_of_type(self.owner))
             target.add_status("Shield", 3, self)
 
 ################################################################################

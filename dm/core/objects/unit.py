@@ -45,6 +45,7 @@ class DMUnit(DMLevelable):
         "_screen_pos",
         "_mover",
         "_moving",
+        "_skill_cooldown_scalar"
     )
 
 ################################################################################
@@ -73,6 +74,7 @@ class DMUnit(DMLevelable):
         self._room: Optional[Vector2] = start_cell
 
         self._skills: List[DMSkill] = skills or []
+        self._skill_cooldown_scalar: float = 1.0
         self._equip = None
 
         self._statuses: List[DMStatus] = []
@@ -232,6 +234,11 @@ class DMUnit(DMLevelable):
         return status
 
 ################################################################################
+    def override_skill_cooldown_scalar(self, new_scalar: float) -> None:
+
+        self._skill_cooldown_scalar = new_scalar
+
+################################################################################
     @property
     def statuses(self) -> List[DMStatus]:
 
@@ -330,6 +337,11 @@ class DMUnit(DMLevelable):
     def stat_score(self) -> float:
 
         return (self.life + self.attack + self.defense) * self.level + self.experience
+
+################################################################################
+    def is_ally(self, other: DMUnit) -> bool:
+
+        return self.type == other.type
 
 ################################################################################
     def enable_movement(self) -> None:

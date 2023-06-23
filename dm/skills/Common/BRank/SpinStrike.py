@@ -32,7 +32,7 @@ class SpinStrike(CommonSkill):
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        for unit in ctx.room.get_heroes_or_monsters(self.owner, inverse=True):
+        for unit in ctx.room.units_of_type(self.owner, inverse=True):
             unit.damage(self.effect)
 
 ################################################################################

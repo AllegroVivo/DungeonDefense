@@ -32,7 +32,7 @@ class MagicArrow(CommonSkill):
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        source = ctx.room.get_heroes_or_monsters(self.owner)
+        source = ctx.room.units_of_type(self.owner)
         for _ in range(4):  # 3 repeats to make 4 total
             target = self.random.choice(source)
             target.damage(self.effect)

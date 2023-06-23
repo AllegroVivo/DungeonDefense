@@ -29,7 +29,7 @@ class AchillesHeel(CommonSkill):
     def execute(self, ctx: AttackContext) -> None:
 
         # Get whatever unit type the attacker is not.
-        target = self.random.choice(ctx.room.get_heroes_or_monsters(self.owner, inverse=True))
+        target = self.random.choice(ctx.room.units_of_type(self.owner, inverse=True))
         target.add_status("Vulnerable", 5, self)
 
 ################################################################################

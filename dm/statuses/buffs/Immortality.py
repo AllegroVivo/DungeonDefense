@@ -41,7 +41,7 @@ class Immortality(DMStatus):
         """Called in every iteration of the battle loop."""
 
         if self.owner == ctx.target:
-            ctx.register_after_execute(self.notify)
+            ctx.register_post_execute(self.notify)
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:

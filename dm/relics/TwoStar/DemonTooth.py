@@ -42,7 +42,7 @@ class DemonTooth(DMRelic):
     def notify(self, ctx: BossSkillContext) -> None:
         """A general event response function."""
 
-        ctx.register_after_execute(self.after_skill)
+        ctx.register_post_execute(self.after_skill)
 
 ################################################################################
     def after_skill(self, ctx: BossSkillContext) -> None:

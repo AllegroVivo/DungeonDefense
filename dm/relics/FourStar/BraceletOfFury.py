@@ -32,7 +32,7 @@ class BraceletOfFury(DMRelic):
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

@@ -10,13 +10,13 @@ from typing     import (
     TypeVar
 )
 
+from .unit import DMUnit
 from .object    import DMObject
 from utilities  import *
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.unit    import DMUnit
 ################################################################################
 
 __all__ = ("DMSkill",)
@@ -53,8 +53,8 @@ class DMSkill(DMObject):
 
         self._parent: DMUnit = parent
 
-        self.__cooldown: int = cooldown
-        self._active_cooldown: int = cooldown
+        self.__cooldown: float = cooldown * self.owner._skill_cooldown_scalar
+        self._active_cooldown: float = self.__cooldown
 
         self._skill_type: SkillType = skill_type
         self._effect: Optional[SkillEffect] = effect
@@ -84,6 +84,12 @@ class DMSkill(DMObject):
         return self._parent
 
 ################################################################################
+    @property
+    def cooldown(self) -> float:
+
+        return self.__cooldown * self.owner._skill_cooldown_scalar
+
+################################################################################
     def _callback(self, ctx: AttackContext) -> None:
 
         # If the master cooldown is 0, then this isn't a battle skill or
@@ -99,7 +105,7 @@ class DMSkill(DMObject):
 ################################################################################
     def _reset_cooldown(self) -> None:
 
-        self._active_cooldown = self.__cooldown
+        self._active_cooldown += self.cooldown
 
 ################################################################################
     def on_acquire(self) -> None:

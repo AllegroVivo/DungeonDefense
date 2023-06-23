@@ -38,7 +38,7 @@ class DefenseCaptain(CommonSkill):
             self._atk_count += 1
 
         if self._atk_count % 2 == 0:
-            for unit in ctx.room.get_heroes_or_monsters(self.owner):
+            for unit in ctx.room.units_of_type(self.owner):
                 unit.add_status("Defense", 3, self)
 
 ################################################################################

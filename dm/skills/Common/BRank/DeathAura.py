@@ -36,7 +36,7 @@ class DeathAura(CommonSkill):
 
         # Regardless of whether the owner is attacking or being attacked, the
         # skill will activate.
-        ctx.register_after_execute(self.callback)
+        ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:

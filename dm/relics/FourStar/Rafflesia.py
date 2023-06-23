@@ -36,7 +36,7 @@ class Rafflesia(DMRelic):
     def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        ctx.register_after_execute(self.callback)
+        ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: StatusExecutionContext) -> None:

@@ -317,7 +317,7 @@ class DMRoom(DMLevelable, DMChargeable):
         return self.game.dungeon.get_adjacent_rooms(self.position)
 
 ################################################################################
-    def get_heroes_or_monsters(self, unit: DMUnit, inverse: bool = False) -> List[DMUnit]:
+    def units_of_type(self, unit: DMUnit, inverse: bool = False) -> List[DMUnit]:
         """Returns the room's heroes or monsters depending on the type of unit
         provided.
 

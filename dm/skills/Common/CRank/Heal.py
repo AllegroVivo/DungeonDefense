@@ -30,7 +30,7 @@ class Heal(CommonSkill):
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        target = self.random.choice(ctx.room.get_heroes_or_monsters(self.owner))
+        target = self.random.choice(ctx.room.units_of_type(self.owner))
         target.heal(self.effect)
 
 ################################################################################
