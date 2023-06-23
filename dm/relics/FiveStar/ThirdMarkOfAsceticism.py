@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 __all__ = ("ThirdMarkOfAsceticism",)
 
-
 ################################################################################
 class ThirdMarkOfAsceticism(DMRelic):
 
@@ -37,7 +36,7 @@ class ThirdMarkOfAsceticism(DMRelic):
         """Called automatically when a relic is added to the player's inventory."""
 
         self.listen("on_death")
-        self.game.subscribe_event("boss_skill_used", self.apply_status)
+        self.listen("boss_skill_used", self.apply_status)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
@@ -48,8 +47,7 @@ class ThirdMarkOfAsceticism(DMRelic):
             # And the Dark Lord is defending
             if ctx.target == self.game.dark_lord:
                 # 35% chance to dodge
-                chance = random.random()
-                if chance <= 0.35:
+                if self.random.chance(35):
                     # Basically a dodge.
                     ctx.will_fail = True
 
@@ -67,8 +65,9 @@ class ThirdMarkOfAsceticism(DMRelic):
 ################################################################################
     def advance_relic(self) -> None:
 
-        # Unsubscribe from the event because the relic is about to be removed
+        # Unsubscribe from the events because the relic is about to be removed
         self.game.unsubscribe_event("on_death", self.notify)
+        self.game.unsubscribe_event("boss_skill_used", self.apply_status)
         # Add the specified new relic
         self.game.add_relic("Last Mark of Asceticism")
         # Remove this relic
@@ -77,6 +76,6 @@ class ThirdMarkOfAsceticism(DMRelic):
 ################################################################################
     def apply_status(self, ctx: BossSkillContext) -> None:
 
-        self.game.dark_lord.add_status("Hatred", ctx.mana_cost)
+        self.game.dark_lord.add_status("Hatred", ctx.mana_cost, self)
 
 ################################################################################

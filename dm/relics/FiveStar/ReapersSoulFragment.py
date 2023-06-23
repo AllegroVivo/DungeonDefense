@@ -30,7 +30,7 @@ class ReapersSoulFragment(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("experience_awarded")
+        self.listen("exp_awarded")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -40,7 +40,6 @@ class ReapersSoulFragment(DMRelic):
 
 ################################################################################
     def notify(self, ctx: ExperienceContext) -> None:
-        """A general event response function."""
 
         if isinstance(ctx.object, DMRoom):
             ctx.amplify_pct(self.effect_value())

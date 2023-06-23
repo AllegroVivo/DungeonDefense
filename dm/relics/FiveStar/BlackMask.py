@@ -6,6 +6,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
+    from dm.core.contexts import CorruptionContext
 ################################################################################
 
 __all__ = ("BlackMask",)
@@ -24,8 +25,6 @@ class BlackMask(DMRelic):
             unlock=UnlockPack.Adventure
         )
 
-        # Will finish implementation after I figure out how to work corruption
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
@@ -39,9 +38,9 @@ class BlackMask(DMRelic):
         return 0.20
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, ctx: CorruptionContext) -> None:
         """A general event response function."""
 
-        pass
+        ctx.reduce_pct(self.effect_value())
 
 ################################################################################

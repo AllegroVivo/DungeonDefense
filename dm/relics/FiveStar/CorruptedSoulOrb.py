@@ -31,7 +31,7 @@ class CorruptedSoulOrb(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
+        self.listen("ritual_start")
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:

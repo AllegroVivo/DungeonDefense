@@ -37,6 +37,6 @@ class TeardrinkerSword(DMRelic):
         """A general event response function."""
 
         if isinstance(ctx.target, DMMonster):
-            self.game.dark_lord.add_status("Hatred", 5)
+            self.game.dark_lord.add_status("Hatred", 5, self)
 
 ################################################################################

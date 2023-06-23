@@ -1,20 +1,16 @@
 from __future__ import annotations
 
-import random
-
 from typing import TYPE_CHECKING
 
-from ...core.objects.hero import DMHero
 from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext, BossSkillContext
+    from dm.core.contexts import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
 __all__ = ("LastMarkOfAsceticism",)
-
 
 ################################################################################
 class LastMarkOfAsceticism(DMRelic):

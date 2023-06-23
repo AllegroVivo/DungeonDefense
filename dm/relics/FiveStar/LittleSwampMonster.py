@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("LittleSwampMonster",)
@@ -30,7 +30,7 @@ class LittleSwampMonster(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("stat_execute")
+        self.listen("status_execute")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,11 +39,11 @@ class LittleSwampMonster(DMRelic):
         return 0.20  # 20% reduced effectiveness equals 30%
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Slow":
-            if isinstance(status.owner, DMMonster):
-                status.reduce_base_effect(self.effect_value())
+        if ctx.status.name == "Slow":
+            if isinstance(ctx.target, DMMonster):
+                ctx.status.reduce_base_effect(self.effect_value())
 
 ################################################################################

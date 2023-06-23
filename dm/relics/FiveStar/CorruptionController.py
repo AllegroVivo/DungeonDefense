@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import CorruptionContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -32,25 +32,11 @@ class CorruptionController(DMRelic):
             unlock=UnlockPack.Adventure
         )
 
-        # Will look at this once I've got Corruption working.
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
-
-        pass
+        self.listen("corruption_start")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -58,21 +44,19 @@ class CorruptionController(DMRelic):
 
         Breakdown:
         ----------
-        **effect = b + (e * s)**
+        **effect = b * (0.99^n)**
 
         In this function:
 
-        - b is the base adjustment.
-        - e is the additional effectiveness per stack.
-        - s is the number of Acceleration stacks.
+        - b is the base effectiveness.
+        - n is the number of times this relic has been acquired.
         """
 
-        pass
+        return 0.50 * (0.02 ** self._count)
 
 ################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
+    def notify(self, ctx: CorruptionContext) -> None:
 
-        pass
+        ctx.reduce_pct(self.effect_value())
 
 ################################################################################

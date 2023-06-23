@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -35,7 +34,7 @@ class RulersDNA(DMRelic):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.game.deployed_monsters:
-            monster.increase_stat_pct("attack", self.effect_value())
+            monster.increase_stat_pct("atk", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

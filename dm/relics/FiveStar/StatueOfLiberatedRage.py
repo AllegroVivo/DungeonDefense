@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import random
 from typing     import TYPE_CHECKING
-from ...core.objects.hero import DMHero
-from ...core.objects.monster import DMMonster
 from ...core.objects.relic import DMRelic
 from ...rooms.traproom import DMTrapRoom
 from utilities import UnlockPack
@@ -11,7 +8,6 @@ from utilities import UnlockPack
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.game.day import DMDay
 ################################################################################
 
 __all__ = ("StatueOfLiberatedRage",)
@@ -43,16 +39,12 @@ class StatueOfLiberatedRage(DMRelic):
             return
 
         # Add Fury to the attacker.
-        ctx.source.add_status("Fury", ctx.source.attack * self.effect_value())
+        ctx.source.add_status("Fury", ctx.source.attack * self.effect_value(), self)
 
         # Low chance to attack allies. 5% seems reasonable like before.
-        chance = random.random()
-        if chance <= 0.05:
-            if isinstance(ctx.source, DMHero):
-                source = ctx.room.heroes
-            else:
-                source = ctx.room.monsters
-            ctx.reassign_defender(random.choice(source))
+        if self.random.chance(5):
+            source = ctx.room.get_heroes_or_monsters(ctx.source)
+            ctx.reassign_defender(self.random.choice(source))
 
 ################################################################################
     def effect_value(self) -> float:

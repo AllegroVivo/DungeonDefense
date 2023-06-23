@@ -8,7 +8,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusApplicationContext
 ################################################################################
 
 __all__ = ("DarkCube",)
@@ -30,8 +30,6 @@ class DarkCube(DMRelic):
             unlock=UnlockPack.Adventure
         )
 
-        # Not prepared for this yet. May need an outgoing status effect CTX.
-
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
@@ -45,9 +43,10 @@ class DarkCube(DMRelic):
         return 0.75
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusApplicationContext) -> None:
 
-        pass
+        if isinstance(ctx.source, DMTrapRoom):
+            if isinstance(ctx.target, DMHero):
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################

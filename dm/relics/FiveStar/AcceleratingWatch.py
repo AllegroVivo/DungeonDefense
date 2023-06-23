@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("AcceleratingWatch",)
@@ -30,7 +30,7 @@ class AcceleratingWatch(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("status_acquired")
+        self.listen("status_execute")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,11 +39,11 @@ class AcceleratingWatch(DMRelic):
         return 2.00  # 200% *additional* effectiveness
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if isinstance(status.owner, DMMonster):
-            if status.name == "Acceleration":
-                status.increase_base_effect(self.effect_value())
+        if isinstance(ctx.target, DMMonster):
+            if ctx.status.name == "Acceleration":
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################

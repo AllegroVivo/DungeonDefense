@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("CursedPocketWatch",)
@@ -33,7 +33,7 @@ class CursedPocketWatch(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("status_acquired")
+        self.listen("status_applied")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -42,13 +42,13 @@ class CursedPocketWatch(DMRelic):
         return 2.00  # 200% *additional* effectiveness
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Acceleration":
-            if isinstance(status.owner, DMMonster):
-                status.increase_base_effect(self.effect_value())
+        if ctx.status.name == "Acceleration":
+            if isinstance(ctx.target, DMMonster):
+                ctx.status.increase_base_effect(self.effect_value())
             else:
-                status.reduce_base_effect(0.10)
+                ctx.status.reduce_base_effect(0.10)
 
 ################################################################################

@@ -5,7 +5,7 @@ from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.game.day  import DMDay
+    from dm.core.contexts import DayAdvanceContext
 ################################################################################
 
 __all__ = ("ElderDragon",)
@@ -36,11 +36,10 @@ class ElderDragon(DMRelic):
         self.listen("day_advance")
 
 ################################################################################
-    def notify(self, day: DMDay) -> None:
-        """A general event response function."""
+    def notify(self, ctx: DayAdvanceContext) -> None:
 
         # If the day is advancing, we know we won the fight.
-        if day.current - 1 % 20 == 0:
+        if ctx.next_day - 1 % 20 == 0:
             self.game.inventory.add_gold(1000)
 
 ################################################################################

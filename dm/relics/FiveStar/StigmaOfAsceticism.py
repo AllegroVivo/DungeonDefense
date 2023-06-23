@@ -39,8 +39,8 @@ class StigmaOfAsceticism(DMRelic):
         """Called automatically when a stat refresh is initiated."""
 
         self.game.dark_lord.reduce_stat_pct("life", self.effect_value())
-        self.game.dark_lord.reduce_stat_pct("attack", self.effect_value())
-        self.game.dark_lord.reduce_stat_pct("defense", self.effect_value())
+        self.game.dark_lord.reduce_stat_pct("atk", self.effect_value())
+        self.game.dark_lord.reduce_stat_pct("def", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:

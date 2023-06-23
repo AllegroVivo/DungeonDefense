@@ -51,6 +51,6 @@ class CorruptedDragon(DMRelic):
     def notify(self, hero: DMHero) -> None:
         """A general event response function."""
 
-        hero.add_status("Panic", 5)
+        hero.add_status("Panic", 5, self)
 
 ################################################################################

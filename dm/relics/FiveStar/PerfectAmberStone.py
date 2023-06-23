@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
+from utilities import EXPSource
 
 if TYPE_CHECKING:
     from dm.core.contexts   import ExperienceContext
@@ -27,7 +28,7 @@ class PerfectAmberStone(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("experience_awarded")
+        self.listen("exp_awarded")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,6 +40,7 @@ class PerfectAmberStone(DMRelic):
     def notify(self, ctx: ExperienceContext) -> None:
         """A general event response function."""
 
-        ctx.amplify_pct(self.effect_value())
+        if ctx.source == EXPSource.Battle:
+            ctx.amplify_pct(self.effect_value())
 
 ################################################################################

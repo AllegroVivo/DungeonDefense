@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
 
 from ...core.objects.hero import DMHero
@@ -34,8 +32,7 @@ class InfinitelyRotatingBlade(DMRelic):
 
         if isinstance(ctx.source, DMTrapRoom):
             if isinstance(ctx.target, DMHero):
-                chance = random.random()
-                if chance <= 0.10:
+                if self.random.chance(10):
                     ctx.amplify_pct(1.00)  # 100% additional damage
 
 ################################################################################

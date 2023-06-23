@@ -8,7 +8,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("CrescentNecklace",)
@@ -40,12 +40,12 @@ class CrescentNecklace(DMRelic):
         return 2.50  # Base 50% effectiveness to total 300%
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
         # If the owner of the status is a hero, increase the effect of the status
-        if isinstance(status.owner, DMHero):
-            if status.name == "Vulnerable":
-                status.increase_base_effect(self.effect_value())
+        if isinstance(ctx.target, DMHero):
+            if ctx.status.name == "Vulnerable":
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################

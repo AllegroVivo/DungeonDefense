@@ -8,7 +8,7 @@ from utilities import UnlockPack
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.status    import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("MarkOfShadow",)
@@ -35,7 +35,7 @@ class MarkOfShadow(DMRelic):
 
         # Have to use two different calls since self.listen automatically uses notify().
         self.listen("status_execute")
-        self.game.subscribe_event("on_death", self.on_death)
+        self.listen("on_death", self.on_death)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -44,12 +44,12 @@ class MarkOfShadow(DMRelic):
         return 1.00  # Additional 100% effect
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if isinstance(status.owner, DMHero):
-            if status.name == "Vulnerable":
-                status.increase_base_effect(self.effect_value())
+        if isinstance(ctx.target, DMHero):
+            if ctx.status.name == "Vulnerable":
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################
     def on_death(self, ctx: AttackContext) -> None:

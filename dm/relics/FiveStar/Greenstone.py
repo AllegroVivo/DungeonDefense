@@ -53,6 +53,6 @@ class Greenstone(DMRelic):
     def notify(self, hero: DMHero) -> None:
         """A general event response function."""
 
-        hero.add_status("Poison", self.effect_value())
+        hero.add_status("Poison", self.effect_value(), self)
 
 ################################################################################

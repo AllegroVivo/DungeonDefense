@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("StickyNet",)
@@ -30,7 +30,7 @@ class StickyNet(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.listen("stat_execute")
+        self.listen("status_execute")
 
 ################################################################################
     def effect_value(self) -> float:
@@ -39,11 +39,11 @@ class StickyNet(DMRelic):
         return 0.25  # 25% additional effectiveness to equal 75%
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Slow":
-            if isinstance(status.owner, DMHero):
-                status.increase_base_effect(self.effect_value())
+        if ctx.status.name == "Slow":
+            if isinstance(ctx.target, DMHero):
+                ctx.status.increase_base_effect(self.effect_value())
 
 ################################################################################

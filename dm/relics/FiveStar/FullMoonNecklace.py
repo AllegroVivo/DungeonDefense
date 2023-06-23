@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
     from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusApplicationContext
 ################################################################################
 
 __all__ = ("FullMoonNecklace",)
@@ -35,15 +36,19 @@ class FullMoonNecklace(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
+        self.listen("status_applied", self.status_applied)
         self.listen("status_execute")
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        # Monsters gain and additional 15% mitigation
+        # Monsters gain and additional 15% damage mitigation when under the
+        # effects of Vulnerable.
         if isinstance(ctx.target, DMMonster):
-            ctx.mitigate_pct(0.15)
+            vulnerable = ctx.target.get_status("Vulnerable")
+            if vulnerable is not None:
+                ctx.mitigate_pct(0.15)
 
 ################################################################################
     def effect_value(self) -> float:
@@ -59,8 +64,14 @@ class FullMoonNecklace(DMRelic):
         if isinstance(status.owner, DMHero):
             if status.name == "Vulnerable":
                 status.increase_base_effect(self.effect_value())
-        # Otherwise nullify the status
-        else:
-            status.reduce_stacks_flat(status.stacks)
+
+################################################################################
+    @staticmethod
+    def status_applied(ctx: StatusApplicationContext) -> None:
+
+        if isinstance(ctx.target, DMMonster):
+            # If the status is Vulnerable, fail the action.
+            if ctx.status.name == "Vulnerable":
+                ctx.will_fail = True
 
 ################################################################################

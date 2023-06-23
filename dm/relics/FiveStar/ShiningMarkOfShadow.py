@@ -7,7 +7,7 @@ from utilities import UnlockPack
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("ShiningMarkOfShadow",)
@@ -42,13 +42,13 @@ class ShiningMarkOfShadow(DMRelic):
         return 1.00  # Additional 100% effect
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
+    def notify(self, ctx: StatusExecutionContext) -> None:
         """A general event response function."""
 
-        if status.name == "Vulnerable":
-            if isinstance(status.owner, DMHero):
-                status.increase_base_effect(self.effect_value())
+        if ctx.status.name == "Vulnerable":
+            if isinstance(ctx.target, DMHero):
+                ctx.status.increase_base_effect(self.effect_value())
             else:
-                status.reduce_base_effect(0.15)
+                ctx.status.reduce_base_effect(0.15)
 
 ################################################################################

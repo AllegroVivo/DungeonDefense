@@ -4,9 +4,8 @@ from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import AttackContext, DayAdvanceContext
     from dm.core.game.game import DMGame
-    from dm.core.game.day  import DMDay
 ################################################################################
 
 __all__ = ("AncientEgg",)
@@ -54,11 +53,11 @@ class AncientEgg(DMRelic):
             self.advance_relic("Broken Ancient Egg")
 
 ################################################################################
-    def notify(self, day: DMDay) -> None:
+    def notify(self, ctx: DayAdvanceContext) -> None:
         """A general event response function."""
 
         # If at least 100 days have passed
-        if day.current - self._start >= 100:
+        if ctx.next_day - self._start >= 100:
             # Go to the next relic
             self.advance_relic("Elder Dragon")
 

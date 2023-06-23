@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from typing import TYPE_CHECKING
 
 from ...core.objects.hero import DMHero
@@ -14,7 +12,6 @@ if TYPE_CHECKING:
 ################################################################################
 
 __all__ = ("SecondMarkOfAsceticism",)
-
 
 ################################################################################
 class SecondMarkOfAsceticism(DMRelic):
@@ -47,8 +44,7 @@ class SecondMarkOfAsceticism(DMRelic):
             # And the Dark Lord is defending
             if ctx.target == self.game.dark_lord:
                 # 35% chance to dodge
-                chance = random.random()
-                if chance <= 0.35:
+                if self.random.chance(35):
                     # Basically a dodge.
                     ctx.will_fail = True
 

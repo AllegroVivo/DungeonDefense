@@ -156,7 +156,7 @@ class DMBattleManager:
         ctx.execute()
 
 ################################################################################
-    def increase_spawn_total_pct(self, amount: float) -> None:
+    def increase_hero_count_pct(self, amount: float) -> None:
 
         if not isinstance(amount, float):
             raise ArgumentTypeError(
@@ -168,7 +168,7 @@ class DMBattleManager:
         self._hero_amt_scalar += amount
 
 ################################################################################
-    def increase_spawn_total_flat(self, amount: int) -> None:
+    def increase_hero_count_flat(self, amount: int) -> None:
 
         if not isinstance(amount, int):
             raise ArgumentTypeError(

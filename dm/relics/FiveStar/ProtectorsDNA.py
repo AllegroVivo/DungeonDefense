@@ -5,7 +5,6 @@ from ...core.objects.relic import DMRelic
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -36,7 +35,7 @@ class ProtectorsDNA(DMRelic):
 
         for monster in self.game.deployed_monsters:
             monster.increase_stat_pct("life", self.effect_value())
-            monster.increase_stat_pct("defense", self.effect_value())
+            monster.increase_stat_pct("def", self.effect_value())
 
 ################################################################################
     def effect_value(self) -> float:
