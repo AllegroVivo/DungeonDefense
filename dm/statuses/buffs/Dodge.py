@@ -33,7 +33,7 @@ class Dodge(DMStatus):
                 "Dodge Resist per evasion."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

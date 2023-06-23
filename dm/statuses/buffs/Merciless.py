@@ -31,7 +31,7 @@ class Merciless(DMStatus):
                 "Prevents reduction of Fury stat 1 time when attacking an enemy."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
         # Implemented in Fury status calculation

@@ -33,7 +33,7 @@ class Vampire(DMStatus):
                 "enemy. Stacks are reduced by half upon activation."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

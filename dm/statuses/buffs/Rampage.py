@@ -33,7 +33,7 @@ class Rampage(DMStatus):
                 "by 1% per stack."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.20
         )
 

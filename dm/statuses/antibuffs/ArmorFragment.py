@@ -32,7 +32,7 @@ class ArmorFragment(DMStatus):
                 "to max LIFE."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiBuff
+            status_type=StatusType.AntiBuff
         )
 
 ################################################################################

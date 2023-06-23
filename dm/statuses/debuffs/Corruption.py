@@ -33,7 +33,7 @@ class Corruption(DMStatus):
                 "or remove this."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.01
         )
 

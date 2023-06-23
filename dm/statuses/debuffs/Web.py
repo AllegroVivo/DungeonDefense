@@ -33,7 +33,7 @@ class Web(DMStatus):
                 "times, Web is removed and gets 1 Rigidity."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.10
         )
 

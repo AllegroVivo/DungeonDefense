@@ -34,7 +34,7 @@ class Armor(DMStatus):
                 "unit gains Armor Fragment equal to that amount. "
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

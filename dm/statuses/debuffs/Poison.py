@@ -33,7 +33,7 @@ class Poison(DMStatus):
                 "and then the stat is reduced by half."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

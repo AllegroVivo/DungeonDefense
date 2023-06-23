@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,15 +25,15 @@ class VowBreaker(CommonSkill):
                 "Inflict 24 (+3.0*ATK) damage and apply 5 Obey to target."
             ),
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=24, scalar=3)
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.source:
-            ctx.amplify_flat(self.effect_value())
-            ctx.add_status("Obey", 5)
+            ctx.target.damage(self.effect)
+            ctx.target.add_status("Obey", 5, self)
 
 ################################################################################

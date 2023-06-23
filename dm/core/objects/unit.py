@@ -195,7 +195,7 @@ class DMUnit(DMLevelable):
     def _add_status(self, status: DMStatus) -> None:
 
         # Only apply Curse for buffs.
-        if status.type == DMStatusType.Buff:
+        if status.type == StatusType.Buff:
             # Before adding a status, check for Curse and resist
             status = self.handle_curse(status)
 

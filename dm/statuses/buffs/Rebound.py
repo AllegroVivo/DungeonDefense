@@ -34,7 +34,7 @@ class Rebound(DMStatus):
                 "is halved when receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.10
         )
 

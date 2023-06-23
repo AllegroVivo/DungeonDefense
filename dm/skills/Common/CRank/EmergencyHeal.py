@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -22,32 +23,13 @@ class EmergencyHeal(CommonSkill):
             name="Emergency Heal",
             description="Gain 16 (+5.0*ATK) Regeneration.",
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=16, scalar=5)
         )
 
 ################################################################################
-    def on_attack(self, ctx: AttackContext) -> None:
-        """Called when used on an offensive turn during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        pass
-
-################################################################################
-    def on_defend(self, ctx: AttackContext) -> None:
-        """Called when used on a defensive turn during a battle."""
-
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
-
-        self.owner.add_status("Regeneration", self.effect_value, self)
-
-################################################################################
-    @property
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
-
-        return 16 + (5 * self.owner.attack)
+        self.owner.add_status("Regeneration", self.effect, self)
 
 ################################################################################

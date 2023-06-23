@@ -31,7 +31,7 @@ class Recharge(DMStatus):
                 "Prevents the reduction of Shock stat 1 time when receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
         # Implemented in Shock status logic

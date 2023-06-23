@@ -32,7 +32,7 @@ class Calmness(DMStatus):
                 "Revenge cost gradually increases depending on the Calmness owned."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiBuff
+            status_type=StatusType.AntiBuff
         )
 
         # Implemented in Revenge status class

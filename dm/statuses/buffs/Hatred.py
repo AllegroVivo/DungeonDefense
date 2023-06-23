@@ -33,7 +33,7 @@ class Hatred(DMStatus):
                 "No effect can reduce or remove this. "
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.01
         )
 

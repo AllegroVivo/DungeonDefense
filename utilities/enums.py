@@ -5,17 +5,18 @@ __all__ = (
     "DMType",
     "RoomType",
     "UnlockPack",
-    "DMSpawnType",
+    "SpawnType",
     "HeroState",
-    "DMFateType",
+    "FateType",
     "StatComponentType",
-    "DMStatusType",
+    "StatusType",
     "BattleState",
     "AttackType",
-    "DMPurchaseType",
-    "DMAdjustmentType",
-    "DMSkillType",
-    "EXPSource"
+    "PurchaseType",
+    "AdjustmentType",
+    "SkillCategory",
+    "EXPSource",
+    "SkillType"
 )
 
 ################################################################################
@@ -58,7 +59,7 @@ class UnlockPack(Enum):
     Abyss = 9
 
 ################################################################################
-class DMSpawnType(Enum):
+class SpawnType(Enum):
 
     Monster = 1
     Hero = 2
@@ -76,7 +77,7 @@ class HeroState(Enum):
     Disengaging = 4
 
 ################################################################################
-class DMFateType(Enum):
+class FateType(Enum):
 
     Entrance = 0
     Battle = 1
@@ -110,7 +111,7 @@ class StatComponentType(Enum):
     Speed = 7
 
 ################################################################################
-class DMStatusType(Enum):
+class StatusType(Enum):
 
     Buff = 1
     Debuff = 2
@@ -133,27 +134,34 @@ class AttackType(Enum):
     Effect = 4
 
 ################################################################################
-class DMPurchaseType(Enum):
+class PurchaseType(Enum):
 
     Temp = 0
 
 ################################################################################
-class DMAdjustmentType(Enum):
+class AdjustmentType(Enum):
 
     Gold = 1
     Soul = 2
 
 ################################################################################
-class DMSkillType(Enum):
+class SkillCategory(Enum):
 
     Common = 1
     Monster = 2
     Hero = 3
+    DarkLord = 4
 
 ################################################################################
 class EXPSource(Enum):
 
     Battle = 1
     Enhancement = 2
+
+################################################################################
+class SkillType(Enum):
+
+    Active = 1
+    Passive = 4
 
 ################################################################################

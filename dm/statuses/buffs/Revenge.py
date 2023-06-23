@@ -33,7 +33,7 @@ class Revenge(DMStatus):
                 "Thorn equal to ATK."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

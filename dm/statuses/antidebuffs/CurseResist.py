@@ -32,7 +32,7 @@ class CurseResist(DMStatus):
                 "possessed."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiDebuff
+            status_type=StatusType.AntiDebuff
         )
 
         # Implemented in Curse status class

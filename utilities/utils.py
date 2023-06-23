@@ -23,16 +23,7 @@ __all__ = (
     "grid_to_topleft_pixel",
     "grid_to_center_pixel",
     "center_text",
-    "Effect"
 )
-
-################################################################################
-@dataclass
-class Effect:
-
-    name: str
-    base: int
-    per_lv: float
 
 ################################################################################
 def convert_all_webp() -> None:

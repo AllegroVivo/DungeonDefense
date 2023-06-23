@@ -5,7 +5,7 @@ from typing     import TYPE_CHECKING, List
 
 from .encounter import DMEncounter
 from ..contexts import AttackContext
-from utilities  import DMFateType, ArgumentTypeError
+from utilities  import FateType, ArgumentTypeError
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -38,7 +38,7 @@ class DMBattleManager:
 
         self._state: DMGame = state
 
-        self._type: DMFateType = None  # type: ignore
+        self._type: FateType = None  # type: ignore
         self._encounters: List[DMEncounter] = []
 
         self._spawn_interval: float = 2.0
@@ -114,22 +114,22 @@ class DMBattleManager:
 ################################################################################
     def start_normal_battle(self) -> None:
 
-        self._type = DMFateType.Battle
+        self._type = FateType.Battle
 
 ################################################################################
     def start_elite_battle(self) -> None:
 
-        self._type = DMFateType.Elite
+        self._type = FateType.Elite
 
 ################################################################################
     def start_invade_battle(self) -> None:
 
-        self._type = DMFateType.Invade
+        self._type = FateType.Invade
 
 ################################################################################
     def start_boss_battle(self) -> None:
 
-        self._type = DMFateType.Boss
+        self._type = FateType.Boss
 
 ################################################################################
     def hero_spawn_check(self, dt: float) -> None:

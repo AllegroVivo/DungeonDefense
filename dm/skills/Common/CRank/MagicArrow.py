@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
-from ....core.objects.monster import DMMonster
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -27,22 +25,16 @@ class MagicArrow(CommonSkill):
                 "Inflict 4 (+3.0*ATK) damage to a random enemy. Repeat 3 times."
             ),
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=4, scalar=3)
         )
 
 ################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        return 4 + (3 * self.owner.attack)
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
-
-        source = ctx.room.heroes if isinstance(ctx.source, DMMonster) else ctx.room.monsters
+        source = ctx.room.get_heroes_or_monsters(self.owner)
         for _ in range(4):  # 3 repeats to make 4 total
-            target = random.choice(source)
-            target.damage(self.effect_value())
+            target = self.random.choice(source)
+            target.damage(self.effect)
 
 ################################################################################

@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
@@ -23,7 +22,9 @@ class StoneSkin(CommonSkill):
             name="Stone Skin",
             description="(Passive) DEF increases by 5 (+0.25*Lv).",
             rank=1,
-            cooldown=0
+            cooldown=0,
+            passive=True,
+            effect=SkillEffect(base=5, scalar=0.25)
         )
 
 ################################################################################

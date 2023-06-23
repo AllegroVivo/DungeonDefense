@@ -33,7 +33,7 @@ class Chained(DMStatus):
                 "gain 1 Chained Resist per every action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

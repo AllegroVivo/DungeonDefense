@@ -22,27 +22,26 @@ class SwiftMoves(CommonSkill):
             name="Swift Moves",
             description="(Passive) Gain 1 Dodge when damage is received 4 times.",
             rank=1,
-            cooldown=0
+            cooldown=0,
+            passive=True
         )
 
         self._damage_counter: int = 0
 
 ################################################################################
-    def on_acquire(self) -> None:
-        """Automatically called upon the skill's acquisition."""
-
-        self.listen("after_attack")
-
-################################################################################
-    def notify(self, ctx: AttackContext) -> None:
-        """A general event response function."""
+    def execute(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.target:
-            if ctx.damage > 0:
-                self._damage_counter += 1
+            ctx.register_after_execute(self.callback)
 
-                if self._damage_counter >= 4:
-                    self._damage_counter = 0
-                    self.owner.add_status("Dodge", 1, self)
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
+
+        if ctx.damage > 0:
+            self._damage_counter += 1
+
+            if self._damage_counter >= 4:
+                self._damage_counter = 0
+                self.owner.add_status("Dodge", 1, self)
 
 ################################################################################

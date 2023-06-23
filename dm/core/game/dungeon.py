@@ -162,7 +162,7 @@ class DMDungeon:
 
         if not self.spawned:
             hero = self.game.spawn(
-                spawn_type=DMSpawnType.Hero,
+                spawn_type=SpawnType.Hero,
                 end_rank=1
             )(self.game, self.game.dungeon.entrance)
             self.heroes.append(hero)  # type: ignore

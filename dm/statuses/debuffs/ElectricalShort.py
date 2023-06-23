@@ -34,7 +34,7 @@ class ElectricalShort(DMStatus):
                 "per Electrical Short to nearby allies."  # Originally said "enemies".
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.10
         )
 

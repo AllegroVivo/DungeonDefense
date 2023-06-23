@@ -34,7 +34,7 @@ class Bloodlust(DMStatus):
                 "Bloodlust stacks possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.10
         )
 

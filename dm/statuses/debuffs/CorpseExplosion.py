@@ -34,7 +34,7 @@ class CorpseExplosion(DMStatus):
                 "to number of Corpse Explosion stacks possessed to nearby allies."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

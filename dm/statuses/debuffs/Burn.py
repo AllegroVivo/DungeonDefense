@@ -43,7 +43,7 @@ class Burn(DMStatus):
                 "and vice versa."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

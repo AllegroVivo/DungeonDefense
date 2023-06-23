@@ -34,7 +34,7 @@ class LivingBomb(DMStatus):
                 "damage to allies in nearby area as much as current Burn stat."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

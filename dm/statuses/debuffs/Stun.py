@@ -33,7 +33,7 @@ class Stun(DMStatus):
                 "gain 1 Stun Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

@@ -35,7 +35,7 @@ class Betray(DMStatus):
                 "decreases by 1 each time an ally is damaged."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=1.00
         )
 

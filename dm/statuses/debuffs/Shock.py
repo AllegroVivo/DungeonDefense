@@ -33,7 +33,7 @@ class Shock(DMStatus):
                 "damage. The stat is reduced by half each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

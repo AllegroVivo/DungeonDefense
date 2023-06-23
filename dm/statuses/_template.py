@@ -30,7 +30,7 @@ class Template(DMStatus):
             name="UrMom",
             description="UrMom",
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

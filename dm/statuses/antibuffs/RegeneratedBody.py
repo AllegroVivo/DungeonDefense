@@ -33,7 +33,7 @@ class RegeneratedBody(DMStatus):
                 "Body stacks possessed."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiBuff
+            status_type=StatusType.AntiBuff
         )
 
         # Implemented in Immortality status class

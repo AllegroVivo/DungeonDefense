@@ -39,14 +39,14 @@ class DMStatus(DMObject):
         name: str,
         description: str,
         stacks: int,
-        status_type: DMStatusType,
+        status_type: StatusType,
         base_effect: float = 0
     ):
 
         super().__init__(state, _id, name, description)
 
         self._stacks: int = int(stacks)
-        self._type: DMStatusType = status_type
+        self._type: StatusType = status_type
         self._parent: DMUnit = parent
 
         self._flat_adjustment: int = 0

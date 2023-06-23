@@ -33,7 +33,7 @@ class Blind(DMStatus):
                 "gain 1 Blind Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

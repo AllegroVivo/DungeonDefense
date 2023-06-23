@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from ....core.objects.monster import DMMonster
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,20 +25,14 @@ class MagicBlade(CommonSkill):
                 "Inflict 8 (+3.0*ATK) damage and apply 1 Fragile to an enemy."
             ),
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=8, scalar=3)
         )
 
 ################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        return 8 + (3 * self.owner.attack)
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
-
-        ctx.amplify_flat(self.effect_value())
-        ctx.add_status("Fragile", 1)
+        ctx.target.damage(self.effect)
+        ctx.target.add_status("Fragile", 1, self)
 
 ################################################################################

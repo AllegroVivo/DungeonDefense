@@ -29,7 +29,7 @@ class Despair(DMStatus):
             name="Despair",
             description="Maximum LIFE and buff you gain decrease by half.",
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

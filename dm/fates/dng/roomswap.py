@@ -15,7 +15,7 @@ __all__ = ("RoomSwapFate",)
 ################################################################################
 class RoomSwapFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.RoomSwap
+    FTYPE: FateType = FateType.RoomSwap
 
     def __init__(self, game: DMGame, x: int = 5, y: int = 0):
 

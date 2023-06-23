@@ -33,7 +33,7 @@ class Fury(DMStatus):
                 "possessed. Fury stacks are halved each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

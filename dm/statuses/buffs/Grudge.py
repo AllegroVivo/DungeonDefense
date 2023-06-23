@@ -34,7 +34,7 @@ class Grudge(DMStatus):
                 "equal to own ATK is gained."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.15
         )
 

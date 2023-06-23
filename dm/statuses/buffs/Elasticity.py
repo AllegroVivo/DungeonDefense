@@ -33,7 +33,7 @@ class Elasticity(DMStatus):
                 "The stat is reduced by 1 each time damage is received."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

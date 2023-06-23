@@ -30,7 +30,7 @@ class Ecstasy(DMStatus):
             name="Ecstasy",
             description="Prevents Pleasure stacks from decreasing 1 time.",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
         # Implemented in the Pleasure status effect calculation

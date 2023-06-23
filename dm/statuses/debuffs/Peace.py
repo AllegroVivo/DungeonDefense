@@ -30,7 +30,7 @@ class Peace(DMStatus):
             name="Peace",
             description="ATK is fixed at 1 until next action.",
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
         # Not sure what to do with it. Probably Goddess Blessing-specific

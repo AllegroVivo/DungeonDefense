@@ -35,7 +35,7 @@ class Haze(DMStatus):
                 "decreases by 1 and you gain 1 Haze Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

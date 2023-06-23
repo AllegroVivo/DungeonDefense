@@ -33,7 +33,7 @@ class Slow(DMStatus):
                 "Slow possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.50
         )
 

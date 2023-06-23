@@ -15,7 +15,7 @@ __all__ = ("ReadingFate",)
 ################################################################################
 class ReadingFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.Reading
+    FTYPE: FateType = FateType.Reading
 
     def __init__(self, game: DMGame, x: int = 3, y: int = 0):
 

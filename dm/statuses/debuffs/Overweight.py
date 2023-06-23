@@ -30,7 +30,7 @@ class Overweight(DMStatus):
             name="Overweight",
             description="Action delay is increased by 1%.",
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
         # Not sure about this one yet. I think it's Goddess Blessing specific.

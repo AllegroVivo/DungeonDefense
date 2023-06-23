@@ -34,7 +34,7 @@ class Curse(DMStatus):
                 "vice versa."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################
@@ -46,7 +46,7 @@ class Curse(DMStatus):
 ################################################################################
     def notify(self, status: DMStatus) -> None:
 
-        if status.type is DMStatusType.Buff:
+        if status.type is StatusType.Buff:
             # Grab the resist info
             resist = self.owner.get_status("Curse Resist")
             if resist >= self:

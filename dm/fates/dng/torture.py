@@ -15,7 +15,7 @@ __all__ = ("TortureFate",)
 ################################################################################
 class TortureFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.Torture
+    FTYPE: FateType = FateType.Torture
 
     def __init__(self, game: DMGame, x: int = 4, y: int = 0):
 

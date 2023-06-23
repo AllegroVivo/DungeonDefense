@@ -34,7 +34,7 @@ class Absorption(DMStatus):
                 "it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

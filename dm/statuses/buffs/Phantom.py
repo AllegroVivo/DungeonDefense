@@ -30,7 +30,7 @@ class Phantom(DMStatus):
             name="Phantom",
             description="Avoids being the target of the next wide-ranged attack.",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
         # Not sure what a "wide-ranged attack" is. Will have to revisit this.

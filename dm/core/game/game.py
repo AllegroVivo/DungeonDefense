@@ -154,7 +154,7 @@ class DMGame:
         _n: Optional[str] = None,
         *,
         obj_id: Optional[str] = None,
-        spawn_type: Optional[DMSpawnType] = None,
+        spawn_type: Optional[SpawnType] = None,
         start_rank: int = 1,
         end_rank: int = 5,
         weighted: bool = True,

@@ -34,7 +34,7 @@ class ImmortalRage(DMStatus):
                 "stat possessed. Stat is halved with each attack."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

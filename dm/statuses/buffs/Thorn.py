@@ -33,7 +33,7 @@ class Thorn(DMStatus):
                 "damage. The stat is reduced by half upon activation."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

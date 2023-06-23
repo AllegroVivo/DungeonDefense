@@ -34,7 +34,7 @@ class Frostbite(DMStatus):
                 "receiving damage."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.05
         )
 

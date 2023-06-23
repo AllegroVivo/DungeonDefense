@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,24 +26,17 @@ class ShieldBash(CommonSkill):
                 "damage as much as 100 % of Armor applied to self."
             ),
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=12, scalar=3)
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        ctx.amplify_flat(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
-
-        damage = 12 + (3 * self.owner.attack)
+        damage = self.effect
         armor = self.owner.get_status("Armor")
         if armor is not None:
             damage += armor.stacks
-
-        return damage
+        ctx.amplify_flat(damage)
 
 ################################################################################

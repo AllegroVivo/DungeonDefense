@@ -256,8 +256,8 @@ class AttackContext(Context):
 
         # Handle status conditions
         # Apply defensive buffs and debuffs first to give advantage ♥
-        defender_statuses = [s for s in self._target.statuses if s.type is DMStatusType.Buff]
-        defender_statuses.extend([s for s in self._target.statuses if s.type is DMStatusType.Debuff])
+        defender_statuses = [s for s in self._target.statuses if s.type is StatusType.Buff]
+        defender_statuses.extend([s for s in self._target.statuses if s.type is StatusType.Debuff])
 
         # `status.handle()` specifically applies any mid-battle effects.
         for status in defender_statuses:
@@ -267,16 +267,12 @@ class AttackContext(Context):
             if self.will_fail:
                 break
 
-        # Process defensive skills
-        for skill in self.target.skills:  # type: ignore
-            skill._defensive_callback(self)  # This is a private method intended specifically for this purpose.
-
         # Avoid status processing if we've already marked the attack as failed.
         if not self.will_fail:
             # Then offensive buffs and debuffs :(
             # (unit.statuses is a blank list on Traps, so this will effectively just pass)
-            attacker_statuses = [s for s in self._source.statuses if s.type is DMStatusType.Buff]  # type: ignore
-            attacker_statuses.extend([s for s in self._source.statuses if s.type is DMStatusType.Debuff])  # type: ignore
+            attacker_statuses = [s for s in self._source.statuses if s.type is StatusType.Buff]  # type: ignore
+            attacker_statuses.extend([s for s in self._source.statuses if s.type is StatusType.Debuff])  # type: ignore
 
             for status in attacker_statuses:
                 status.handle(self)
@@ -286,7 +282,7 @@ class AttackContext(Context):
 
         # Process attacker's skills
         for skill in self.source.skills:  # type: ignore
-            skill._offensive_callback(self)
+            skill._callback(self)  # This private method is specifically for use for this purpose.
 
         # Damage the additional targets now that we've processed everything.
         for target in self._addl_targets:

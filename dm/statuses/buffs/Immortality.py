@@ -33,7 +33,7 @@ class Immortality(DMStatus):
                 "you gain 1 Regenerated Body per effect activation."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from ...core.objects.relic import DMRelic
-from utilities  import DMSpawnType
+from utilities  import SpawnType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import EggHatchContext
@@ -36,19 +36,19 @@ class AdvancedIncubator(DMRelic):
         # Brute force three high level monsters in as the new result.
         ctx.set_options(
             self.game.spawn(  # type: ignore
-                spawn_type=DMSpawnType.Monster,
+                spawn_type=SpawnType.Monster,
                 start_rank=6,
                 end_rank=7,
                 weighted=False
             )(self.game, ctx._options[0].level),  # Just give them the same levels
             self.game.spawn(  # type: ignore
-                spawn_type=DMSpawnType.Monster,
+                spawn_type=SpawnType.Monster,
                 start_rank=6,
                 end_rank=7,
                 weighted=False
             )(self.game, ctx._options[1].level),
             self.game.spawn(  # type: ignore
-                spawn_type=DMSpawnType.Monster,
+                spawn_type=SpawnType.Monster,
                 start_rank=6,
                 end_rank=7,
                 weighted=False

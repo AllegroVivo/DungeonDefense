@@ -35,7 +35,7 @@ class Mirror(DMStatus):
                 "Fragment upon activation."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

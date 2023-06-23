@@ -15,7 +15,7 @@ __all__ = ("MonsterTraderFate",)
 ################################################################################
 class MonsterTraderFate(DMFateCard):
 
-    FTYPE: DMFateType = DMFateType.MonsterTrader
+    FTYPE: FateType = FateType.MonsterTrader
 
     def __init__(self, game: DMGame, x: int = 0, y: int = 0):
 

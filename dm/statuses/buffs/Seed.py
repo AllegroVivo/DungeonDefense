@@ -32,7 +32,7 @@ class Seed(DMStatus):
                 "A seed that holds the power of nature. Used by Floria's Abilities."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
         # Probably need to implement this in the Boss Skill logic.

@@ -26,8 +26,7 @@ class Taunt(CommonSkill):
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
         self.owner.add_status("Taunt", 10, self)
 

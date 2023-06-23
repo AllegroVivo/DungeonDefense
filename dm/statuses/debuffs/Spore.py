@@ -34,7 +34,7 @@ class Spore(DMStatus):
                 "stack as damage to nearby enemies."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################

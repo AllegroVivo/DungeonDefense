@@ -16,7 +16,7 @@ from ...statuses    import ALL_STATUSES
 from ..objects.monster  import DMMonster
 from ..objects.room     import DMRoom
 from ..objects.status   import DMStatus
-from utilities      import DMSpawnType
+from utilities      import SpawnType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -82,7 +82,7 @@ class DMObjectPool:
         *,
         _n: Optional[str],
         obj_id: Optional[str],
-        spawn_type: Optional[DMSpawnType],
+        spawn_type: Optional[SpawnType],
         start_rank: int,
         end_rank: int,
         weighted: bool,
@@ -162,13 +162,13 @@ class DMObjectPool:
             raise ValueError("spawn_type cannot be None for ObjectPool.spawn() if no obj_id is provided.")
 
         match spawn_type:
-            case DMSpawnType.Monster:
+            case SpawnType.Monster:
                 source = self.__monsters
-            case DMSpawnType.Hero:
+            case SpawnType.Hero:
                 source = self.__heroes
-            case DMSpawnType.Relic:
+            case SpawnType.Relic:
                 source = self.__relics
-            case DMSpawnType.Fate:
+            case SpawnType.Fate:
                 source = self.__fates
             case _:
                 source = self.__rooms
@@ -200,7 +200,7 @@ class DMObjectPool:
         return result(self._state)._copy(**kwargs)
 
 ################################################################################
-    def _generate_weights(self, spawn_type: DMSpawnType) -> Dict[int, float]:
+    def _generate_weights(self, spawn_type: SpawnType) -> Dict[int, float]:
         # Define the start and end weights for each rank
         rank_weights = self._base_weights(spawn_type)
 
@@ -229,10 +229,10 @@ class DMObjectPool:
 
 ################################################################################
     @staticmethod
-    def _base_weights(_type: DMSpawnType) -> Dict[int, Tuple[int, int]]:
+    def _base_weights(_type: SpawnType) -> Dict[int, Tuple[int, int]]:
         """Returns a rank vs. weight-over-time mapping for the given spawn type."""
 
-        if _type == DMSpawnType.Monster:
+        if _type == SpawnType.Monster:
             return {
                 1: (100, 50),
                 2: (50, 40),
@@ -240,11 +240,11 @@ class DMObjectPool:
                 4: (5, 15),
                 5: (1, 5),
             }
-        elif _type == DMSpawnType.Hero:
+        elif _type == SpawnType.Hero:
             pass
-        elif _type == DMSpawnType.Relic:
+        elif _type == SpawnType.Relic:
             pass
-        elif _type == DMSpawnType.Fate:
+        elif _type == SpawnType.Fate:
             return {
                 1: (100, 100),
                 2: (40, 40),
@@ -252,7 +252,7 @@ class DMObjectPool:
                 4: (15, 15),
                 5: (2, 5),
             }
-        elif _type == DMSpawnType.Room:
+        elif _type == SpawnType.Room:
             pass
         else:
             raise ValueError("Invalid spawn type provided to ObjectPool._base_weights().")

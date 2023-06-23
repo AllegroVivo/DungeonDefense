@@ -31,7 +31,7 @@ class DodgeResist(DMStatus):
                 "Dodge cost gradually increases depending on the Dodge Resist owned."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiBuff
+            status_type=StatusType.AntiBuff
         )
 
 ################################################################################

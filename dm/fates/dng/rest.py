@@ -15,7 +15,7 @@ __all__ = ("RestFate",)
 ################################################################################
 class RestFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.Rest
+    FTYPE: FateType = FateType.Rest
 
     def __init__(self, game: DMGame, x: int = 0, y: int = 0):
 

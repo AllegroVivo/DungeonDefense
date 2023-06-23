@@ -33,7 +33,7 @@ class Rigidity(DMStatus):
                 "Resist each time Rigidity is given."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=1.0
         )
 

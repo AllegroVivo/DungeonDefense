@@ -29,7 +29,7 @@ class DMFateCard(DMObject):
         "next_state"
     )
 
-    FTYPE: DMFateType = None
+    FTYPE: FateType = None
 
 ################################################################################
     def __init__(

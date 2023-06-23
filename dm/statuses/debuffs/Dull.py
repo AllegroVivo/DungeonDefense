@@ -34,7 +34,7 @@ class Dull(DMStatus):
                 "reduced by 1 each time it is activated."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=1.00
         )
 

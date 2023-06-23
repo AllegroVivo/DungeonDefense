@@ -33,7 +33,7 @@ class Acceleration(DMStatus):
                 "with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff,
+            status_type=StatusType.Buff,
             base_effect=0.50
         )
 

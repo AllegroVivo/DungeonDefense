@@ -29,7 +29,7 @@ class Coagulation(DMStatus):
             name="Coagulation",
             description="Prevents Poison stacks from decreasing 1 time.",
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
         # Implemented in Poison status class

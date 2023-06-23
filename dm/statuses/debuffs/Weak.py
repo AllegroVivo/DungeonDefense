@@ -32,7 +32,7 @@ class Weak(DMStatus):
                 "amount of Weak possessed. Stat is halved with each action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.50
         )
 

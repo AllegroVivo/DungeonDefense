@@ -30,7 +30,7 @@ class Taunt(DMStatus):
             name="Taunt",
             description="Become all enemies' target.",
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

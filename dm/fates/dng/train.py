@@ -15,7 +15,7 @@ __all__ = ("TrainFate",)
 ################################################################################
 class TrainFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.Train
+    FTYPE: FateType = FateType.Train
 
     def __init__(self, game: DMGame, x: int = 2, y: int = 0):
 

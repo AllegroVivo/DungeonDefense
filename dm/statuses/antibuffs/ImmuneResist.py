@@ -33,7 +33,7 @@ class ImmuneResist(DMStatus):
                 "owned."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiBuff
+            status_type=StatusType.AntiBuff
         )
 
         # Implemented in Immune status class

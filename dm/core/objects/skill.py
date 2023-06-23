@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from typing     import TYPE_CHECKING, Any, Literal, Optional, Type, TypeVar
+from typing     import (
+    TYPE_CHECKING,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Type,
+    TypeVar
+)
+
 from .object    import DMObject
 from utilities  import *
 
@@ -20,7 +29,9 @@ class DMSkill(DMObject):
     __slots__ = (
         "_parent",
         "__cooldown",
-        "_active_cooldown"
+        "_active_cooldown",
+        "_skill_type",
+        "_effect",
     )
 
 ################################################################################
@@ -29,6 +40,8 @@ class DMSkill(DMObject):
         state: DMGame,
         parent: Optional[DMUnit],
         cooldown: Literal[0, 1, 2, 4, 6, 8],
+        skill_type: SkillType,
+        effect: Optional[SkillEffect],
         _id: str,
         name: str,
         description: Optional[str],
@@ -43,6 +56,9 @@ class DMSkill(DMObject):
         self.__cooldown: int = cooldown
         self._active_cooldown: int = cooldown
 
+        self._skill_type: SkillType = skill_type
+        self._effect: Optional[SkillEffect] = effect
+
 ################################################################################
     @property
     def type(self) -> DMType:
@@ -51,9 +67,15 @@ class DMSkill(DMObject):
 
 ################################################################################
     @property
-    def skill_type(self) -> DMSkillType:
+    def category(self) -> SkillCategory:
 
         raise NotImplementedError
+
+################################################################################
+    @property
+    def passive(self) -> bool:
+
+        return self._skill_type is SkillType.Passive
 
 ################################################################################
     @property
@@ -62,7 +84,7 @@ class DMSkill(DMObject):
         return self._parent
 
 ################################################################################
-    def _offensive_callback(self, ctx: AttackContext) -> None:
+    def _callback(self, ctx: AttackContext) -> None:
 
         # If the master cooldown is 0, then this isn't a battle skill or
         # doesn't have battle-based logic.
@@ -71,20 +93,7 @@ class DMSkill(DMObject):
 
         self._active_cooldown -= 1
         if self._active_cooldown <= 0:
-            self.handle(ctx)
-            self._reset_cooldown()
-
-################################################################################
-    def _defensive_callback(self, ctx: AttackContext) -> None:
-
-        # If the master cooldown is 0, then this isn't a battle skill or
-        # doesn't have battle-based logic.
-        if self.__cooldown == 0:
-            return
-
-        self._active_cooldown -= 1
-        if self._active_cooldown <= 0:
-            self.handle(ctx)
+            self.execute(ctx)
             self._reset_cooldown()
 
 ################################################################################
@@ -99,14 +108,8 @@ class DMSkill(DMObject):
         pass
 
 ################################################################################
-    def on_attack(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
-
-        pass
-
-################################################################################
-    def on_defend(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
+        """When called, performs this skill's active effect, if any."""
 
         pass
 
@@ -117,17 +120,21 @@ class DMSkill(DMObject):
         pass
 
 ################################################################################
-    @property
-    def effect_value(self) -> Any:
-        """The value of the effect corresponding to this skill."""
-
-        return
-
-################################################################################
     def notify(self, *args) -> None:
-        """A general event response function."""
+        """The default event response function if `self.notify()` is called
+        with no callback argument."""
 
         pass
+
+################################################################################
+    @property
+    def effect(self) -> Optional[int]:
+        """Returns this skill's outgoing active attack value, if any."""
+
+        if self._effect is None:
+            return
+
+        return int(self._effect.base + (self._effect.scalar * self.owner.level))
 
 ################################################################################
     def _copy(self, **kwargs) -> DMSkill:

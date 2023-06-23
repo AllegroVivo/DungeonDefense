@@ -5,7 +5,7 @@ import random
 from typing     import TYPE_CHECKING, List
 
 from .context  import Context
-from utilities import DMSpawnType
+from utilities import SpawnType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -33,7 +33,7 @@ class EggHatchContext(Context):
     def _init_options(self, num_monsters: int) -> None:
 
         self._options = [
-            self._state.spawn(spawn_type=DMSpawnType.Monster)
+            self._state.spawn(spawn_type=SpawnType.Monster)
         ] * num_monsters
 
 ################################################################################

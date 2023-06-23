@@ -31,7 +31,7 @@ class Fatigue(DMStatus):
                 "DEX is delayed by 1%. No buff or debuff can reduce or remove this."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff,
+            status_type=StatusType.Debuff,
             base_effect=0.01
         )
 

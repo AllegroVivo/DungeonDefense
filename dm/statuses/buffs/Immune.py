@@ -34,7 +34,7 @@ class Immune(DMStatus):
                 "vice versa."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################
@@ -46,7 +46,7 @@ class Immune(DMStatus):
 ################################################################################
     def notify(self, status: DMStatus) -> None:
 
-        if status.type is DMStatusType.Debuff:
+        if status.type is StatusType.Debuff:
             # Grab the resist info
             resist = self.owner.get_status("Immune Resist")
             if resist > self:

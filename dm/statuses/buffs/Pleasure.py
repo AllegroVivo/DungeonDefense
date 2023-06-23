@@ -33,7 +33,7 @@ class Pleasure(DMStatus):
                 "when receiving damage. Half of Pleasure remains after the change."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Buff
+            status_type=StatusType.Buff
         )
 
 ################################################################################

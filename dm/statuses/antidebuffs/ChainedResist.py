@@ -32,7 +32,7 @@ class ChainedResist(DMStatus):
                 "Resist possessed."
             ),
             stacks=stacks,
-            status_type=DMStatusType.AntiDebuff
+            status_type=StatusType.AntiDebuff
         )
 
         # Implemented in Chained status class

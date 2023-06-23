@@ -15,7 +15,7 @@ __all__ = ("EliteFate",)
 ################################################################################
 class EliteFate(DMFateCard):
 
-    FTYPE: DMFateType = DMFateType.Elite
+    FTYPE: FateType = FateType.Elite
 
     def __init__(self, game: DMGame, x: int = 0, y: int = 0):
 

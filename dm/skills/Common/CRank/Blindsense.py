@@ -20,20 +20,20 @@ class Blindsense(CommonSkill):
             state, parent,
             _id="SKL-101",
             name="Blindsense",
-            description="(Passive) Become immune to Blind and Panic.",
+            description="Become immune to Blind and Panic.",
             rank=1,
-            cooldown=0
+            cooldown=0,
+            passive=True
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Automatically called upon the skill's acquisition."""
 
-        self.listen("status_acquire")
+        self.listen("status_applied")
 
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
-        """A general event response function."""
 
         if self.owner == ctx.target:
             if ctx.status.name in ("Blind", "Panic"):

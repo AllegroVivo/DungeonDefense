@@ -15,7 +15,7 @@ __all__ = ("UpgradeFate",)
 ################################################################################
 class UpgradeFate(DungeonFateCard):
 
-    FTYPE: DMFateType = DMFateType.Upgrade
+    FTYPE: FateType = FateType.Upgrade
 
     def __init__(self, game: DMGame, x: int = 1, y: int = 0):
 

@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import random
-
 from typing     import TYPE_CHECKING
-from ....core.objects.monster import DMMonster
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,24 +23,14 @@ class Heal(CommonSkill):
             name="Heal",
             description="Recover 15 (+3.0*ATK) LIFE of ally.",
             rank=1,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=15, scalar=3)
         )
 
 ################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        return 15 + (3 * self.owner.attack)
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
-
-        source = (
-            ctx.room.heroes if isinstance(ctx.source, DMMonster)
-            else ctx.room.monsters
-        )
-        target = random.choice(source)
-        target.heal(self.effect_value())
+        target = self.random.choice(ctx.room.get_heroes_or_monsters(self.owner))
+        target.heal(self.effect)
 
 ################################################################################

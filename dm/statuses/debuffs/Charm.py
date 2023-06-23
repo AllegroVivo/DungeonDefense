@@ -36,7 +36,7 @@ class Charm(DMStatus):
                 "you gain 1 Charm Resist per action."
             ),
             stacks=stacks,
-            status_type=DMStatusType.Debuff
+            status_type=StatusType.Debuff
         )
 
 ################################################################################
