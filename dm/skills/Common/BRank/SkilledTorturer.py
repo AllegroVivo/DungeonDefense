@@ -4,41 +4,38 @@ from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
+    from dm.core.contexts   import TortureContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("SkilledTorturer",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class SkilledTorturer(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-140",
+            name="Skilled Torturer",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Time required for Torture is reduced by 1D."
             ),
             rank=2,
-            cooldown=1,
+            cooldown=0,
             passive=True
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_acquire(self) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
+        self.listen("torture_start")
 
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
+################################################################################
+    def notify(self, ctx: TortureContext) -> None:
 
-        ctx.amplify_pct(effect / 100)
+        ctx.reduce_flat(1)
 
 ################################################################################

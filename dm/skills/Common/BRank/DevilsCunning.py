@@ -9,36 +9,31 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("DevilsCunning",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class DevilsCunning(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-124",
+            name="Devil's Cunning",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Damage inflicted is doubled if target is in Haze state."
             ),
             rank=2,
-            cooldown=1,
+            cooldown=0,
             passive=True
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
-
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+        if self.owner == ctx.target:
+            haze = ctx.target.get_status("Haze")
+            if haze is not None:
+                ctx.amplify_pct(1.00)  # Add 100% damage
 
 ################################################################################

@@ -14,4 +14,5 @@ from .stacks            import StackReductionContext
 from .status_apply      import StatusApplicationContext
 from .status_execute    import StatusExecutionContext
 from .targeting         import TargetingContext
+from .torture           import TortureContext
 ################################################################################

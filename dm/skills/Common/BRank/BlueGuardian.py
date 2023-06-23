@@ -20,20 +20,20 @@ class BlueGuardian(CommonSkill):
             state, parent,
             _id="SKL-117",
             name="Blue Guardian",
-            description="(Passive) Become immune to Slow and Frostbite.",
+            description="Become immune to Slow and Frostbite.",
             rank=2,
-            cooldown=0
+            cooldown=0,
+            passive=True
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Automatically called upon the skill's acquisition."""
 
-        self.listen("status_acquired")
+        self.listen("status_applied")
 
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
-        """A general event response function."""
 
         if self.owner == ctx.target:
             if ctx.status.name in ("Slow", "Frostbite"):

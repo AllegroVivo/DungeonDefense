@@ -9,36 +9,39 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("QuickReflex",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class QuickReflex(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-136",
+            name="Quick Reflex",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Gain 1 Dodge when damage is received 3 times."
             ),
             rank=2,
-            cooldown=1,
+            cooldown=0,
             passive=True
         )
+
+        self._hit_counter: int = 0
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
+        if self.owner == ctx.target:
+            ctx.register_after_execute(self.callback)
 
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
 
-        ctx.amplify_pct(effect / 100)
+        if ctx.damage > 0:
+            self._hit_counter += 1
+            if self._hit_counter % 3 == 0:
+                ctx.source.add_status("Dodge", 1, self)
 
 ################################################################################

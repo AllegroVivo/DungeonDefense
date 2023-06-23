@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -9,36 +10,30 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("FrostArrow",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class FrostArrow(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-130",
+            name="Frost Arrow",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Inflict 14 (+3.0*ATK) damage and apply 2 Slow to an enemy."
             ),
             rank=2,
-            cooldown=1,
-            passive=True
+            cooldown=2,
+            effect=SkillEffect(base=14, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
-
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+        if self.owner == ctx.source:
+            ctx.target.damage(self.effect)
+            ctx.target.add_status("Slow", 2, self)
 
 ################################################################################

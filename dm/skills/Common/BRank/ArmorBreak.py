@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,20 +25,14 @@ class ArmorBreak(CommonSkill):
                 "Inflict 16 (+3.0*ATK) damage and apply 3 Fragile to an enemy."
             ),
             rank=2,
-            cooldown=0
+            cooldown=0,
+            effect=SkillEffect(base=16, scalar=3)
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        ctx.amplify_flat(self.effect_value())
-        ctx.add_status("Fragile", 3)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
-
-        return 16 + (3 * self.owner.attack)
+        ctx.target.damage(self.effect)
+        ctx.target.add_status("Fragile", 3, self)
 
 ################################################################################

@@ -9,36 +9,27 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("ShieldBlock",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class ShieldBlock(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-139",
+            name="Shield Block",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Gain 5 Defense."
             ),
             rank=2,
-            cooldown=1,
-            passive=True
+            cooldown=2
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
-
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+        self.owner.add_status("Defense", 5, self)
 
 ################################################################################

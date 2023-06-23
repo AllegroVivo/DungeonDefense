@@ -7,22 +7,29 @@ from .adjustable import AdjustableContext
 
 if TYPE_CHECKING:
     from dm.core.game.game    import DMGame
-    from dm.core.objects.object import DMObject
+    from dm.core.objects.unit import DMUnit
+    from dm.core.objects.room import DMRoom
 ################################################################################
 
-__all__ = ("CorruptionContext",)
+__all__ = ("TortureContext",)
 
 ################################################################################
-class CorruptionContext(AdjustableContext):
+class TortureContext(AdjustableContext):
 
     __slots__ = (
 
     )
 
 ################################################################################
-    def __init__(self, state: DMGame, base_amt: int = 0, _obj: Optional[DMObject] = None):
+    def __init__(self, state: DMGame, base_amt: int = 0, _obj: Optional[DMUnit] = None):
 
         super().__init__(state, base_amt, _obj)
+
+################################################################################
+    @property
+    def room(self) -> DMRoom:
+
+        return self._obj.room
 
 ################################################################################
     def execute(self) -> None:

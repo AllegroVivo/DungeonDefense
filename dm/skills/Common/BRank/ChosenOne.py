@@ -21,30 +21,25 @@ class ChosenOne(CommonSkill):
             _id="SKL-119",
             name="Chosen One",
             description=(
-                "(Passive) When attacking enemy, inflict extra damage as much "
+                "When attacking enemy, inflict extra damage as much "
                 "as 5 % per Curse stack while reducing Curse stack by 5."
             ),
             rank=2,
-            cooldown=1
+            cooldown=1,
+            passive=True
         )
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """Called when used during a battle."""
 
-        ctx.amplify_pct(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value of the effect corresponding to this skill."""
-
         curse = self.owner.get_status("Curse")
         if curse is None:
-            return 0
+            return
 
         effect = (5 * curse.stacks)
         curse.reduce_stacks_flat(5)
 
-        return effect / 100  # Convert to percentage
+        ctx.amplify_pct(effect / 100)
 
 ################################################################################

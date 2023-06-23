@@ -9,36 +9,30 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("Feint",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class Feint(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-127",
+            name="Feint",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Receive 66 % less damage from AoE attacks."
             ),
             rank=2,
-            cooldown=1,
+            cooldown=0,
             passive=True
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
+        """When called, performs this skill's active effect, if any."""
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
-
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+        # Not sure how to identify AoE attacks yet, so...
+        pass
 
 ################################################################################

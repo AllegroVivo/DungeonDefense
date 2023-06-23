@@ -9,24 +9,27 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("SwiftMoves",)
+__all__ = ("SteelSkin",)
 
 ################################################################################
-class SwiftMoves(CommonSkill):
+class SteelSkin(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-109",
-            name="Swift Moves",
-            description="Gain 1 Dodge when damage is received 4 times.",
-            rank=1,
+            _id="SKL-142",
+            name="Steel Skin",
+            description=(
+                "Gain 1 Absorption at the beginning of battle. Gain 1 additional"
+                "Absorption after damage is received 3 times."
+            ),
+            rank=2,
             cooldown=0,
             passive=True
         )
 
-        self._damage_counter: int = 0
+        self._hit_count: int = 0
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
@@ -38,10 +41,18 @@ class SwiftMoves(CommonSkill):
     def callback(self, ctx: AttackContext) -> None:
 
         if ctx.damage > 0:
-            self._damage_counter += 1
+            self._hit_count += 1
+            if self._hit_count % 3 == 0:
+                self.owner.add_status("Absorption", 1, self)
 
-            if self._damage_counter >= 4:
-                self._damage_counter = 0
-                self.owner.add_status("Dodge", 1, self)
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("battle_start")
+
+################################################################################
+    def notify(self) -> None:
+
+        self.owner.add_status("Absorption", 1, self)
 
 ################################################################################

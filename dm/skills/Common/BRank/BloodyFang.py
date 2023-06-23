@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,24 +26,19 @@ class BloodyFang(CommonSkill):
                 "additional damage as much as Vampire."
             ),
             rank=2,
-            cooldown=2
+            cooldown=2,
+            effect=SkillEffect(base=12, scalar=3)
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        ctx.amplify_flat(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value of the effect corresponding to this skill."""
-
-        damage = 12 + (3 * self.owner.attack)
+        damage = self.effect
         vampire = self.owner.get_status("Vampire")
         if vampire is not None:
             damage += vampire.stacks
 
-        return damage
+        if self.owner == ctx.source:
+            ctx.target.damage(damage)
 
 ################################################################################

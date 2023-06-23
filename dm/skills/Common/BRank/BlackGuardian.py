@@ -20,20 +20,20 @@ class BlackGuardian(CommonSkill):
             state, parent,
             _id="SKL-115",
             name="Black Guardian",
-            description="(Passive) Become immune to Poison and Corpse Explosion.",
+            description="Become immune to Poison and Corpse Explosion.",
             rank=2,
-            cooldown=0
+            cooldown=0,
+            passive=True
         )
 
 ################################################################################
     def on_acquire(self) -> None:
         """Automatically called upon the skill's acquisition."""
 
-        pass
+        self.listen("status_applied")
 
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
-        """A general event response function."""
 
         if self.owner == ctx.target:
             if ctx.status.name in ("Poison", "Corpse Explosion"):

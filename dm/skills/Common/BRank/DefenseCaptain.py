@@ -9,36 +9,36 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("DefenseCaptain",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class DefenseCaptain(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-123",
+            name="Defense Captain",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Apply 3 Defense to all allies in the room for every 2 "
+                "attacks received."
             ),
             rank=2,
-            cooldown=1,
+            cooldown=0,
             passive=True
         )
+
+        self._atk_count: int = 0
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
+        if self.owner == ctx.target:
+            self._atk_count += 1
 
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+        if self._atk_count % 2 == 0:
+            for unit in ctx.room.get_heroes_or_monsters(self.owner):
+                unit.add_status("Defense", 3, self)
 
 ################################################################################

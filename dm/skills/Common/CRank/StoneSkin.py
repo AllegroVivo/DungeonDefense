@@ -20,7 +20,7 @@ class StoneSkin(CommonSkill):
             state, parent,
             _id="SKL-108",
             name="Stone Skin",
-            description="(Passive) DEF increases by 5 (+0.25*Lv).",
+            description="DEF increases by 5 (+0.25*Lv).",
             rank=1,
             cooldown=0,
             passive=True,

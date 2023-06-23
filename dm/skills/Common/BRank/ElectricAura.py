@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING
 from dm.skills._common import CommonSkill
+from utilities import SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -9,36 +10,37 @@ if TYPE_CHECKING:
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("Bravery",)
+__all__ = ("ElectricAura",)
 
 ################################################################################
-class Bravery(CommonSkill):
+class ElectricAura(CommonSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
         super().__init__(
             state, parent,
-            _id="SKL-118",
-            name="Bravery",
+            _id="SKL-126",
+            name="Electric Aura",
             description=(
-                "When attacking enemy, inflict extra damage as much "
-                "as 5 % per Panic stack while reducing Panic stack by 5."
+                "Apply 8 (+0.5*ATK) Shock to enemies that have attacked "
+                "you or received damaged from you."
             ),
             rank=2,
-            cooldown=1,
-            passive=True
+            cooldown=0,
+            passive=True,
+            effect=SkillEffect(base=8, scalar=0.5)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
+        ctx.register_after_execute(self.callback)
 
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
 
-        ctx.amplify_pct(effect / 100)
+        if ctx.damage > 0:
+            target = ctx.target if self.owner == ctx.source else ctx.source
+            target.add_status("Shock", self.effect, self)
 
 ################################################################################

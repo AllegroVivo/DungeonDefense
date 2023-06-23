@@ -26,9 +26,10 @@ class AchillesHeel(CommonSkill):
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def execute(self, ctx: AttackContext) -> None:
 
-        ctx.add_status("Vulnerable", 5)
+        # Get whatever unit type the attacker is not.
+        target = self.random.choice(ctx.room.get_heroes_or_monsters(self.owner, inverse=True))
+        target.add_status("Vulnerable", 5, self)
 
 ################################################################################
