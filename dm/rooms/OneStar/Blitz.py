@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
 from utilities import UnlockPack
 
 if TYPE_CHECKING:
@@ -31,44 +28,23 @@ class Blitz(DMTrapRoom):
             ),
             level=level,
             rank=1,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            base_dmg=15
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                damage = self.effect_value()
+        # Establish the base damage.
+        damage = self.damage
 
-                # If the hero is under the effect of Haze or Charm, triple the damage.
-                haze = unit.get_status("Haze")
-                charm = unit.get_status("Charm")
-                if haze or charm:
-                    damage *= 3
+        # If the hero is under the effect of Haze or Charm, triple that.
+        haze = unit.get_status("Haze")
+        charm = unit.get_status("Charm")
+        if haze or charm:
+            damage *= 3
 
-                unit.damage(damage)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 14)
-        for _ in range(self.level):
-            damage += random.randint(0, 14)
-
-        return damage
+        # Then apply.
+        unit.damage(damage)
 
 ################################################################################

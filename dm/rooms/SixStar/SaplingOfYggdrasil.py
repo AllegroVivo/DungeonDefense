@@ -10,6 +10,7 @@ from utilities import UnlockPack
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
+    from dm.core.contexts import DayAdvanceContext
 ################################################################################
 
 __all__ = ("SaplingOfYggdrasil",)
@@ -24,7 +25,7 @@ class SaplingOfYggdrasil(DMFacilityRoom):
             _id="ROOM-210",
             name="Sapling of Yggdrasil",
             description=(
-                "UrMom"
+                "The last hope for the Yggdrasil, the World Tree."
             ),
             level=level,
             rank=6,
@@ -34,20 +35,17 @@ class SaplingOfYggdrasil(DMFacilityRoom):
         self._uninvaded_battles: int = 0
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                self._uninvaded_battles = 0
+        if isinstance(unit, DMHero):
+            self._uninvaded_battles = 0
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.listen("room_enter")
-        self.game.subscribe_event("battle_start", self.battle_start)
-        self.game.subscribe_event("day_advance", self.check_advance)
+        self.listen("battle_start", self.battle_start)
+        self.listen("day_advance", self.notify)
 
 ################################################################################
     def battle_start(self) -> None:
@@ -55,16 +53,18 @@ class SaplingOfYggdrasil(DMFacilityRoom):
         self._uninvaded_battles += 1
 
 ################################################################################
-    def check_advance(self) -> None:
+    def notify(self, ctx: DayAdvanceContext) -> None:
 
         if self._uninvaded_battles >= 100:
             # Unsubscribe from events.
-            self.game.unsubscribe_event("room_enter", self.notify)
             self.game.unsubscribe_event("battle_start", self.battle_start)
-            self.game.unsubscribe_event("day_advance", self.check_advance)
+            self.game.unsubscribe_event("day_advance", self.notify)
 
+            # Spawn the replacement room
+            new_room = self.game.spawn(_id="ROOM-233", position=self.position, level=self.level)
+
+            # And perform the swap
             self.remove()
-            # Or something like this
-            # self.game.add_room(SaplingOfYggdrasil(self.game, self.position, self.level + 1))
+            self.game.dungeon.replace_room(self, new_room)  # type: ignore
 
 ################################################################################

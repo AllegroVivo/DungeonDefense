@@ -4,10 +4,10 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
+    from dm.core.contexts import StatusApplicationContext
     from dm.core.game.game import DMGame
 ################################################################################
 
@@ -27,32 +27,22 @@ class PoisonWeed(DMFacilityRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="buff", base=100, per_lv=5),
+            ]
         )
 
 ################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
+    def on_acquire(self) -> None:
 
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (100 + (5 * self.level)) / 100
+        self.listen("status_applied")
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def notify(self, ctx: StatusApplicationContext) -> None:
 
         if ctx.source in self.adjacent_rooms:
-            # Outgoing poison damage is increased
-            pass
+            if ctx.status.name == "Poison":
+                ctx.increase_stacks_pct(self.effects["buff"] / 100)
 
 ################################################################################

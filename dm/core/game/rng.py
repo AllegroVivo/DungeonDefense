@@ -4,7 +4,7 @@ from typing     import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.object import DMObject
+    from ...rooms.traproom import DMTrapRoom
     from dm.core.objects.hero import DMHero
     from dm.core.objects.monster import DMMonster
     from dm.core.objects.room import DMRoom
@@ -96,7 +96,7 @@ class DMGenerator:
             return None
 
 ################################################################################
-    def choices(self, seq: List[Any], k: int = 1, *, exclude: Optional[Any] = None) -> List[Any]:
+    def sample(self, seq: List[Any], k: int = 1, *, exclude: Optional[Any] = None) -> List[Any]:
         """Return a list of k elements from the sequence `seq`. If seq is empty,
         it will return an empty list.
         
@@ -147,11 +147,19 @@ class DMGenerator:
         return choices
 
 ################################################################################
-    def calculate_damage(self, _obj: DMObject) -> int:
-        """Intended to calculate the damage to objects that deal a random amount
-        per level."""
+    def scaling_damage(self, room: DMRoom) -> int:
+        """Intended to calculate the damage dealt by objects, usually traps,
+        that deal random damage from within a range for each of their levels."""
 
-        return 0
+        try:
+            x = room._damage_range
+        except AttributeError:
+            raise AttributeError("Room must have a _damage_range attribute to use this method.")
+
+        base_damage = 1 + int(self.next() * x)
+        additional_damage = sum(int(self.next() * (x - 1)) for _ in range(room.level))
+
+        return base_damage + additional_damage
 
 ################################################################################
     def from_range(self, start: Union[int, float], stop: Union[int, float]) -> int:
@@ -228,17 +236,22 @@ class DMGenerator:
 ################################################################################
     def chance(self, n: Union[int, float]) -> bool:
         """Return True with a probability of n/100. If n is greater than 1, it
-        will be divided by 100.
+        will be divided by 100. If n is less than 0, it will be treated as 0.
 
         Parameters:
         -----------
         n : Union[:class:`int`, :class:`float`]
             The probability of returning True. For readability, it can be an
-            integer (will be divided by 100) or a float (used as is).
+            integer - any value greater than 1 will be divided by 100.
         """
+
+        if n not in range(0, 101):
+            raise ValueError("Chance must be between 0 and 100")
 
         if n > 1:
             n /= 100
+        elif n < 0:
+            n = 0
 
         return self.next() <= n
 

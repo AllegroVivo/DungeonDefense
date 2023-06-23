@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -28,64 +28,32 @@ class Return(DMTrapRoom):
                 "activation. It works up to {value} times."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="returns", base=3, per_lv=1),
+            ]
         )
 
         self._count: int = 0
         self._triggers: int = 0
 
 ################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        self.game.subscribe_event("battle_end", self.after_battle)
+        # If we've triggered this room the max number of times, do nothing.
+        if self._triggers > self.effects["returns"]:
+            return
 
-################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
-
-        # If the unit is in this room.
-        if unit.room == self:
-            # If the unit is a hero.
-            if isinstance(unit, DMHero):
-                # Increment the count and check if the hero is the third hero
-                # to enter this room.
-                self._count += 1
-                # If we've hit the third hero to enter.
-                if self._count == 3:
-                    # Return the hero to the dungeon entrance.
-                    unit.room = self.game.dungeon.entrance
-                    # Increment the number of times this room has been triggered.
-                    self._triggers += 1
-                    # And reset the entry count.
-                    self._count = 0
-
-        # If we've triggered this room enough times.
-        if self._triggers >= self.effect_value():
-            # Remove from the listener for this battle.
-            self.game.unsubscribe_event("room_enter", self.notify)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base number of uses.
-        - a is the additional number of uses per level.
-        - LV is the level of this room.
-        """
-
-        return 3 + (1 * self.level)
-
-################################################################################
-    def after_battle(self) -> None:
-
-        # Always re-add the listener for future battles.
-        self.listen("room_enter")
+        # Increment the count and check if the hero is the third hero
+        # to enter this room.
+        self._count += 1
+        # If we've hit the third hero to enter.
+        if self._count == 3:
+            # Return the hero to the dungeon entrance.
+            unit.room = self.game.dungeon.entrance
+            # Increment the number of times this room has been triggered.
+            self._triggers += 1
+            # And reset the entry count.
+            self._count = 0
 
 ################################################################################

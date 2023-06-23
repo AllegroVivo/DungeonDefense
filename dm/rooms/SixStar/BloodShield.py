@@ -4,12 +4,12 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from ...core.objects.monster import DMMonster
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
     from dm.core.game.game import DMGame
+    from dm.core.objects.monster import DMMonster
 ################################################################################
 
 __all__ = ("BloodShield",)
@@ -29,39 +29,30 @@ class BloodShield(DMFacilityRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="Armor", base=500, per_lv=50),
+            ]
         )
 
         # I'm going to make the assumption that DEF represents the DEF of the
         # monster to whom the effect is being applied.
 
 ################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
+    def handle(self, ctx: AttackContext) -> None:
 
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (500 + (50 * self.level)) / 100
+        if ctx.room in self.adjacent_rooms:
+            if isinstance(ctx.target, DMMonster):
+                ctx.register_after_execute(self.callback)
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
+    def callback(self, ctx: AttackContext) -> None:
 
-        if isinstance(ctx.target, DMMonster):
-            adj_monsters = []
-            for room in self.adjacent_rooms:
-                adj_monsters.extend(room.monsters)
-
-            if ctx.target in adj_monsters:
-                ctx.target.add_status("Armor", self.effect_value() * ctx.target.defense)
+        if ctx.damage > 0:
+            ctx.target.add_status(
+                "Armor",
+                (self.effects["Armor"] / 100) * ctx.target.defense,  # Convert to %
+                self
+            )
 
 ################################################################################

@@ -30,7 +30,7 @@ class MagicGear(DMRelic):
         if len(options) == 0:
             return
 
-        results = self.random.choices(options, k=2)
+        results = self.random.sample(options, k=2)
         for room in results:
             room.upgrade()
 

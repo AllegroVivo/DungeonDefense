@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -22,11 +22,17 @@ class CurseWave(DMTrapRoom):
             _id="ROOM-218",
             name="Curse Wave",
             description=(
-                "Once recharged, give 3 (+1 per Lv) Weak, Vulnerable, and Curse to all enemies in adjacent area."
+                "Once recharged, give {value} Weak, Vulnerable, and Curse to "
+                "all enemies in adjacent area."
             ),
             level=level,
             rank=8,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Weak", base=3, per_lv=1),
+                Effect(name="Vulnerable", base=3, per_lv=1),
+                Effect(name="Curse", base=3, per_lv=1)
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
@@ -38,25 +44,8 @@ class CurseWave(DMTrapRoom):
             heroes.extend(room.heroes)
 
         for hero in heroes:
-            hero.add_status("Weak", self.effect_value())
-            hero.add_status("Vulnerable", self.effect_value())
-            hero.add_status("Curse", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 3 + (1 * self.level)
+            hero.add_status("Weak", self.effects["Weak"], self)
+            hero.add_status("Vulnerable", self.effects["Vulnerable"], self)
+            hero.add_status("Curse", self.effects["Curse"], self)
 
 ################################################################################

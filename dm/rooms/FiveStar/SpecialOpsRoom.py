@@ -4,12 +4,11 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("SpecialOpsRoom",)
@@ -29,32 +28,16 @@ class SpecialOpsRoom(DMFacilityRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="scalar", base=30, per_lv=2),
+            ]
         )
 
 ################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (30 + (2 * self.level)) / 100  # Convert to percentage.
-
-################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
-        rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-        if ctx.source in rooms:
-            ctx.amplify_pct(self.effect_value())
+        if ctx.source in self.adjacent_rooms:
+            ctx.amplify_pct(self.effects["scalar"])
 
 ################################################################################

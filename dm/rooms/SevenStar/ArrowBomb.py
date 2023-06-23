@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
@@ -29,39 +27,16 @@ class ArrowBomb(DMTrapRoom):
             ),
             level=level,
             rank=7,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            base_dmg=33
         )
-
         self.setup_charging(1.6, 1.6)
 
 ################################################################################
     def on_charge(self) -> None:
 
-        pass
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        In this function:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 33)
-        for _ in range(self.level):
-            damage += random.randint(0, 32)
-
-        return damage
+        for room in self.adjacent_rooms:
+            for hero in room.heroes:
+                hero.damage(self.damage)
 
 ################################################################################

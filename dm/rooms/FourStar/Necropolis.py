@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -23,58 +23,44 @@ class Necropolis(DMBattleRoom):
             _id="ROOM-151",
             name="Necropolis",
             description=(
-                "Gives {value} Immortality to all monsters in the room at the "
+                "Gives {start} Immortality to all monsters in the room at the "
                 "beginning of the battle. When a deployed monster dies, "
                 "give {status} Immortality to all monsters."
             ),
             level=level,
             rank=4,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            effects=[
+                Effect(name="Immortality", base=4, per_lv=2),
+            ]
         )
 
 ################################################################################
-    def notify(self, ctx: AttackContext) -> None:
-        """A general event response function."""
+    def on_death(self, ctx: AttackContext) -> None:
 
         if ctx.room == self:
             if ctx.target in self.monsters:
                 for monster in self.game.deployed_monsters:
-                    monster.add_status("Immortality", self.effect_value()[1])
+                    monster.add_status("Immortality", self.death_value, self)
 
 ################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
+    @property
+    def death_value(self) -> int:
 
-        Breakdown:
-        ----------
-        **start_status = b + (a * LV)**
-
-        **on_death_status = b + (a * LV@10(6))**
-
-        In these functions:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        - LV@10(6) represents every 10 levels after the 6th level.
-        """
-
-        status = 4 + (2 * self.level)
-        on_death = 3 + (1 * ((self.level - 6) // 10))
-
-        return status, on_death
+        # Additional effectiveness for every 10 levels above 6.
+        return 3 + (1 * ((self.level - 6) // 10))
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.listen("on_death")
-        self.game.subscribe_event("battle_start", self.status_effect)
+        self.listen("on_death", self.on_death)
+        self.listen("battle_start")
 
 ################################################################################
-    def status_effect(self) -> None:
+    def notify(self) -> None:
 
         for monster in self.monsters:
-            monster.add_status("Immortality", self.effect_value()[0])
+            monster.add_status("Immortality", self.effects["Immortality"], self)
 
 ################################################################################

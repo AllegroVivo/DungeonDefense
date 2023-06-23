@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import EggHatchContext
@@ -25,7 +26,10 @@ class Hatchery(DMFacilityRoom):
                 "Increases the level of monsters born from monster eggs by {value}."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="boost", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
@@ -36,26 +40,8 @@ class Hatchery(DMFacilityRoom):
 
 ################################################################################
     def notify(self, ctx: EggHatchContext) -> None:
-        """A general event response function."""
 
         for monster in ctx.options:
-            monster.level_up(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 2 + (1 * self.level)
+            monster.level_up(self.effects["boost"])
 
 ################################################################################

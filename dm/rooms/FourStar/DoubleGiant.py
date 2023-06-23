@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,38 +27,25 @@ class DoubleGiant(DMBattleRoom):
             ),
             level=level,
             rank=4,
-            monster_cap=2
+            monster_cap=2,
+            effects=[
+                Effect(name="life", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def effect_value(self) -> Tuple[float, float]:
-        """The value(s) of this room's effect(s).
+    @property
+    def atk_boost(self) -> float:
 
-        Breakdown:
-        ----------
-        **life = b + (a * LV)**
-
-        **atk = b + (a * LV@10(6))**
-
-        In these functions:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        - LV@10(6) represents every 10 levels after the 6th level.
-        """
-
-        life = float(2 + (1 * self.level))
-        attack = float(2 + (1 * ((self.level - 6) // 10)))  # Effectiveness every 10 levels after 6
-
-        return life, attack
+        # Effectiveness every 10 levels after 6
+        return float(2 + (1 * ((self.level - 6) // 10)))
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_pct("life", self.effect_value()[0])
-            monster.increase_stat_pct("attack", self.effect_value()[1])
+            monster.increase_stat_pct("life", self.effects["life"])
+            monster.increase_stat_pct("attack", self.atk_boost)
 
 ################################################################################

@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -24,36 +25,19 @@ class SwordAndShield(DMBattleRoom):
                 "ATK and DEF of the deployed monsters are increased by {value}."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="ATK", base=5, per_lv=5),
+                Effect(name="DEF", base=5, per_lv=5),
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        A random value from the base effectiveness range is chosen, then a random
-        value from the additional effectiveness range is added to the total for
-        each level of this room.
-
-        Breakdown:
-        ----------
-        **effect = b * (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 5 + (5 * self.level)
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_flat("atk", self.effect_value())
-            monster.increase_stat_flat("def", self.effect_value())
+            monster.increase_stat_flat("ATK", self.effects["ATK"])
+            monster.increase_stat_flat("DEF", self.effects["DEF"])
 
 ################################################################################

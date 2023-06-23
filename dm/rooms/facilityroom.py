@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, TypeVar
+from typing     import TYPE_CHECKING, List, Optional, TypeVar
 
 from dm.core.objects.room import DMRoom
 from utilities      import *
@@ -17,24 +17,23 @@ F = TypeVar("F", bound="DMFacilityRoom")
 ################################################################################
 class DMFacilityRoom(DMRoom):
 
-    __slots__ = (
-
-    )
-
-################################################################################
     def __init__(
         self,
         state: DMGame,
         position: Vector2,
+        *,
         _id: str,
         name: str,
         description: str,
         rank: int,
         level: int = 1,
         unlock: Optional[UnlockPack] = None,
+        effects: Optional[List[Effect]] = None,
     ):
 
-        super().__init__(state, position, _id, name, description, rank, level, unlock)
+        super().__init__(
+            state, position, effects, None, _id, name, description, rank, level, unlock
+        )
 
 ################################################################################
     @property

@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -24,7 +25,10 @@ class Lounge(DMFacilityRoom):
                 "Gives {value} ATK and {value} DEF to all monsters in the dungeon."
             ),
             level=level,
-            rank=3
+            rank=3,
+            effects=[
+                Effect(name="buff", base=4, per_lv=0.5),
+            ]
         )
 
 ################################################################################
@@ -32,24 +36,7 @@ class Lounge(DMFacilityRoom):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.game.deployed_monsters:
-            monster.increase_stat_flat("atk", self.effect_value())
-            monster.increase_stat_flat("def", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return int(4 + (0.5 * self.level))
+            monster.increase_stat_flat("atk", self.effects["buff"])
+            monster.increase_stat_flat("def", self.effects["buff"])
 
 ################################################################################

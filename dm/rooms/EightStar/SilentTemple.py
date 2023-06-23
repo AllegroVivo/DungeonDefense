@@ -5,7 +5,7 @@ from typing     import TYPE_CHECKING, Optional
 
 from ...core.objects.monster import DMMonster
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -30,37 +30,21 @@ class SilentTemple(DMFacilityRoom):
             ),
             level=level,
             rank=8,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Focus", base=10, per_lv=2)
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
 ################################################################################
     def on_charge(self) -> None:
-        """A general event response function."""
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Focus", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 10 + (2 * self.level)
+            monster.add_status("Focus", self.effects["Focus"], self)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         if isinstance(ctx.source, DMMonster):
             if ctx.room in self.adjacent_rooms:

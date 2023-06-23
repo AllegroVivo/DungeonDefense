@@ -5,7 +5,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -30,36 +30,21 @@ class Gunpowder(DMBattleRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            effects=[
+                Effect(name="scalar", base=200, per_lv=50)
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (200 + (50 * self.level)) / 100  # Convert to percentage.
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if ctx.room == self:
-            # Appears to apply to all units.
-            burn = ctx.target.get_status("Burn")
-            if burn is not None:
-                for hero in self.heroes:
-                    hero.damage(self.effect_value() * burn.stacks)
-                burn.reduce_stacks_flat(burn.stacks)
+        burn = ctx.target.get_status("Burn")
+        if burn is not None:
+            for hero in self.heroes:
+                hero.damage(burn.stacks * (self.effects["scalar"] / 100))
+
+            burn.deplete_all_stacks()
 
 ################################################################################

@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,7 +27,11 @@ class PlagueSpreader(DMTrapRoom):
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Poison", base=48, per_lv=36),
+                Effect(name="Corpse Explosion", base=48, per_lv=36),
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
@@ -40,24 +44,7 @@ class PlagueSpreader(DMTrapRoom):
             targets.extend(room.heroes)
 
         for target in targets:
-            target.add_status("Poison", self.effect_value())
-            target.add_status("Corpse Explosion", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 48 + (36 * self.level)
+            target.add_status("Poison", self.effects["Poison"], self)
+            target.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
 
 ################################################################################

@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -25,54 +23,26 @@ class SwampMonster(DMTrapRoom):
             _id="ROOM-232",
             name="Swamp Monster",
             description=(
-                "Inflict  {damage} damage to entering heroes, while reducing "
+                "Inflict {damage} damage to entering heroes, while reducing "
                 "target's Armor by 50 % and giving {status} Slow."
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Adventure
+            unlock=UnlockPack.Adventure,
+            base_dmg=91,
+            effects=[
+                Effect(name="Slow", base=5, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            unit.damage(self.effect_value()[0])
-            unit.add_status("Slow", self.effect_value()[1])
-            armor = unit.get_status("Armor")
-            if armor is not None:
-                armor.reduce_stacks_pct(0.50)
+        unit.damage(self.damage)
+        unit.add_status("Slow", self.effects["Slow"], self)
 
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        **status = b + (a * LV)**
-
-        In these functions:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - b is the base status.
-        - a is the additional stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 91)
-        status = 5
-        for _ in range(self.level):
-            damage += random.randint(90, 180)
-            status += 1
-
-        return damage, status
+        armor = unit.get_status("Armor")
+        if armor is not None:
+            armor.reduce_stacks_pct(0.50)
 
 ################################################################################

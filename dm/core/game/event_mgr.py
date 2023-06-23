@@ -62,6 +62,10 @@ class DMEventManager:
             raise TypeError(f"Invalid event name `{event_type}` passed to EventManager.dispatch().")
 
         for callback in self.subscribers[event_type]:
-            callback(*context)
+            try:
+                callback(*context)
+            except Exception as e:
+                print(f"Invalid callback found in EventManager.dispatch() for event {event_type}.")
+                continue
 
 ################################################################################

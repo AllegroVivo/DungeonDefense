@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import random
+from typing import TYPE_CHECKING, Optional
 
-from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from pygame import Vector2
 
-from ..traproom   import DMTrapRoom
+from utilities import Effect
+from ..traproom import DMTrapRoom
 from ...core.objects.hero import DMHero
 
 if TYPE_CHECKING:
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 ################################################################################
 
 __all__ = ("Ice",)
+
 
 ################################################################################
 class Ice(DMTrapRoom):
@@ -29,47 +30,17 @@ class Ice(DMTrapRoom):
                 "that enters the room."
             ),
             level=level,
-            rank=1
+            rank=1,
+            base_dmg=10,
+            effects=[
+                Effect(name="Slow", base=2, per_lv=1)
+            ]
         )
 
-################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    ################################################################################
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                unit.damage(self.effect_value()[0])
-                unit.add_status("Slow", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect.
-
-        A random value from the base effectiveness range is chosen, then a random
-        value from the additional effectiveness range is added to the total for
-        each level of this room.
-
-        Breakdown:
-        ----------
-        Damage: **effect = (a to b) + ((x to y) * LV)**
-
-        Status: **effect = n + (e * LV)**
-
-        In these functions:
-
-        - (a to b) is the base effectiveness.
-        - (x to y) is the additional effectiveness per level.
-        - n is the base number of stacks.
-        - e is the additional number of stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 10)
-        slow = 2
-        for _ in range(self.level):
-            damage += random.randint(0, 9)
-            slow += 1
-
-        return damage, slow
+        unit.damage(self.damage)
+        unit.add_status("Slow", self.effects["Slow"], self)
 
 ################################################################################

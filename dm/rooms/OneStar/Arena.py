@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -24,7 +25,10 @@ class Arena(DMBattleRoom):
                 "The deployed monsters' ATK is increased by {value}."
             ),
             level=level,
-            rank=1
+            rank=1,
+            effects=[
+                Effect(name="atk", base=4, per_lv=2)
+            ],
         )
 
 ################################################################################
@@ -32,23 +36,6 @@ class Arena(DMBattleRoom):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_flat("atk", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - a is the additional effectiveness per level.
-        - LV is the room's level.
-        """
-
-        return 4 + (2 * self.level)
+            monster.increase_stat_flat("atk", self.effects["atk"])
 
 ################################################################################

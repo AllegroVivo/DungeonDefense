@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
 from ...core.objects.monster      import DMMonster
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -30,7 +30,11 @@ class BloodyMist(DMBattleRoom):
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="status", base=96, per_lv=72),
+                Effect(name="on_damage", base=20, per_lv=1),
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
@@ -41,35 +45,14 @@ class BloodyMist(DMBattleRoom):
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Vampire", self.effect_value()[0])
-            monster.add_status("Fury", self.effect_value()[0])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, float]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        status = 96 + (72 * self.level)
-        stat = (20 + (1 * self.level)) / 100  # Convert to percentage
-
-        return status, stat
+            monster.add_status("Vampire", self.effects["status"], self)
+            monster.add_status("Fury", self.effects["status"], self)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.target, DMMonster):
-            if ctx.room in self.adjacent_rooms:
+        if ctx.room in self.adjacent_rooms:
+            if isinstance(ctx.target, DMMonster):
                 ctx.register_after_execute(self.callback)
 
 ################################################################################
@@ -77,6 +60,10 @@ class BloodyMist(DMBattleRoom):
 
         if ctx.target.is_alive:
             if ctx.damage > 0:
-                ctx.target.add_status("Vampire", self.effect_value()[1] * ctx.target.attack)
+                ctx.target.add_status(
+                    "Vampire",
+                    (self.effects["on_damage"] / 100) * ctx.target.attack,  # convert to percentage
+                    self
+                )
 
 ################################################################################

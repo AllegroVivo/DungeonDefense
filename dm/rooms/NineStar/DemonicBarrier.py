@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -28,37 +28,21 @@ class DemonicBarrier(DMBattleRoom):
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Shield", base=3, per_lv=1),
+                Effect(name="Immune", base=3, per_lv=1),
+                Effect(name="buff", base=40, per_lv=10)
+            ]
         )
-
         self.setup_charging(6.6, 3.3)
 
 ################################################################################
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Shield", self.effect_value()[0])
-            monster.add_status("Immune", self.effect_value()[0])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, float]:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        status = 1 + (1 * self.level)
-        stat = (40 + (10 * self.level)) / 100  # Convert to percentage
-
-        return status, stat
+            monster.add_status("Shield", self.effects["Shield"], self)
+            monster.add_status("Immune", self.effects["Immune"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
@@ -69,7 +53,7 @@ class DemonicBarrier(DMBattleRoom):
             monsters.extend(room.monsters)
 
         for monster in monsters:
-            monster.increase_stat_pct("LIFE", self.effect_value()[1])
-            monster.increase_stat_pct("DEF", self.effect_value()[1])
+            monster.increase_stat_pct("life", self.effects["buff"] / 100)  # Convert to %
+            monster.increase_stat_pct("def", self.effects["buff"] / 100)
 
 ################################################################################

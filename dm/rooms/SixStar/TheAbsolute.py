@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,34 +29,20 @@ class TheAbsolute(DMBattleRoom):
             level=level,
             rank=6,
             monster_cap=1,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="buff", base=200, per_lv=60),
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (200 + (60 * self.level)) / 100
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:  # Only one, but this keeps it uniform.
-            monster.increase_stat_pct("LIFE", self.effect_value())
-            monster.increase_stat_pct("ATK", self.effect_value())
-            monster.increase_stat_pct("DEF", self.effect_value())
+            monster.increase_stat_pct("LIFE", self.effects["buff"] / 100)
+            monster.increase_stat_pct("ATK", self.effects["buff"] / 100)
+            monster.increase_stat_pct("DEF", self.effects["buff"] / 100)
             monster.increase_stat_pct("DEX", 2.00)
 
 ################################################################################

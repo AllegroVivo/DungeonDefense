@@ -4,8 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from ...core.objects.hero import DMHero
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,35 +28,17 @@ class Library(DMFacilityRoom):
             ),
             level=level,
             rank=4,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Focus", base=10, per_lv=2),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-                for room in rooms:
-                    for monster in room.monsters:
-                        monster.add_status("Focus", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 10 + (2 * self.level)
+        for room in self.adjacent_rooms:
+            for monster in room.monsters:
+                monster.add_status("Focus", self.effects["Focus"], self)
 
 ################################################################################

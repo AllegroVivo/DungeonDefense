@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -28,49 +28,29 @@ class CurtainOfDarkness(DMTrapRoom):
                 "beginning of the battle."
             ),
             level=level,
-            rank=4
+            rank=4,
+            effects=[
+                Effect(name="Blind", base=1, per_lv=1),
+                Effect(name="Defense", base=3, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                unit.add_status("Blind", self.effect_value()[0])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        blind = 1 + (1 * self.level)
-        defense = 3 + (1 * self.level)
-
-        return blind, defense
+        unit.add_status("Blind", self.effects["Blind"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.game.subscribe_event("battle_start", self.battle_start)
+        self.listen("battle_start")
 
 ################################################################################
-    def battle_start(self) -> None:
+    def notify(self) -> None:
 
-        rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-        for room in rooms:
+        for room in self.adjacent_rooms:
             for monster in room.monsters:
-                monster.add_status("Defense", self.effect_value()[0])
+                monster.add_status("Defense", self.effects["Defense"], self)
 
 ################################################################################

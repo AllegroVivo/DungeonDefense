@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,7 +27,10 @@ class SecretLaboratory(DMFacilityRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="research", base=5, per_lv=1),
+            ]
         )
 
         self._research: int = 0
@@ -38,27 +41,9 @@ class SecretLaboratory(DMFacilityRoom):
     def on_charge(self) -> None:
         """Called when this room is charged."""
 
-        self._research += self.effect_value()
-
+        self._research += self.effects["research"]
         if self._research >= 300:
             self._research -= 300
             self.game.dungeon.upgrade_random_monster(include_inventory=True)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 5 + (1 * self.level)
 
 ################################################################################

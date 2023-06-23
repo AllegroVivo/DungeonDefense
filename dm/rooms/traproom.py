@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, List, Optional, Tuple
+from typing     import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from dm.core.objects.room import DMRoom
 from utilities      import *
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
-    from dm.core.objects.unit import DMUnit
     from dm.core.objects.status import DMStatus
 ################################################################################
 
@@ -19,7 +18,6 @@ class DMTrapRoom(DMRoom):
 
     __slots__ = (
         "_activated_before",
-        "_damage_range",
     )
 
 ################################################################################
@@ -27,20 +25,22 @@ class DMTrapRoom(DMRoom):
         self,
         state: DMGame,
         position: Vector2,
-        dmg_range: Optional[Tuple[int, int]] = None,
         *,
         _id: str,
         name: str,
         description: str,
         rank: int,
         level: int = 1,
-        unlock: Optional[UnlockPack] = None
+        unlock: Optional[UnlockPack] = None,
+        base_dmg: Optional[int] = None,
+        effects: Optional[List[Effect]] = None,
     ):
 
-        super().__init__(state, position, _id, name, description, rank, level, unlock)
+        super().__init__(
+            state, position, effects, base_dmg, _id, name, description, rank, level, unlock
+        )
 
         self._activated_before: bool = False
-        self._damage_range: Optional[Tuple[int, int]] = dmg_range
 
 ################################################################################
     @property

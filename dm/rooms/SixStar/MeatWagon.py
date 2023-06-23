@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional, Tuple
 
 from ..facilityroom import DMFacilityRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -21,12 +22,16 @@ class MeatWagon(DMFacilityRoom):
             _id="ROOM-201",
             name="Meat Wagon",
             description=(
-                "Once recharged, give 2 (+1 per Lv) Immortality to adjacent monsters and get 5 (+1 per Lv) Gold."
+                "Once recharged, give 2 (+1 per Lv) Immortality to adjacent "
+                "monsters and get 5 (+1 per Lv) Gold."
             ),
             level=level,
-            rank=6
+            rank=6,
+            effects=[
+                Effect(name="Immortality", base=2, per_lv=1),
+                Effect(name="Gold", base=5, per_lv=1)
+            ]
         )
-
         self.setup_charging(20.0, 10.0)
 
 ################################################################################
@@ -37,28 +42,8 @@ class MeatWagon(DMFacilityRoom):
             targets.extend(room.monsters)
 
         for target in targets:
-            target.add_status("Immortality", self.effect_value()[0])
+            target.add_status("Immortality", self.effects["Immortality"], self)
 
-        self.game.inventory.add_gold(self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In these functions:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        status = 2 + (1 * self.level)
-        gold = 5 + (1 * self.level)
-
-        return status, gold
+        self.game.inventory.add_gold(self.effects["Gold"])
 
 ################################################################################

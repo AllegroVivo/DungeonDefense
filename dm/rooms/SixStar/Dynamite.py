@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -28,39 +28,24 @@ class Dynamite(DMBattleRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            effects=[
+                Effect(name="Burn", base=300, per_lv=50),
+            ]
         )
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
-        """A general event response function."""
 
         if ctx.room == self:
             burn = ctx.target.get_status("Burn")
             if burn is not None:
                 targets = []
                 for room in self.adjacent_rooms:
-                    targets.extend(room.heroes)
+                    targets.extend(room.get_heroes_or_monsters(ctx.target))
 
                 for target in targets:
-                    target.damage(burn.stacks * self.effect_value())
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (300 + (50 * self.level)) / 100  # Convert to percentage.
+                    target.damage(burn.stacks * (self.effects["Burn"] / 100))
 
 ################################################################################
     def on_acquire(self) -> None:

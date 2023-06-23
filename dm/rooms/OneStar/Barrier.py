@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional
 
-from ..battleroom   import DMBattleRoom
+from pygame import Vector2
+
+from utilities import Effect
+from ..battleroom import DMBattleRoom
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -22,7 +24,10 @@ class Barrier(DMBattleRoom):
             name="Barrier",
             description="The deployed monster's DEF is increased by {value}.",
             level=level,
-            rank=1
+            rank=1,
+            effects=[
+                Effect(name="def", base=4, per_lv=2)
+            ]
         )
 
 ################################################################################
@@ -30,23 +35,6 @@ class Barrier(DMBattleRoom):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_flat("def", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base adjustment.
-        - a is the additional effectiveness per level.
-        - LV is the room's level.
-        """
-
-        return 4 + (2 * self.level)
+            monster.increase_stat_flat("def", self.effects["def"])
 
 ################################################################################

@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,7 +26,10 @@ class Tailwind(DMFacilityRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            effects=[
+                Effect(name="dex", base=15, per_lv=1),
+            ]
         )
 
 ################################################################################
@@ -34,23 +37,6 @@ class Tailwind(DMFacilityRoom):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.game.deployed_monsters:
-            monster.increase_stat_pct("DEX", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (15 + (1 * self.level)) / 100  # Convert to percentage.
+            monster.increase_stat_pct("DEX", self.effects["dex"])
 
 ################################################################################

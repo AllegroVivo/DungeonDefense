@@ -4,8 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from ...core.objects.hero import DMHero
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -30,51 +29,30 @@ class TreeOfLife(DMBattleRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            effects=[
+                Effect(name="Regeneration", base=20, per_lv=12),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-                for room in rooms:
-                    for monster in room.monsters:
-                        monster.add_status("Regeneration", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 20 + (12 * self.level)
+        for room in self.adjacent_rooms:
+            for monster in room.monsters:
+                monster.add_status("Regeneration", self.effects["Regeneration"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.listen("room_enter")
-        self.game.subscribe_event("battle_start", self.battle_start)
+        self.listen("battle_start")
 
 ################################################################################
-    def battle_start(self) -> None:
-        """Called automatically at the beginning of a battle."""
+    def notify(self) -> None:
 
-        rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-        for room in rooms:
+        for room in self.adjacent_rooms:
             for monster in room.monsters:
-                monster.add_status("Absorption", 1)
+                monster.add_status("Absorption", 1, self)
 
 ################################################################################

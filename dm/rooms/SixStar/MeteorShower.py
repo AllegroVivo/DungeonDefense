@@ -25,48 +25,33 @@ class MeteorShower(DMTrapRoom):
             _id="ROOM-199",
             name="Meteor Shower",
             description=(
-                "Inflicts 1~49 (+0~48 per Lv) damage and gives 128 (+96 per Lv) Burn to all heroes in adjacent rooms when a hero enters the room. Damage inflicted is doubled for enemies under the effect of Slow."
+                "Inflicts {damage} damage and gives {status} Burn to all "
+                "heroes in adjacent rooms when a hero enters the room. Damage "
+                "inflicted is doubled for enemies under the effect of Slow."
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            base_dmg=49,
+            effects=[
+                Effect(name="Burn", base=128, per_lv=96),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        pass
+        targets = []
+        for room in self.adjacent_rooms:
+            targets.extend(room.get_heroes_or_monsters(unit))
 
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
+        for target in targets:
+            damage = self.damage
+            burn = target.get_status("Burn")
+            if burn is not None:
+                damage *= 2
 
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        **status = b + (a * LV)**
-
-        In these functions:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - b is the base status.
-        - a is the additional stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 49)
-        status = 128
-        for _ in range(self.level):
-            damage += random.randint(0, 48)
-            status += 96
-
-        return damage, status
+            target.damage(damage)
+            target.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

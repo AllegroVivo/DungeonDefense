@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
     from dm.core.game.game import DMGame
-    from dm.core.objects.status import DMStatus
+    from dm.core.contexts import StatusExecutionContext
 ################################################################################
 
 __all__ = ("DeathMist",)
@@ -24,25 +23,32 @@ class DeathMist(DMBattleRoom):
             _id="ROOM-224",
             name="Death Mist",
             description=(
-                "Once recharged, give 3 (+1 per Lv) Immortality and 1 Immortal "
+                "Once recharged, give {status} Immortality and 1 Immortal "
                 "Rage to all monsters in adjacent area. Every time Immortality "
                 "is triggered, monsters deployed in adjacent rooms will get Fury "
-                "as much as 100 (+5 per Lv) % of ATK."
+                "as much as {buff} % of ATK."
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Immortality", base=3, per_lv=1),
+                Effect(name="buff", base=100, per_lv=5),
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
 ################################################################################
-    def notify(self, status: DMStatus) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusExecutionContext) -> None:
 
-        if status.name == "Immortality":
+        if ctx.status.name == "Immortality":
             for monster in self.game.deployed_monsters:
                 if monster.room in self.adjacent_rooms:
-                    monster.add_status("Fury", self.effect_value()[1] * monster.attack)
+                    monster.add_status(
+                        "Fury",
+                        (self.effects["buff"] / 100) * monster.attack,  # Convert to %
+                        self
+                    )
 
 ################################################################################
     def on_charge(self) -> None:
@@ -52,28 +58,8 @@ class DeathMist(DMBattleRoom):
             monsters.extend(room.monsters)
 
         for monster in monsters:
-            monster.add_status("Immortality", self.effect_value()[0])
-            monster.add_status("Immortal Rage", 1)
-
-################################################################################
-    def effect_value(self) -> Tuple[int, float]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In these functions:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        status = 3 + (1 * self.level)
-        stat = (100 + (5 * self.level)) / 100
-
-        return status, stat
+            monster.add_status("Immortality", self.effects["Immortality"], self)
+            monster.add_status("Immortal Rage", 1, self)
 
 ################################################################################
     def on_acquire(self) -> None:

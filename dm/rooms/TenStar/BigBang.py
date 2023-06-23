@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,7 +27,12 @@ class BigBang(DMTrapRoom):
             ),
             level=level,
             rank=10,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            base_dmg=121,
+            effects=[
+                Effect(name="Burn", base=80, per_lv=40),
+                Effect(name="Shock", base=80, per_lv=40),
+            ]
         )
         self.setup_charging(6.6, 6.6)
 
@@ -37,39 +40,8 @@ class BigBang(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.damage(self.effect_value()[0])
-            hero.add_status("Burn", self.effect_value()[1])
-            hero.add_status("Shock", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        **status = b + (a * LV)**
-
-        In these functions:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - b is the base status.
-        - a is the additional stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 121)
-        status = 80
-        for _ in range(self.level):
-            damage += random.randint(0, 120)
-            status += 40
-
-        return damage, status
+            hero.damage(self.damage)
+            hero.add_status("Burn", self.effects["Burn"], self)
+            hero.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

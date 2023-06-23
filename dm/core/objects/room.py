@@ -5,6 +5,7 @@ from pygame     import Rect, Surface, Vector2
 from typing     import (
     TYPE_CHECKING,
     Any,
+    Dict,
     List,
     Optional,
     Tuple,
@@ -37,6 +38,8 @@ class DMRoom(DMLevelable, DMChargeable):
     __slots__ = (
         "_position",
         "_graphics",
+        "_damage_range",
+        "_effects",
     )
 
 ################################################################################
@@ -44,6 +47,8 @@ class DMRoom(DMLevelable, DMChargeable):
         self,
         state: DMGame,
         position: Optional[Vector2],
+        effects: Optional[List[Effect]],
+        base_dmg: Optional[int],
         _id: str,
         name: str,
         description: str,
@@ -58,9 +63,13 @@ class DMRoom(DMLevelable, DMChargeable):
         self._position: Vector2 = position or Vector2(-1, -1)
         self._graphics: RoomGraphical = RoomGraphical(self)
 
+        self._damage_range: Optional[int] = base_dmg
+        self._effects: List[Effect] = effects or []
+
         # Subscribe to relevant events.
         self.listen("room_enter", self._room_entered)
-        self.listen("stat_recalculation", self.stat_adjust)
+        self.listen("on_attack", self._on_attack)
+        self.listen("stat_refresh", self.stat_adjust)
 
 ################################################################################
     def __repr__(self) -> str:
@@ -134,6 +143,26 @@ class DMRoom(DMLevelable, DMChargeable):
         return self.graphics.center()
 
 ################################################################################
+    @property
+    def damage(self) -> Optional[int]:
+
+        if self._damage_range is None:
+            return
+
+        return self.random.scaling_damage(self)
+
+################################################################################
+    @property
+    def effects(self) -> Optional[Dict[str, int]]:
+        """Returns a dictionary of this room's outgoing status effects and
+        their stack values."""
+
+        if not self._effects:
+            return
+
+        return {e.name: e.base + (e.per_lv * self.level) for e in self._effects}
+
+################################################################################
     def _room_entered(self, unit: DMUnit) -> None:
         """Called when the "room_enter" event is fired and fires this object's
         `on_enter()` method if the room entered was this one."""
@@ -143,8 +172,8 @@ class DMRoom(DMLevelable, DMChargeable):
 
 ################################################################################
     def _on_attack(self, ctx: AttackContext) -> None:
-        """Called when the "attack" event is fired and fires this object's
-        `on_enter()` method if this is the room where the attack took place."""
+        """Called when the "on_attack" event is fired and fires this object's
+        `on_attack()` method if this is the room where the attack took place."""
 
         if ctx.room == self:
             self.on_attack(ctx)
@@ -212,22 +241,10 @@ class DMRoom(DMLevelable, DMChargeable):
         # Dummy coordinates until it's placed.
         new_obj.position = kwargs.pop("position", None) or Vector2(-1, -1)
 
-        return new_obj
+        new_obj._damage_range = self._damage_range
+        new_obj._statuses = self._effects
 
-# ################################################################################
-#     @property
-#     def color(self) -> Tuple[int, int, int]:
-#
-#         class_name = type(self).__name__
-#
-#         if class_name == "EntranceRoom":
-#             return GREEN
-#         if class_name == "BossRoom":
-#             return RED
-#         if class_name == "Battle":
-#             return BLUE
-#
-#         return ROOM_BG
+        return new_obj
 
 ################################################################################
     def draw(self, screen: Surface) -> None:
@@ -254,39 +271,6 @@ class DMRoom(DMLevelable, DMChargeable):
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
-
-        pass
-
-################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
-
-        pass
-
-################################################################################
-    def effect_value(self) -> Any:
-        """The value(s) of this room's effect.
-
-        A random value from the base effectiveness range is chosen, then a random
-        value from the additional effectiveness range is added to the total for
-        each level of this room.
-
-        Breakdown:
-        ----------
-        **effect = (a to b) + ((x to y) * LV)**
-
-        In this function:
-
-        - (a to b) is the base effectiveness will be chosen.
-        - (x to y) is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
 
         pass
 
@@ -333,7 +317,7 @@ class DMRoom(DMLevelable, DMChargeable):
         return self.game.dungeon.get_adjacent_rooms(self.position)
 
 ################################################################################
-    def get_heroes_or_monsters(self, unit: DMUnit) -> List[DMUnit]:
+    def get_heroes_or_monsters(self, unit: DMUnit, inverse: bool = False) -> List[DMUnit]:
         """Returns the room's heroes or monsters depending on the type of unit
         provided.
 
@@ -349,9 +333,9 @@ class DMRoom(DMLevelable, DMChargeable):
         """
 
         if isinstance(unit, DMHero):
-            return self.heroes
+            return self.heroes if not inverse else self.monsters
         elif isinstance(unit, DMMonster):
-            return self.monsters
+            return self.monsters if not inverse else self.heroes
         else:
             return []
 

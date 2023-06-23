@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities  import RoomType
+from utilities  import RoomType, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,33 +26,19 @@ class Ambush(DMBattleRoom):
                 "trap in the dungeon."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="buff", base=4, per_lv=4),
+            ]
         )
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
-        for monster in self.monsters:
-            monster.increase_stat_flat("atk", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = (e + (a * LV)) * T**
-
-        In this function:
-
-        - e is the base increase.
-        - a is the additional increase per level.
-        - LV is the level of this room.
-        - T is the number of traps in the dungeon.
-        """
-
         traps = [r for r in self.game.dungeon.all_rooms() if r.room_type == RoomType.Trap]
-        return (4 + (4 * self.level)) * len(traps)
+
+        for monster in self.monsters:
+            monster.increase_stat_flat("atk", self.effects["buff"] * len(traps))
 
 ################################################################################

@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from ...core.objects.hero import DMHero
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,43 +28,18 @@ class MirrorRoom(DMBattleRoom):
             ),
             level=level,
             rank=4,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="Mirror", base=1, per_lv=1),
+                Effect(name="Pleasure", base=20, per_lv=20),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                for monster in self.monsters:
-                    monster.add_status("Mirror", self.effect_value()[0])
-                    monster.add_status("Pleasure", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int ,int]:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        mirror = 1 + (1 * self.level)
-        pleasure = 20 + (20 * self.level)
-
-        return mirror, pleasure
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
-
-        self.listen("room_enter")
+        for monster in self.monsters:
+            monster.add_status("Mirror", self.effects["Mirror"], self)
+            monster.add_status("Pleasure", self.effects["Pleasure"], self)
 
 ################################################################################

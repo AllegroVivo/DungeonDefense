@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,7 +27,10 @@ class Graveyard(DMBattleRoom):
                 "the beginning of the battle."
             ),
             level=level,
-            rank=3
+            rank=3,
+            effects=[
+                Effect(name="Immortality", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
@@ -34,24 +38,7 @@ class Graveyard(DMBattleRoom):
         """A general event response function."""
 
         for monster in self.monsters:
-            monster.add_status("Immortality", 1)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect =b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 2 + (1 * self.level)
+            monster.add_status("Immortality", self.effects["Immortality"], self)
 
 ################################################################################
     def on_acquire(self) -> None:

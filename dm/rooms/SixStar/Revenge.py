@@ -4,8 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from ...core.objects.monster import DMMonster
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -29,39 +28,26 @@ class Revenge(DMFacilityRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="Fury", base=100, per_lv=10),
+            ]
         )
 
         # I'm going to make the assumption that ATK represents the ATK of the
         # monster to whom the effect is being applied.
 
 ################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (100 + (10 * self.level)) / 100
-
-################################################################################
     def handle(self, ctx: AttackContext) -> None:
         """Automatically called as part of all battle loops."""
 
-        if isinstance(ctx.target, DMMonster):
-            adj_monsters = []
-            for room in self.adjacent_rooms:
-                adj_monsters.extend(room.monsters)
+        if ctx.room in self.adjacent_rooms:
+            ctx.register_after_execute(self.callback)
 
-            if ctx.target in adj_monsters:
-                ctx.target.add_status("Fury", self.effect_value() * ctx.target.attack)
+################################################################################
+    def callback(self, ctx: AttackContext) -> None:
+
+        if ctx.damage > 0:
+            ctx.target.add_status("Fury", self.effects["Fury"] / 100 * ctx.source.attack, self)
 
 ################################################################################

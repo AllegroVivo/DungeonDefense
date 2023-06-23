@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,7 +27,10 @@ class SwirlOfAnger(DMFacilityRoom):
             ),
             level=level,
             rank=8,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Fury", base=200, per_lv=200),
+            ]
         )
         self.setup_charging(3.3, 3.3)
 
@@ -39,24 +42,7 @@ class SwirlOfAnger(DMFacilityRoom):
             monsters.extend(room.monsters)
 
         for monster in monsters:
-            monster.add_status("Fury", self.effect_value())
-            monster.add_status("Merciless", 1)
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 200 + (200 * self.level)
+            monster.add_status("Fury", self.effects["Fury"], self)
+            monster.add_status("Merciless", 1, self)
 
 ################################################################################

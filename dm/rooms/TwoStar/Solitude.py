@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import RoomType
+from utilities import RoomType, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,36 +26,22 @@ class Solitude(DMBattleRoom):
                 "number of rooms in the dungeon that are not battle rooms."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="ATK", base=4, per_lv=4),
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = (e + (a * LV)) * T**
-
-        In this function:
-
-        - e is the base increase.
-        - a is the additional increase per level.
-        - LV is the level of this room.
-        - T is the number of non-battle rooms in the dungeon.
-        """
-
-        rooms = [
-            r for r in self.game.dungeon.all_rooms()
-            if r.room_type is not RoomType.Battle
-        ]
-        return (4 + (4 * self.level)) * len(rooms)
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
+        rooms = [
+            r for r in self.game.dungeon.all_rooms()
+            if r.room_type is not RoomType.Battle
+        ]
+
         for monster in self.monsters:
-            monster.increase_stat_flat("ATK", self.effect_value())
+            monster.increase_stat_flat("ATK", self.effects["ATK"] * len(rooms))
 
 ################################################################################

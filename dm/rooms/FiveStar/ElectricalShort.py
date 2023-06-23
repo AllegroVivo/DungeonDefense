@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -22,47 +23,28 @@ class ElectricalShort(DMTrapRoom):
             _id="ROOM-183",
             name="Electrical Short",
             description=(
-                "Consumes all of hero's Shock stat and inflicts damage by "
+                "Consumes all of hero's Shock stat and inflicts damage equal to "
                 "{value} % of stat consumed to all enemies in adjacent rooms."
             ),
             level=level,
-            rank=5
+            rank=5,
+            effects=[
+                Effect(name="scalar", base=200, per_lv=50)
+            ]
         )
 
-        # Assuming this triggers on entry?
-
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            shock = unit.get_status("Shock")
-            if shock is not None:
-                rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-                targets = []
-                for room in rooms:
-                    targets.extend(room.heroes)
+        shock = unit.get_status("Shock")
+        if shock is not None:
+            targets = []
+            for room in self.adjacent_rooms:
+                targets.extend(room.heroes)
 
-                for target in targets:
-                    target.damage(shock.stacks * self.effect_value())
+            for target in targets:
+                target.damage(shock.stacks * self.effects["scalar"] / 100)
 
-                shock.reduce_stacks_flat(shock.stacks)
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (200 + (50 * self.level)) / 100  # Convert to percentage.
+            shock.deplete_all_stacks()
 
 ################################################################################

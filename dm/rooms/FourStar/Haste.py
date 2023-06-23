@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,48 +28,23 @@ class Haste(DMBattleRoom):
                 "enters the room."
             ),
             level=level,
-            rank=4
+            rank=4,
+            effects=[
+                Effect(name="DEX", base=10, per_lv=1),
+                Effect(name="Acceleration", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMUnit):
-                unit.add_status("Acceleration", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[float, int]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        effect = float(10 + (1 * self.level))
-        status = 2 + (1 * self.level)
-
-        return effect, status
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
-
-        self.listen("room_enter")
+        unit.add_status("Acceleration", self.effects["Acceleration"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_pct("DEX", self.effect_value()[0])
+            monster.increase_stat_pct("DEX", self.effects["DEX"] / 100)  # Convert to percentage
 
 ################################################################################

@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -31,57 +29,22 @@ class Meteor(DMTrapRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            base_dmg=31,
+            effects=[
+                Effect(name="Burn", base=32, per_lv=24)
+            ]
         ),
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            for hero in self.heroes:
-                damage = self.effect_value()[0]
-                if unit.get_status("Slow") is not None:
-                    damage *= 2
+        for hero in self.heroes:
+            damage = self.damage
+            if unit.get_status("Slow") is not None:
+                damage *= 2
 
-                hero.damage(damage)
-                hero.add_status("Burn", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        **status = b + (a * LV)**
-
-        In these functions:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - b is the base status.
-        - a is the additional stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 31)
-        status = 32
-        for _ in range(self.level):
-            damage += random.randint(0, 30)
-            status += 24
-
-        return damage, status
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
-
-        pass
+            hero.damage(damage)
+            hero.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

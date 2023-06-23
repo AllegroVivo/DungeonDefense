@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from ...core.objects.hero import DMHero
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,48 +28,23 @@ class Pressure(DMBattleRoom):
             ),
             level=level,
             rank=4,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            effects=[
+                Effect(name="DEX", base=10, per_lv=1),
+                Effect(name="Slow", base=1, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                unit.add_status("Slow", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[float, int]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        stat_adj = float(10 + (1 * self.level))
-        status = 1 + (1 * self.level)
-
-        return stat_adj, status
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
-
-        self.listen("room_enter")
+        unit.add_status("Slow", self.effects["Slow"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for hero in self.heroes:
-            hero.reduce_stat_pct("DEX", self.effect_value()[0])
+            hero.reduce_stat_pct("DEX", self.effects["DEX"])
 
 ################################################################################

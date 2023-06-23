@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,7 +27,10 @@ class AncientBell(DMFacilityRoom):
             ),
             level=level,
             rank=6,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            effects=[
+                Effect(name="Focus", base=10, per_lv=2),
+            ]
         )
 
 ################################################################################
@@ -38,23 +41,6 @@ class AncientBell(DMFacilityRoom):
             monsters.extend(room.monsters)
 
         for monster in monsters:
-            monster.add_status("Focus", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 10 + (2 * self.level)
+            monster.add_status("Focus", self.effects["Focus"], self)
 
 ################################################################################

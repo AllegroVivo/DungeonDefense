@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -22,12 +22,17 @@ class Yggdrasil(DMTrapRoom):
             _id="ROOM-233",
             name="Yggdrasil",
             description=(
-                "Once recharged, gives 60 (+20 per Lv) Armor, Fury, and "
-                "Regeneration to all monsters in the dungeon."
+                "Once recharged, gives {value} Armor, Fury, and Regeneration "
+                "to all monsters in the dungeon."
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Adventure
+            unlock=UnlockPack.Adventure,
+            effects=[
+                Effect(name="Armor", base=60, per_lv=20),
+                Effect(name="Fury", base=60, per_lv=20),
+                Effect(name="Regeneration", base=60, per_lv=20),
+            ]
         ),
         self.setup_charging(3.3, 3.3)
 
@@ -35,25 +40,8 @@ class Yggdrasil(DMTrapRoom):
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Armor", self.effect_value())
-            monster.add_status("Fury", self.effect_value())
-            monster.add_status("Regeneration", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 60 + (20 * self.level)
+            monster.add_status("Armor", self.effects["Armor"], self)
+            monster.add_status("Fury", self.effects["Fury"], self)
+            monster.add_status("Regeneration", self.effects["Regeneration"], self)
 
 ################################################################################

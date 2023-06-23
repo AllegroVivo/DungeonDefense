@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,35 +27,17 @@ class ElectricField(DMTrapRoom):
                 "a hero enters the room."
             ),
             level=level,
-            rank=4
+            rank=4,
+            effects=[
+                Effect(name="Shock", base=36, per_lv=24),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-                for room in rooms:
-                    for hero in room.heroes:
-                        hero.add_status("Shock", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 36 + (24 * self.level)
+        for room in self.adjacent_rooms:
+            for hero in room.heroes:
+                hero.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

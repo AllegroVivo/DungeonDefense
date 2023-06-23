@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -30,52 +28,22 @@ class FireStorm(DMTrapRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            base_dmg=43,
+            effects=[
+                Effect(name="Burn", base=192, per_lv=128)
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-            targets = []
-            for room in rooms:
-                targets.extend(room.heroes)
+        targets = []
+        for room in self.adjacent_rooms:
+            targets.extend(room.heroes)
 
-            for target in targets:
-                target.damage(self.effect_value()[0])
-                target.add_status("Burn", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        **status = b + (a * LV)**
-
-        In these functions:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - b is the base status.
-        - a is the additional stacks per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 43)
-        status = 192
-        for _ in range(self.level):
-            damage += random.randint(0, 42)
-            status += 128
-
-        return damage, status
+        for target in targets:
+            target.damage(self.damage)
+            target.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

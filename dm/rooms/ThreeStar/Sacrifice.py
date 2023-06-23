@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts.attack import AttackContext
@@ -28,7 +28,10 @@ class Sacrifice(DMBattleRoom):
             ),
             level=level,
             rank=3,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            effects=[
+                Effect(name="effect", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
@@ -39,28 +42,8 @@ class Sacrifice(DMBattleRoom):
 
 ################################################################################
     def notify(self, ctx: AttackContext) -> None:
-        """A general event response function."""
 
         if ctx.room == self:
-            self.game.dark_lord.heal(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = (b + (a * LV)) * DL**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        - DL is the Dark Lord's max life.
-        """
-
-        effect = 0.02 + (0.01 * self.level)
-        return int(self.game.dark_lord.max_life * effect)
+            self.game.dark_lord.heal(self.game.dark_lord.max_life * self.effects["effect"] / 100)
 
 ################################################################################

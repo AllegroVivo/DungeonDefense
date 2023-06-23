@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
@@ -29,7 +27,8 @@ class BigExplosion(DMTrapRoom):
             ),
             level=level,
             rank=8,
-            unlock=UnlockPack.Myth
+            unlock=UnlockPack.Myth,
+            base_dmg=29
         )
         self.setup_charging(3.3, 3.3)
 
@@ -37,31 +36,6 @@ class BigExplosion(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.damage(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect(s).
-
-        A random value from the base damage range is chosen, then a random value
-        from the additional damage range is added to the total for each level of
-        this room.
-
-        Breakdown:
-        ----------
-        **damage = (i to j) + ((x to y) * LV)**
-
-        In this function:
-
-        - (i to j) is the base damage.
-        - (x to y) is the additional damage per level.
-        - LV is the level of this room.
-        """
-
-        damage = random.randint(1, 29)
-        for _ in range(self.level):
-            damage += random.randint(0, 28)
-
-        return damage
+            hero.damage(self.damage)
 
 ################################################################################

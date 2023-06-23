@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,31 +26,17 @@ class FrostyWind(DMFacilityRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Awakening
+            unlock=UnlockPack.Awakening,
+            effects=[
+                Effect(name="dex", base=10, per_lv=1),
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> float:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return (10 + (1 * self.level)) // 100
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for hero in self.game.all_heroes:
-            hero.reduce_stat_pct("DEX", self.effect_value())
+            hero.reduce_stat_pct("dex", self.effects["dex"] / 100)  # Convert to percentage
 
 ################################################################################

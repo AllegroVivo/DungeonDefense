@@ -5,6 +5,7 @@ from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
 from ..traproom   import DMTrapRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -31,35 +32,20 @@ class OperationRoom(DMFacilityRoom):
                 "is reduced for traps that attack multiple enemies simultaneously."
             ),
             level=level,
-            rank=3
+            rank=3,
+            effects=[
+                Effect(name="buff", base=8, per_lv=6),
+            ]
         )
 
         # Will need to revisit this one.
 
 ################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 8 + (6 * self.level)
-
-################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         # Need to figure this out a little more when I actually make traps attack.
         if isinstance(ctx.source, DMTrapRoom):
-            ctx.source.attack_power += self.effect_value()
+            ctx.source.attack_power += self.effects["buff"]
 
         # Also need to reduce effectiveness somehow?
 

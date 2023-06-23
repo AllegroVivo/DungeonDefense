@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, List, Optional, TypeVar
+from typing     import TYPE_CHECKING, List, Optional, Tuple, TypeVar
 
 from dm.core.objects.room import DMRoom
 from utilities      import *
@@ -28,16 +28,21 @@ class DMBattleRoom(DMRoom):
         self,
         state: DMGame,
         position: Optional[Vector2],
+        *,
         _id: str,
         name: str,
         description: str,
         rank: int,
         level: int = 1,
         unlock: Optional[UnlockPack] = None,
-        monster_cap: int = 3
+        monster_cap: int = 3,
+        base_dmg: Optional[int] = None,
+        effects: Optional[List[Effect]] = None
     ):
 
-        super().__init__(state, position, _id, name, description, rank, level, unlock)
+        super().__init__(
+            state, position, effects, base_dmg, _id, name, description, rank, level, unlock
+        )
 
         self.monster_cap: int = monster_cap
 

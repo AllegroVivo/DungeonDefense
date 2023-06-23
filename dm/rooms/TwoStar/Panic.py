@@ -3,8 +3,8 @@ from __future__ import annotations
 from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
-from ...core.objects.hero import DMHero
 from ..traproom   import DMTrapRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -26,32 +26,15 @@ class PanicRoom(DMTrapRoom):
                 "Gives {value} Panic to heroes that enter the room."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="Panic", base=1, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                unit.add_status("Panic", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 1 + (1 * self.level)
+        unit.add_status("Panic", self.effects["Panic"], self)
 
 ################################################################################

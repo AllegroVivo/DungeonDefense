@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from pygame     import Vector2
-from typing     import TYPE_CHECKING, Optional, Tuple
+from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,35 +27,24 @@ class ThreeGiganteers(DMBattleRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Original
+            unlock=UnlockPack.Original,
+            effects=[
+                Effect(name="life", base=2, per_lv=1),
+            ]
         )
 
 ################################################################################
-    def effect_value(self) -> Tuple[float, float]:
-        """The value(s) of this room's effect(s).
+    def atk_boost(self) -> float:
 
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        life = float(2 + (1 * self.level))
-        attack = float(2 + (1 * ((self.level - 4) // 5)))  # Effectiveness every 5 levels after 4
-
-        return life, attack
+        # Effectiveness every 5 levels after 4
+        return float(2 + (1 * ((self.level - 4) // 5)))
 
 ################################################################################
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
-            monster.increase_stat_pct("life", self.effect_value()[0])
-            monster.increase_stat_pct("attack", self.effect_value()[1])
+            monster.increase_stat_pct("LIFE", self.effects["life"])
+            monster.increase_stat_pct("ATK", self.atk_boost())
 
 ################################################################################

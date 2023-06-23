@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
-from ...core.objects.hero import DMHero
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -27,33 +27,16 @@ class Rage(DMBattleRoom):
                 "hero enters."
             ),
             level=level,
-            rank=2
+            rank=2,
+            effects=[
+                Effect(name="Acceleration", base=2, per_lv=2),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                for monster in self.monsters:
-                    monster.add_status("Acceleration", self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - e is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 2 + (2 * self.level)
+        for monster in self.monsters:
+            monster.add_status("Acceleration", self.effects["Acceleration"], self)
 
 ################################################################################

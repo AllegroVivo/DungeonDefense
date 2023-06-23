@@ -3,6 +3,7 @@ import os
 import pygame
 import re
 
+from dataclasses    import dataclass
 from pygame         import Rect, Surface, Vector2
 from pygame.font    import Font
 from typing         import Dict, List, Tuple, Union
@@ -21,8 +22,17 @@ __all__ = (
     "pixel_to_grid",
     "grid_to_topleft_pixel",
     "grid_to_center_pixel",
-    "center_text"
+    "center_text",
+    "Effect"
 )
+
+################################################################################
+@dataclass
+class Effect:
+
+    name: str
+    base: int
+    per_lv: float
 
 ################################################################################
 def convert_all_webp() -> None:

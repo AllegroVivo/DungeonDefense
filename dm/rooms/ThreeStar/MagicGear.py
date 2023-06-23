@@ -4,6 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..facilityroom import DMFacilityRoom
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -24,7 +25,10 @@ class MagicGear(DMFacilityRoom):
                 "Once recharged, get {value} Gold."
             ),
             level=level,
-            rank=3
+            rank=3,
+            effects=[
+                Effect(name="Gold", base=5, per_lv=1),
+            ]
         )
 
         self.setup_charging(charge_time=20.0, on_enter=2.0)
@@ -32,23 +36,6 @@ class MagicGear(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        self.game.inventory.add_gold(self.effect_value())
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 5 + (1 * self.level)
+        self.game.inventory.add_gold(self.effects["Gold"])
 
 ################################################################################

@@ -5,7 +5,7 @@ from typing     import TYPE_CHECKING, Optional, Tuple
 
 from ..battleroom   import DMBattleRoom
 from ...core.objects.hero import DMHero
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -31,48 +31,28 @@ class Prism(DMBattleRoom):
             ),
             level=level,
             rank=5,
-            unlock=UnlockPack.Advanced
+            unlock=UnlockPack.Advanced,
+            effects=[
+                Effect(name="Mirror", base=1, per_lv=1),
+                Effect(name="Pleasure", base=20, per_lv=20)
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            if isinstance(unit, DMHero):
-                for monster in self.monsters:
-                    monster.add_status("Mirror", self.effect_value()[0])
-                    monster.add_status("Pleasure", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[int, int]:
-        """The value(s) of this room's effect(s).
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In these functions:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        mirror = 1 + (1 * self.level)
-        pleasure = 20 + (20 * self.level)
-
-        return mirror, pleasure
+        for monster in self.monsters:
+            monster.add_status("Mirror", self.effects["Mirror"], self)
+            monster.add_status("Pleasure", self.effects["Pleasure"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.listen("room_enter")
-        self.game.subscribe_event("on_death", self.on_death)
+        self.listen("on_death")
 
 ################################################################################
-    def on_death(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
         if ctx.room == self:
             if isinstance(ctx.target, DMHero):

@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional, Tuple
 
 from ..battleroom   import DMBattleRoom
-from utilities import UnlockPack
+from utilities import UnlockPack, Effect
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -29,12 +29,15 @@ class InfinityClock(DMBattleRoom):
             ),
             level=level,
             rank=9,
-            unlock=UnlockPack.Adventure
+            unlock=UnlockPack.Adventure,
+            effects=[
+                Effect(name="Acceleration", base=5, per_lv=1),
+                Effect(name="dex", base=100, per_lv=4),
+            ]
         )
 
 ################################################################################
-    def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
+    def on_enter(self, unit: DMUnit) -> None:
 
         if unit.room == self:
             monsters = []
@@ -42,33 +45,7 @@ class InfinityClock(DMBattleRoom):
                 monsters.extend(room.monsters)
 
             for monster in monsters:
-                monster.add_status("Acceleration", self.effect_value()[1])
-
-################################################################################
-    def effect_value(self) -> Tuple[float, int]:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        stat = (100 + (4 * self.level)) / 100  # Convert to percentage
-        status = 5 + (1 * self.level)
-
-        return stat, status
-
-################################################################################
-    def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
-
-        self.listen("room_enter")
+                monster.add_status("Acceleration", self.effects["Acceleration"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
@@ -79,6 +56,6 @@ class InfinityClock(DMBattleRoom):
             monsters.extend(room.monsters)
 
         for monster in monsters:
-            monster.increase_stat_pct("DEX", self.effect_value()[0])
+            monster.increase_stat_pct("dex", self.effects["dex"] / 100)  # Convert to %
 
 ################################################################################

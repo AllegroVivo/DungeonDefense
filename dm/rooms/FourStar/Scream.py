@@ -5,6 +5,7 @@ from typing     import TYPE_CHECKING, Optional
 
 from ..battleroom   import DMBattleRoom
 from ...core.objects.hero import DMHero
+from utilities import Effect
 
 if TYPE_CHECKING:
     from dm.core.contexts import AttackContext
@@ -27,38 +28,24 @@ class Scream(DMBattleRoom):
                 "dies in this room."
             ),
             level=level,
-            rank=4
+            rank=4,
+            effects=[
+                Effect(name="Panic", base=1, per_lv=1),
+            ]
         )
-
-################################################################################
-    def effect_value(self) -> int:
-        """The value(s) of this room's effect.
-
-        Breakdown:
-        ----------
-        **effect = b + (a * LV)**
-
-        In this function:
-
-        - b is the base effectiveness.
-        - a is the additional effectiveness per level.
-        - LV is the level of this room.
-        """
-
-        return 1 + (1 * self.level)
 
 ################################################################################
     def on_acquire(self) -> None:
         """Called automatically when this room is added to the map."""
 
-        self.game.subscribe_event("on_death", self.on_death)
+        self.listen("on_death")
 
 ################################################################################
-    def on_death(self, ctx: AttackContext) -> None:
+    def notify(self, ctx: AttackContext) -> None:
 
         if ctx.room == self:
             if isinstance(ctx.target, DMHero):
                 for hero in self.game.all_heroes:
-                    hero.add_status("Panic", self.effect_value())
+                    hero.add_status("Panic", self.effects["Panic"], self)
 
 ################################################################################
