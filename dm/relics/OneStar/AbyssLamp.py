@@ -37,7 +37,6 @@ class AbyssLamp(DMRelic):
 
         # Check for activation at a 10% chance.
         if self.random.chance(10):
-            source = ctx.room.units_of_type(ctx.target)
-            ctx.override(self.random.choice(source))
+            ctx.override(self.random.choice(self.room.heroes))
 
 ################################################################################

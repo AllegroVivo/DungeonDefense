@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from time       import time
 from typing     import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
@@ -28,8 +29,8 @@ class DMGenerator:
         self._state: DMGame = state
 
         self._MT: List[int] = [0] * 624
-        self._seed: int = seed
-        self._MT[0] = seed
+        self._seed: int = seed if seed is not None else int(time())
+        self._MT[0] = self._seed
         self._index: int = 624
 
         self._generate_initial_array()

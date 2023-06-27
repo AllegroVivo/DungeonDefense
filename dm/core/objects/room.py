@@ -18,14 +18,14 @@ from utilities  import *
 
 from .chargeable import DMChargeable
 from ..graphics import RoomGraphical
-from .hero import DMHero
-from .monster import DMMonster
 from .levelable import DMLevelable
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
+    from .hero import DMHero
+    from .monster import DMMonster
 ################################################################################
 
 __all__ = ("DMRoom",)
@@ -334,9 +334,9 @@ class DMRoom(DMLevelable, DMChargeable):
             The list of units of the same type as the given unit.
         """
 
-        if isinstance(unit, DMHero):
+        if unit.is_hero():
             return self.heroes if not inverse else self.monsters
-        elif isinstance(unit, DMMonster):
+        elif unit.is_monster():
             return self.monsters if not inverse else self.heroes
         else:
             return []

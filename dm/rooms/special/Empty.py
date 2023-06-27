@@ -24,7 +24,9 @@ class EmptyRoom(DMRoom):
             description="There's... nothing here...",
             level=0,
             rank=0,
-            unlock=None
+            unlock=None,
+            effects=None,
+            base_dmg=None,
         )
 
 ################################################################################

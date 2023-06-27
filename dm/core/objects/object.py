@@ -3,7 +3,6 @@ from __future__ import annotations
 from uuid       import UUID, uuid4
 from typing     import TYPE_CHECKING, Callable, Optional, Type, TypeVar, Union
 
-from ..contexts import StatusApplicationContext
 from utilities  import *
 
 if TYPE_CHECKING:

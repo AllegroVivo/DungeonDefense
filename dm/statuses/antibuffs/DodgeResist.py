@@ -6,6 +6,7 @@ from ...core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -33,5 +34,18 @@ class DodgeResist(DMStatus):
             stacks=stacks,
             status_type=StatusType.AntiBuff
         )
+
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("status_execute")
+
+################################################################################
+    def notify(self, ctx: StatusExecutionContext) -> None:
+
+        if self.owner == ctx.target:
+            if ctx.status.name == "Dodge":
+                if self.stacks >= ctx.status.stacks:
+                    ctx.will_fail = True
 
 ################################################################################

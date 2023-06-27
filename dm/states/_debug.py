@@ -22,10 +22,10 @@ class _DebugState(DMState):
 
         super().__init__(game)
 
-        monster1 = self.game.inventory.get_random_inventory_monster()
-        monster2 = self.game.inventory.get_random_inventory_monster()
+        monster1 = self.game.inventory.get_random_inventory_monster(strongest=False)
+        monster2 = self.game.inventory.get_random_inventory_monster(strongest=False)
         while monster1 == monster2:
-            monster2 = self.game.inventory.get_random_inventory_monster()
+            monster2 = self.game.inventory.get_random_inventory_monster(strongest=False)
 
         self.game.battle_mgr.engage(monster1, monster2)
         self.count = 0

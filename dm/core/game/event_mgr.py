@@ -36,10 +36,10 @@ class DMEventManager:
     def subscribe(self, event_type: str, callback: Callable) -> None:
 
         if event_type not in self.subscribers:
-            raise TypeError(f"Invalid event name [{event_type}] passed to EventManager.subscribe().")
+            raise TypeError(f"Invalid event name ['{event_type}'] passed to EventManager.subscribe().")
 
         if not callable(callback):
-            raise TypeError("Invalid observer passed to EventManager.subscribe().")
+            raise TypeError("Invalid observer callback passed to EventManager.subscribe().")
 
         if callback in self.subscribers[event_type]:
             return

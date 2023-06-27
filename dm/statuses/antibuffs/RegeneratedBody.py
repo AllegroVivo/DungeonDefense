@@ -6,7 +6,7 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -36,6 +36,17 @@ class RegeneratedBody(DMStatus):
             status_type=StatusType.AntiBuff
         )
 
-        # Implemented in Immortality status class
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("status_execute")
+
+################################################################################
+    def notify(self, ctx: StatusExecutionContext) -> None:
+
+        if self.owner == ctx.target:
+            if ctx.status.name == "Immortality":
+                if self.stacks >= ctx.status.stacks:
+                    ctx.will_fail = True
 
 ################################################################################

@@ -10,7 +10,7 @@ from typing     import (
     Union
 )
 
-from ..contexts import HealingContext, StatusApplicationContext
+from ..contexts import HealingContext
 from ..game.movement import MovementComponent
 from ..graphics._graphical import GraphicalComponent
 from ...core.objects.levelable import DMLevelable
@@ -186,12 +186,13 @@ class DMUnit(DMLevelable):
         if isinstance(status, str):
             status = self.game.spawn(status, parent=self, stacks=int(stacks))
 
-        # Create a context and dispatch the event for interaction.
-        ctx = StatusApplicationContext(self.game, source, self, status)  # type: ignore
-        self.game.dispatch_event("status_applied", ctx)
-
-        # After the context has been acted on, we can add the resulting status.
-        self._add_status(ctx.execute())
+        # Can't do this here because of a circular import.
+        # # Create a context and dispatch the event for interaction.
+        # ctx = StatusApplicationContext(self.game, source, self, status)  # type: ignore
+        # self.game.dispatch_event("status_applied", ctx)
+        #
+        # # After the context has been acted on, we can add the resulting status.
+        # self._add_status(ctx.execute())
 
 ################################################################################
     def _add_status(self, status: DMStatus) -> None:
@@ -571,5 +572,17 @@ class DMUnit(DMLevelable):
         for i, status in enumerate(self._statuses):
             if status.stacks <= 0:
                 self._statuses.pop(i)
+
+################################################################################
+    @staticmethod
+    def is_monster() -> bool:
+
+        return False
+
+################################################################################
+    @staticmethod
+    def is_hero() -> bool:
+
+        return False
 
 ################################################################################

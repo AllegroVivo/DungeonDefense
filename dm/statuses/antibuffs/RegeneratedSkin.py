@@ -6,7 +6,7 @@ from dm.core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
-    from dm.core.contexts import AttackContext
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -29,14 +29,26 @@ class RegeneratedSkin(DMStatus):
             _id="ABF-107",
             name="Regenerated Skin",
             description=(
-                "When recovering LIFE, gains Regenerated Skin equal to the LIFE "
-                "recovered. Recovery amount gradually decreases depending on the "
-                "Regenerated Skin owned."
+                "When recovering LIFE vis Regeneration, gain Regenerated Skin "
+                "equal to the LIFE recovered. Recovery amount gradually decreases "
+                "depending on the Regenerated Skin owned."
             ),
             stacks=stacks,
             status_type=StatusType.AntiBuff
         )
 
-        # Implemented in ???
+################################################################################
+    def on_acquire(self) -> None:
+
+        self.listen("status_execute")
 
 ################################################################################
+    def notify(self, ctx: StatusExecutionContext) -> None:
+
+        if self.owner == ctx.target:
+            if ctx.status.name == "Regeneration":
+                if self.stacks >= ctx.status.stacks:
+                    ctx.will_fail = True
+
+################################################################################
+

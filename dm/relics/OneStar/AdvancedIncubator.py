@@ -28,7 +28,7 @@ class AdvancedIncubator(DMRelic):
     def on_acquire(self) -> None:
         """Called automatically when a relic is added to the player's inventory."""
 
-        self.game.subscribe_event("egg_hatch", self.notify)
+        self.listen("egg_hatch")
 
 ################################################################################
     def notify(self, ctx: EggHatchContext) -> None:

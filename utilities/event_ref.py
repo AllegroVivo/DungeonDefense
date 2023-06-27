@@ -74,6 +74,7 @@ _EVENT_REFERENCE: List[str] = [
     # Stats-Related
     "stat_calculation",             # [None]
     "reset_stats",                  # [None]
+    "stat_refresh",
 
     # Dungeon-Related
     "day_advance",                  # [None]

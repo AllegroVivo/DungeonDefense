@@ -6,6 +6,7 @@ from ...core.objects.status import DMStatus
 from utilities          import *
 
 if TYPE_CHECKING:
+    from dm.core.contexts import StatusExecutionContext
     from dm.core.objects.unit import DMUnit
     from dm.core.game.game import DMGame
 ################################################################################
@@ -35,15 +36,15 @@ class ArmorFragment(DMStatus):
             status_type=StatusType.AntiBuff
         )
 
+        # I don't really understand what this means, so I'll come back to it.
+
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically upon the status's acquisition by the unit."""
 
-        self.game.subscribe_event("status_execute", self.notify)
+        self.listen("status_execute")
 
 ################################################################################
-    def notify(self, *args) -> None:
-        """A general event response function."""
+    def notify(self, ctx: StatusExecutionContext) -> None:
 
         pass
 

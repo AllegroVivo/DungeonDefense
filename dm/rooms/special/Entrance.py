@@ -24,7 +24,9 @@ class EntranceRoom(DMRoom):
             description="An entryway into to the dungeon.",
             rank=0,
             level=0,
-            unlock=None
+            unlock=None,
+            effects=None,
+            base_dmg=None,
         )
 
 ################################################################################
