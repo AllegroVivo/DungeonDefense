@@ -30,8 +30,9 @@ class DMSkill(DMObject):
         "_parent",
         "__cooldown",
         "_active_cooldown",
-        "_skill_type",
+        "_passive",
         "_effect",
+        "_parent_atk_count"
     )
 
 ################################################################################
@@ -39,8 +40,7 @@ class DMSkill(DMObject):
         self,
         state: DMGame,
         parent: Optional[DMUnit],
-        cooldown: Literal[0, 1, 2, 4, 6, 8],
-        skill_type: SkillType,
+        cooldown: CooldownType,
         effect: Optional[SkillEffect],
         _id: str,
         name: str,
@@ -52,12 +52,16 @@ class DMSkill(DMObject):
         super().__init__(state, _id, name, description, rank, unlock)
 
         self._parent: DMUnit = parent
+        self._parent_atk_count: int = 1  # Start this at 1 since attacks aren't added until after execution.
 
-        self.__cooldown: float = cooldown * self.owner._skill_cooldown_scalar
+        self.__cooldown: float = cooldown.value * self.owner._skill_cooldown_scalar
         self._active_cooldown: float = self.__cooldown
 
-        self._skill_type: SkillType = skill_type
+        self._passive: bool = self.__cooldown == 0
         self._effect: Optional[SkillEffect] = effect
+
+        # Subscribe to relevant events
+        self.listen("on_attack", self._callback)
 
 ################################################################################
     @property
@@ -75,7 +79,7 @@ class DMSkill(DMObject):
     @property
     def passive(self) -> bool:
 
-        return self._skill_type is SkillType.Passive
+        return self._passive
 
 ################################################################################
     @property
@@ -90,17 +94,42 @@ class DMSkill(DMObject):
         return self.__cooldown * self.owner._skill_cooldown_scalar
 
 ################################################################################
+    @property
+    def atk_count(self) -> int:
+
+        return self._parent_atk_count
+
+################################################################################
     def _callback(self, ctx: AttackContext) -> None:
+
+        # Call `on_attack` here because a number of passive effects will
+        # need this listener.
+        self.on_attack(ctx)
 
         # If the master cooldown is 0, then this isn't a battle skill or
         # doesn't have battle-based logic.
         if self.__cooldown == 0:
             return
 
+        # If this attack doesn't involve this unit, just exit.
+        if self.owner not in (ctx.source, ctx.target):
+            return
+
+        # This is useful in the subclasses.
+        if self.owner == ctx.target:
+            ctx.register_post_execute(self._increment_atk_count)
+
+        # Reduce the cooldown and check if it's ready to be used.
         self._active_cooldown -= 1
         if self._active_cooldown <= 0:
             self.execute(ctx)
             self._reset_cooldown()
+
+################################################################################
+    def _increment_atk_count(self, ctx: AttackContext) -> None:
+
+        if not ctx.will_fail:
+            self._parent_atk_count += 1
 
 ################################################################################
     def _reset_cooldown(self) -> None:
@@ -116,6 +145,12 @@ class DMSkill(DMObject):
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
         """When called, performs this skill's active effect, if any."""
+
+        pass
+
+################################################################################
+    def on_attack(self, ctx: AttackContext) -> None:
+        """Called automatically when an attack is initiated."""
 
         pass
 

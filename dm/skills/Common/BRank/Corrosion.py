@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -21,13 +22,16 @@ class Corrosion(CommonSkill):
             _id="SKL-121",
             name="Corrosion",
             description="Apply 2 Weak to the attacker.",
-            rank=2,
-            cooldown=0
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        ctx.target.add_status("Weak", 2, self)
+        # If we're defending
+        if self.owner == ctx.target:
+            # Apply Weak to the attacker.
+            ctx.source.add_status("Weak", 2, self)
 
 ################################################################################

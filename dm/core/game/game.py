@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from dm.core.objects.relic import DMRelic
     from dm.core.objects.room import DMRoom
     from dm.core.states.state import DMState
+    from dm.core.objects.unit import DMUnit
 ################################################################################
 
 __all__ = ("DMGame",)
@@ -296,5 +297,24 @@ class DMGame:
     def all_rooms(self, entry: bool = False, boss: bool = False, empty: bool = False) -> List[DMRoom]:
 
         return self.dungeon.all_rooms(entry, boss, empty)
+
+################################################################################
+    def units_of_type(self, unit: DMUnit, inverse: bool = False) -> List[DMUnit]:
+        """Returns the game's heroes or monsters depending on the type of unit
+        provided.
+
+        Parameters:
+        -----------
+        unit: :class:`DMUnit`
+            The unit whose type is to be returned.
+
+        Returns:
+        --------
+        List[:class:`DMUnit`]
+            The list of units of the same type as the given unit.
+        """
+
+        if isinstance(unit, DMHero):
+            return self.all_heroes if not inverse else self.all_monsters
 
 ################################################################################

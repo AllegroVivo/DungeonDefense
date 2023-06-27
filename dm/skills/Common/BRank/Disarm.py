@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,16 @@ class Disarm(CommonSkill):
             description=(
                 "Apply 5 Weak to an enemy."
             ),
-            rank=2,
-            cooldown=2
+            rank=3,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        if self.owner == ctx.target:
-            ctx.source.add_status("Weak", 5, self)
+        # If we're attacking
+        if self.owner == ctx.source:
+            # Apply Weak to the target.
+            ctx.target.add_status("Weak", 5, self)
 
 ################################################################################

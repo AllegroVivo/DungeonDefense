@@ -38,7 +38,7 @@ class CurtainOfDarkness(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.add_status("Blind", self.effects["Blind"], self)
+        unit.add_status("X", self.effects["X"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
@@ -51,6 +51,6 @@ class CurtainOfDarkness(DMTrapRoom):
 
         for room in self.adjacent_rooms:
             for monster in room.monsters:
-                monster.add_status("Defense", self.effects["Defense"], self)
+                monster.add_status("X", self.effects["X"], self)
 
 ################################################################################

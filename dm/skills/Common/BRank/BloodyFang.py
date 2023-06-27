@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,20 +25,23 @@ class BloodyFang(CommonSkill):
                 "Inflict 12 (+3.0*ATK) damage to an enemy, and then inflict "
                 "additional damage as much as Vampire."
             ),
-            rank=2,
-            cooldown=2,
+            rank=3,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=12, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        damage = self.effect
-        vampire = self.owner.get_status("Vampire")
-        if vampire is not None:
-            damage += vampire.stacks
-
+        # If we're attacking
         if self.owner == ctx.source:
-            ctx.target.damage(damage)
+            # Damage the target.
+            ctx.target.damage(self.effect)
+            # Check for Vampire
+            vampire = ctx.target.get_status("Vampire")
+            if vampire is not None:
+                # Damage the target again for an amount equal to the number of
+                # Vampire stacks they possess.
+                ctx.target.damage(vampire.stacks)
 
 ################################################################################

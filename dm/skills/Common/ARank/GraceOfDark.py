@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -23,9 +24,8 @@ class GraceOfDark(CommonSkill):
             description=(
                 "Gain 1 Immune instead of Curse."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -36,9 +36,13 @@ class GraceOfDark(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If the status is being applied to us.
         if self.owner == ctx.target:
+            # If the status is Curse.
             if ctx.status.name == "Curse":
+                # Cancel the application.
                 ctx.will_fail = True
+                # Apply Immune instead.
                 self.owner.add_status("Immune", 1, self)
 
 ################################################################################

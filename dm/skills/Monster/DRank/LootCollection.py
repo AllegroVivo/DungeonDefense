@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Monster._monster import MonsterSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("LootCollection",)
 
 ################################################################################
-class LootCollection(CommonSkill):
+class LootCollection(MonsterSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
@@ -23,9 +24,8 @@ class LootCollection(CommonSkill):
             description=(
                 "50 % chance to Gain 1 Gold when killing an enemy."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=1,
+            cooldown=CooldownType.Passive,
         )
 
 ################################################################################

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -23,9 +24,8 @@ class RunegravenSkin(CommonSkill):
             description=(
                 "Become immune to Vulnerable."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -36,8 +36,11 @@ class RunegravenSkin(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're the target of the status.
         if self.owner == ctx.target:
+            # If the status is Vulnerable.
             if ctx.status.name == "Vulnerable":
+                # Cancel the application.
                 ctx.will_fail = True
 
 ################################################################################

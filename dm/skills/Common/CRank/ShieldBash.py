@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -26,17 +26,22 @@ class ShieldBash(CommonSkill):
                 "damage as much as 100 % of Armor applied to self."
             ),
             rank=1,
-            cooldown=2,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=12, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        damage = self.effect
-        armor = self.owner.get_status("Armor")
-        if armor is not None:
-            damage += armor.stacks
-        ctx.amplify_flat(damage)
+        # If we're attacking
+        if self.owner == ctx.source:
+            damage = self.effect
+            # Check for Armor
+            armor = self.owner.get_status("Armor")
+            if armor is not None:
+                # If present, increase the damage
+                damage += armor.stacks
+            # Apply to target
+            ctx.target.damage(damage)
 
 ################################################################################

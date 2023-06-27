@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
+
 
 if TYPE_CHECKING:
     from dm.core.contexts   import TortureContext
@@ -23,9 +25,8 @@ class Sadism(CommonSkill):
             description=(
                 "The effect of Torture increases by 15 %."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################

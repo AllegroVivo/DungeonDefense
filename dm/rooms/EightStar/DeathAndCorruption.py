@@ -45,7 +45,7 @@ class DeathAndCorruption(DMTrapRoom):
             targets.extend(room.heroes)
 
         for target in targets:
-            target.damage(self.damage)
-            target.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+            target.damage(self.damage)  # type: ignore
+            target.add_status("X", self.effects["X"], self)
 
 ################################################################################

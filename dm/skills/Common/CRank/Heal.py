@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +23,16 @@ class Heal(CommonSkill):
             name="Heal",
             description="Recover 15 (+3.0*ATK) LIFE of ally.",
             rank=1,
-            cooldown=2,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=15, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # Select a random ally
         target = self.random.choice(ctx.room.units_of_type(self.owner))
+        # Restore their health
         target.heal(self.effect)
 
 ################################################################################

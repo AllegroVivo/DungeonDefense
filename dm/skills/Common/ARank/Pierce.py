@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,15 +25,17 @@ class Pierce(CommonSkill):
                 "Inflict 16 (+3.0*ATK) damage to an enemy. Inflict additional "
                 "damage as much as half of enemy's DEF."
             ),
-            rank=2,
-            cooldown=2,
+            rank=4,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=16, scalar=3.0)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.source:
-            ctx.target.damage(self.effect + (ctx.target.defense / 2))
+            # Add damage equal to half of target's defense
+            ctx.amplify_flat(int(self.effect + (ctx.target.defense / 2)))
 
 ################################################################################

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Monster._monster import MonsterSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("RegenerationSkill",)
 
 ################################################################################
-class RegenerationSkill(CommonSkill):
+class RegenerationSkill(MonsterSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
@@ -24,9 +24,8 @@ class RegenerationSkill(CommonSkill):
             description=(
                 "Gain (+0.5*ATK) Regeneration when attacked."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True,
+            rank=1,
+            cooldown=CooldownType.Passive,
             effect=SkillEffect(base=0, scalar=0.5),
         )
 

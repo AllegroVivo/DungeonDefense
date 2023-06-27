@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import TortureContext
@@ -23,9 +24,8 @@ class SkilledTorturer(CommonSkill):
             description=(
                 "Time required for Torture is reduced by 1D."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################

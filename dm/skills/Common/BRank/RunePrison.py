@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,16 @@ class RunePrison(CommonSkill):
             description=(
                 "Apply 2 Rigidity to an enemy."
             ),
-            rank=2,
-            cooldown=2
+            rank=3,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.source:
+            # Apply Rigidity
             ctx.target.add_status("Rigidity", 2, self)
 
 ################################################################################

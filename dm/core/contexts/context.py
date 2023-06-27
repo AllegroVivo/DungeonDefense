@@ -17,7 +17,7 @@ class Context(ABC):
     __slots__ = (
         "_id",
         "_state",
-        "_late_callback",
+        "_late_callbacks",
         "_post_execution_callbacks"
     )
 
@@ -27,7 +27,7 @@ class Context(ABC):
         self._id: UUID = uuid4()
         self._state: DMGame = state
 
-        self._late_callback: Optional[Callable] = None
+        self._late_callbacks: List[Callable] = []
         self._post_execution_callbacks: List[Callable] = []
 
 ################################################################################
@@ -59,10 +59,12 @@ class Context(ABC):
 ################################################################################
     def register_late_callback(self, callback: Callable) -> None:
 
-        if self._late_callback is not None:
-            raise RuntimeError("Late callback already registered.")
-
-        self._late_callback = callback
+        # Honestly, we're probably going to have situations where there
+        # are multiple late callbacks, so we should probably just make this
+        # a list of callbacks and just deal with the fact that they may
+        # be called in a random order. (But try to limit them regardless.)
+        # Good enough for jazz band.
+        self._late_callbacks.append(callback)
 
 ################################################################################
     def register_post_execute(self, callback: Callable) -> None:

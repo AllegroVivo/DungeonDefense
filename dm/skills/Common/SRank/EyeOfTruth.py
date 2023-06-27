@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,21 +24,19 @@ class EyeOfTruth(CommonSkill):
             description=(
                 "No debuff will cause it to attack an ally."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        # Late callback is a single callable that will be executed at the end of
-        # the attack before damage application.
+        # If we're attacking
         if self.owner == ctx.source:
-            ctx.register_late_callback(self.late_callback)
+            ctx.register_late_callback(self.callback)
 
 ################################################################################
-    def late_callback(self, ctx: AttackContext) -> None:
+    def callback(self, ctx: AttackContext) -> None:
 
         # Check at the last second to see if the owner is attacking an ally.
         if ctx.target.is_ally(self.owner):

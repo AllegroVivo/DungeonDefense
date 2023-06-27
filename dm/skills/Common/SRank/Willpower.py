@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -23,9 +24,8 @@ class Willpower(CommonSkill):
             description=(
                 "Become immune to Stun and Rigidity."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -36,8 +36,11 @@ class Willpower(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're being targeted with a status
         if self.owner == ctx.target:
+            # And it's one of the statuses we're immune to
             if ctx.status.name in ("Stun", "Rigidity"):
+                # Negate it.
                 ctx.will_fail = True
 
 ################################################################################

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect, UnlockPack
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, UnlockPack, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -23,9 +23,8 @@ class ProtectiveRune(CommonSkill):
             description=(
                 "Gain 15 (+1.5*ATK) Armor when a hero enters the room."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True,
+            rank=4,
+            cooldown=CooldownType.Passive,
             effect=SkillEffect(base=15, scalar=1.5),
             unlock=UnlockPack.Awakening
         )
@@ -38,7 +37,9 @@ class ProtectiveRune(CommonSkill):
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
 
+        # If a unit has entered the same room as us
         if unit.room == self.room:
+            # Apply Armor
             self.owner.add_status("Armor", self.effect, self)
 
 ################################################################################

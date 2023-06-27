@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -23,9 +24,8 @@ class Valor(CommonSkill):
             description=(
                 "Cancel Panic applied to self, and gain 1 Immortality instead."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -36,9 +36,13 @@ class Valor(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're being targeted with a status
         if self.owner == ctx.target:
+            # And it's Panic
             if ctx.status.name == "Panic":
-                ctx.will_fail = True
+                # Convert it to Immortality
                 ctx.target.add_status("Immortality", 1, self)
+                # And negate the original application
+                ctx.will_fail = True
 
 ################################################################################

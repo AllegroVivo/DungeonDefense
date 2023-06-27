@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING, Optional
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect, UnlockPack
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,15 +25,14 @@ class PreEmptiveStrike(CommonSkill):
                 "Deal 4 % additional damage on the first hit to each new "
                 "enemy for every stack of Acceleration."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
         self._opponent: Optional[DMUnit] = None
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
         # If we're attacking a new target, reset the opponent.
         if self.owner == ctx.source and self._opponent != ctx.target:
@@ -51,11 +50,12 @@ class PreEmptiveStrike(CommonSkill):
         # Need to add a listener here to reset the opponent when the owner
         # attacks a new target or after battle.
         # self.listen("after_attack", self.post_attack)  # Or something for disengagement.
-        self.listen("battle_end")
+        self.listen("unit_disengaged")
 
 ################################################################################
-    def notify(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
 
-        self._opponent = None
+        if self.owner == unit:
+            self._opponent = None
 
 ################################################################################

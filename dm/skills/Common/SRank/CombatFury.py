@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect, UnlockPack
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, UnlockPack, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,17 +24,18 @@ class CombatFury(CommonSkill):
             description=(
                 "Gain 20 (+1*ATK) Fury every time you attack an enemy."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True,
+            rank=4,
+            cooldown=CooldownType.Passive,
             effect=SkillEffect(base=20, scalar=1),
             unlock=UnlockPack.Awakening
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.source:
+            # Gain Fury
             self.owner.add_status("Fury", self.effect, self)
 
 ################################################################################

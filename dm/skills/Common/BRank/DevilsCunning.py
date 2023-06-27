@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,17 +24,19 @@ class DevilsCunning(CommonSkill):
             description=(
                 "Damage inflicted is doubled if target is in Haze state."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.target:
+            # The the target is under the effect of Haze
             haze = ctx.target.get_status("Haze")
             if haze is not None:
+                # Double the damage
                 ctx.amplify_pct(1.00)  # Add 100% damage
 
 ################################################################################

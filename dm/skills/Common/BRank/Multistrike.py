@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,15 +24,17 @@ class Multistrike(CommonSkill):
             description=(
                 "Inflict 6 (+3.0*ATK) damage to an enemy. Repeats 3 times."
             ),
-            rank=2,
-            cooldown=2,
+            rank=3,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=6, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.source:
+            # Damage the target three times
             for _ in range(3):
                 ctx.target.damage(self.effect)
 

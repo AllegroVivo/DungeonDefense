@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,15 +24,19 @@ class ArmorBreak(CommonSkill):
             description=(
                 "Inflict 16 (+3.0*ATK) damage and apply 3 Fragile to an enemy."
             ),
-            rank=2,
-            cooldown=0,
+            rank=3,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=16, scalar=3)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        ctx.target.damage(self.effect)
-        ctx.target.add_status("Fragile", 3, self)
+        # If we're attacking
+        if self.owner == ctx.source:
+            # Damage the target.
+            ctx.target.damage(self.effect)
+            # Also apply Fragile.
+            ctx.target.add_status("Fragile", 3, self)
 
 ################################################################################

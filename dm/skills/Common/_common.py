@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing     import TYPE_CHECKING, List, Literal, Optional
 from dm.core.objects.skill import DMSkill
-from utilities import SkillCategory, UnlockPack, SkillType, SkillEffect
+from utilities import *
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
 
-__all__ = ("MonsterSkill",)
+__all__ = ("CommonSkill",)
 
 ################################################################################
-class MonsterSkill(DMSkill):
+class CommonSkill(DMSkill):
 
     def __init__(
         self,
@@ -24,22 +24,18 @@ class MonsterSkill(DMSkill):
         description: Optional[str],
         rank: int = 0,
         unlock: Optional[UnlockPack] = None,
-        cooldown: Literal[0, 1, 2, 4, 6, 8] = 0,
-        passive: bool = False,
+        cooldown: CooldownType = CooldownType.Passive,
         effect: Optional[SkillEffect] = None
     ):
 
-        _type = SkillType.Passive if passive else SkillType.Active
-
         super().__init__(
-            state, parent, cooldown, _type, effect,
-            _id, name, description, rank, unlock
+            state, parent, cooldown, effect, _id, name, description, rank, unlock
         )
 
 ################################################################################
     @property
     def category(self) -> SkillCategory:
 
-        return SkillCategory.Monster
+        return SkillCategory.Common
 
 ################################################################################

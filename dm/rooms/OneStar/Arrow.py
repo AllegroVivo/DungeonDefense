@@ -31,8 +31,7 @@ class Arrow(DMTrapRoom):
 
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
-        """Called when a unit enters this room specifically."""
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
 
 ################################################################################

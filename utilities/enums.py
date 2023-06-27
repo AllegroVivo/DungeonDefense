@@ -16,7 +16,8 @@ __all__ = (
     "AdjustmentType",
     "SkillCategory",
     "EXPSource",
-    "SkillType"
+    "SkillType",
+    "CooldownType"
 )
 
 ################################################################################
@@ -165,3 +166,11 @@ class SkillType(Enum):
     Passive = 4
 
 ################################################################################
+class CooldownType(Enum):
+
+    Passive = 0
+    _One = 1
+    SingleTarget = 2
+    RoomWide = 4
+    AdjacentWide = 6
+    DungeonWide = 8

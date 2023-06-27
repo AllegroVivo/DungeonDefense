@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._monster import MonsterSkill
+from dm.skills.Hero._hero import HeroSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("Template",)
 
 ################################################################################
-class Template(MonsterSkill):
+class Template(HeroSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
@@ -23,8 +24,8 @@ class Template(MonsterSkill):
             description=(
                 "UrMom"
             ),
-            rank=2,
-            cooldown=0
+            rank=10,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -39,6 +40,11 @@ class Template(MonsterSkill):
 
 ################################################################################
     def notify(self, *args) -> None:
+
+        pass
+
+################################################################################
+    def on_attack(self, ctx: AttackContext) -> None:
 
         pass
 

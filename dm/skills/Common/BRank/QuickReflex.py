@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,25 +24,22 @@ class QuickReflex(CommonSkill):
             description=(
                 "Gain 1 Dodge when damage is received 3 times."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
-        self._hit_counter: int = 0
-
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
+        # If we're the target
         if self.owner == ctx.target:
             ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
+        # If damage was dealt
         if ctx.damage > 0:
-            self._hit_counter += 1
-            if self._hit_counter % 3 == 0:
-                ctx.source.add_status("Dodge", 1, self)
+            self.owner.add_status("Dodge", 1, self)
 
 ################################################################################

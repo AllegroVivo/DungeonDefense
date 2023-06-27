@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,9 +24,8 @@ class EyeOfMind(CommonSkill):
             description=(
                 "Gain 15 Focus and 15 Defense at the beginning of the battle."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
         # (Hidden effect: Attacks can't miss)
@@ -33,13 +33,14 @@ class EyeOfMind(CommonSkill):
 ################################################################################
     def on_acquire(self) -> None:
 
-        self.listen("battle_start")
+        self.listen("hero_spawn")
 
 ################################################################################
-    def notify(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
 
-        self.owner.add_status("Focus", 15, self)
-        self.owner.add_status("Defense", 15, self)
+        if self.owner == unit:
+            for status in ("Focus", "Defense"):
+                self.owner.add_status(status, 15, self)
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
@@ -47,19 +48,16 @@ class EyeOfMind(CommonSkill):
         # This execution logic, including the callback below, pertains to the
         # hidden effect of this skill, which is that attacks can't miss.
         if self.owner == ctx.source:
-            ctx.register_post_execute(self.callback)
+            ctx.register_post_execute(self.post_execute)
 
 ################################################################################
     @staticmethod
-    def callback(ctx: AttackContext) -> None:
+    def post_execute(ctx: AttackContext) -> None:
 
-        # If we've failed the attack, meaning it will miss, then we can just
-        # use some of the internal methods to apply the original damage directly.
+        # If the attack will not succeed
         if ctx.will_fail:
-            # `target._damage()` is the method to bypass creating an AttackCTX
-            # and `ctx._damage` is the private damage component attached to
-            # the AttackCTX, which we're modifying directly to avoid the `will_fail`
-            # condition.
-            ctx.target._damage(ctx._damage.calculate())
+            # We can just bypass creation of another attack context and
+            # apply the damage directly.
+            ctx.target.direct_damage(ctx._damage.calculate())
 
 ################################################################################

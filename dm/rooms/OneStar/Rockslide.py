@@ -33,12 +33,14 @@ class Rockslide(DMTrapRoom):
 
     ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
-        damage = self.damage
 
+        # Get base damage.
+        damage = self.dmg
+        # If the hero is under the effect of Slow, triple the damage.
         slow = unit.get_status("Slow")
         if slow is not None:
             damage *= 3.0  # Triple the damage.
-
+        # Apply.
         unit.damage(damage)
 
 ################################################################################

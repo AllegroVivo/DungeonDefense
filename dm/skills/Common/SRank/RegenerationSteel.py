@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -24,9 +25,8 @@ class RegenerationSteel(CommonSkill):
                 "Regeneration applied to self is converted into double "
                 "the amount of Armor."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -37,9 +37,13 @@ class RegenerationSteel(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're being targeted with a status
         if self.owner == ctx.target:
+            # And it's Regeneration
             if ctx.status.name == "Regeneration":
-                ctx.will_fail = True
+                # Convert it to Armor
                 ctx.target.add_status("Armor", ctx.status.stacks * 2, self)
+                # And negate the original application
+                ctx.will_fail = True
 
 ################################################################################

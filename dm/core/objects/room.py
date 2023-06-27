@@ -144,7 +144,9 @@ class DMRoom(DMLevelable, DMChargeable):
 
 ################################################################################
     @property
-    def damage(self) -> Optional[int]:
+    def dmg(self) -> Optional[int]:
+        """Don't change this name, it's called `dmg` so it doesn't conflict with
+        DMUnit's `damage` method. (They conflict in the AttackContext class.)"""
 
         if self._damage_range is None:
             return

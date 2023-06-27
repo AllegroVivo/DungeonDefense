@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,14 @@ class ChallengersCry(CommonSkill):
             description=(
                 "Gain 5 Taunt and 5 Defense."
             ),
-            rank=2,
-            cooldown=2
+            rank=4,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        self.owner.add_status("Taunt", 5, self)
-        self.owner.add_status("Defense", 5, self)
+        for status in ("Taunt", "Defense"):
+            self.owner.add_status(status, 5, self)
 
 ################################################################################

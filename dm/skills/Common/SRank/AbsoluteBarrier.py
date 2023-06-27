@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,16 @@ class AbsoluteBarrier(CommonSkill):
             description=(
                 "Apply 5 Shield to ally."
             ),
-            rank=2,
-            cooldown=2
+            rank=4,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # Select a random ally
         target = self.random.choice(ctx.room.units_of_type(self.owner))
+        # Apply shield
         target.add_status("Shield", 5, self)
 
 ################################################################################

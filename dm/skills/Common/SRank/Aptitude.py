@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -22,9 +23,8 @@ class Aptitude(CommonSkill):
             description=(
                 "Cooldown of Active skills is reduced to half."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
         # This might need tweaking. What happens on skill removal?

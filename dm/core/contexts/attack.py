@@ -280,8 +280,8 @@ class AttackContext(Context):
                 if self.will_fail:
                     break
 
-        # Process attacker's skills
-        for skill in self.source.skills:  # type: ignore
+        # Process both sets of skills' attack callbacks.
+        for skill in self.source.skills + self.target.skills:  # type: ignore
             skill._callback(self)  # This private method is specifically for use for this purpose.
 
         # Execute the late callback if it's registered. This is a single
@@ -290,8 +290,8 @@ class AttackContext(Context):
         # things like checking at the last second to see if we're attacking
         # an ally so a skill effect can intervene, etc...
         # (See: `EyeOfTruth` skill)
-        if self._late_callback is not None:
-            self._late_callback(self)
+        if self._late_callbacks is not None:
+            self._late_callbacks(self)
 
         # Damage the additional targets now that we've processed everything.
         for target in self._addl_targets:

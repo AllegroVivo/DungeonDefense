@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
-    from dm.core.contexts   import AttackContext
     from dm.core.game.game import DMGame
     from dm.core.objects.unit import DMUnit
 ################################################################################
@@ -23,9 +23,8 @@ class Rush(CommonSkill):
             description=(
                 "DEX increases by 100 %, but ATK is reduced by 50 %."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################

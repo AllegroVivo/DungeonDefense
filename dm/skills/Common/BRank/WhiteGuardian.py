@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import StatusApplicationContext
@@ -23,9 +24,8 @@ class WhiteGuardian(CommonSkill):
             description=(
                 "Become immune to Weak and Curse."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
@@ -36,8 +36,11 @@ class WhiteGuardian(CommonSkill):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're the status target
         if self.owner == ctx.target:
+            # If the status is Weak or Curse
             if ctx.status.name in ("Weak", "Curse"):
+                # Cancel the status application
                 ctx.will_fail = True
 
 ################################################################################

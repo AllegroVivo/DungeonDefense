@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,15 +25,12 @@ class Illusion(CommonSkill):
                 "Gain 5 Phantom at the beginning of battle. Upon receiving "
                 "2nd damage, gain 1 Phantom."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
-        self._hit_count: int = 0
-
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.target:
             ctx.register_post_execute(self.callback)
@@ -40,19 +38,24 @@ class Illusion(CommonSkill):
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
+        # If damage is being dealt
         if not ctx.will_fail:
-            self._hit_count += 1
-            if self._hit_count % 2 == 0:
+            # If we've been hit 2 times
+            if self.atk_count % 2 == 0:
+                # Apply Phantom
                 self.owner.add_status("Phantom", 1, self)
 
 ################################################################################
     def on_acquire(self) -> None:
 
-        self.listen("battle_start")
+        self.listen("hero_spawn")
 
 ################################################################################
-    def notify(self) -> None:
+    def notify(self, unit: DMUnit) -> None:
 
-        self.owner.add_status("Phantom", 5, self)
+        # If we've spawned
+        if self.owner == unit:
+            # Apply Phantom
+            self.owner.add_status("Phantom", 5, self)
 
 ################################################################################

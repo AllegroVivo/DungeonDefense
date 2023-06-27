@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Monster._monster import MonsterSkill
+from utilities import CooldownType, SkillEffect
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("UltrasonicWave",)
 
 ################################################################################
-class UltrasonicWave(CommonSkill):
+class UltrasonicWave(MonsterSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
@@ -21,30 +22,17 @@ class UltrasonicWave(CommonSkill):
             _id="SKL-199",
             name="Ultrasonic Wave",
             description=(
-                "UrMom"
+                "Inflict 12 (+3.0*ATK) damage and apply 1 Rigidity to an enemy."
             ),
-            rank=2,
-            cooldown=0
+            rank=1,
+            cooldown=CooldownType.SingleTarget,
+            effect=SkillEffect(base=12, scalar=3.0),
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        pass
-
-################################################################################
-    def on_acquire(self) -> None:
-
-        pass
-
-################################################################################
-    def notify(self, *args) -> None:
-
-        pass
-
-################################################################################
-    def stat_adjust(self) -> None:
-
-        pass
+        ctx.target.damage(self.effect)
+        ctx.target.add_status("Rigidity", 1, self)
 
 ################################################################################

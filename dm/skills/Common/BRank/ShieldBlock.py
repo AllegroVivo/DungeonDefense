@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,13 +24,15 @@ class ShieldBlock(CommonSkill):
             description=(
                 "Gain 5 Defense."
             ),
-            rank=2,
-            cooldown=2
+            rank=3,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        self.owner.add_status("Defense", 5, self)
+        # If we're defending
+        if self.owner == ctx.target:
+            self.owner.add_status("Defense", 5, self)
 
 ################################################################################

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,16 @@ class ParryWeapon(CommonSkill):
             description=(
                 "Gain 1 Defense when attacked."
             ),
-            rank=2,
-            cooldown=0
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
+        # If we're being attacked
         if self.owner == ctx.target:
+            # Add Defense.
             self.owner.add_status("Defense", 1, self)
 
 ################################################################################

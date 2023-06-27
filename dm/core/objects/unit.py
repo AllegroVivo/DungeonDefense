@@ -368,6 +368,7 @@ class DMUnit(DMLevelable):
 ################################################################################
     def disengage(self) -> None:
 
+        self.game.dispatch_event("unit_disengaged", self)
         self._engaged = False
 
 ################################################################################
@@ -505,6 +506,8 @@ class DMUnit(DMLevelable):
 
 ################################################################################
     def get_status(self, name: str) -> Optional[DMStatus]:
+        """Returns a status from the unit's list of statuses if present, otherwise
+        returns None."""
 
         for status in self._statuses:
             if status.name == name:
@@ -512,24 +515,42 @@ class DMUnit(DMLevelable):
 
 ################################################################################
     def heal(self, amount: Union[int, float]) -> None:
+        """This method is called by the game engine to apply healing to the unit.
+        It dispatches all relevant events as expected."""
 
         ctx = HealingContext(self.game, self, amount)
         self.game.dispatch_event("on_heal", ctx)
+        ctx.execute()
 
 ################################################################################
     def _heal(self, amount: Union[int, float]) -> None:
+        """This method is called by the game engine to apply healing to the unit
+        without dispatching any events."""
 
         self.stats.heal(int(amount))
 
 ################################################################################
     def damage(self, amount: Union[int, float]) -> None:
+        """This method is called by the game engine to apply damage to the unit.
+        It dispatches all relevant events as expected."""
+
+        # Add in event dispatch logic
 
         self.stats.damage(int(amount))
 
 ################################################################################
     def _damage(self, amount: Union[int, float]) -> None:
+        """This method is called by the game engine to apply damage to the unit
+        without dispatching any events."""
 
         self.stats.damage(int(amount))
+
+################################################################################
+    def direct_damage(self, amount: Union[int, float]) -> None:
+        """This method is intended to apply damage to the unit without
+        dispatching any events or performing any checks."""
+
+        self._damage(amount)
 
 ################################################################################
     def immobilize(self, duration: float) -> None:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,15 +25,14 @@ class ElasticArmor(CommonSkill):
                 "Gain 10 Elasticity at the beginning of battle. Upon "
                 "receiving 2nd damage, gain 1 Elasticity."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
-        self._hit_count: int = 0
+        self._times_damaged: int = 0
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
         if self.owner == ctx.target:
             ctx.register_post_execute(self.callback)
@@ -41,18 +41,21 @@ class ElasticArmor(CommonSkill):
     def callback(self, ctx: AttackContext) -> None:
 
         if ctx.damage > 0:
-            self._hit_count += 1
-            if self._hit_count % 2 == 0:
+            self._times_damaged += 1
+            if self._times_damaged % 2 == 0:
                 self.owner.add_status("Elasticity", 1, self)
 
 ################################################################################
     def on_acquire(self) -> None:
 
-        self.listen("battle_start")
+        self.listen("hero_spawn")
 
 ################################################################################
-    def notify(self, *args) -> None:
+    def notify(self, unit: DMUnit) -> None:
 
-        self.owner.add_status("Elasticity", 10, self)
+        # If we've spawned
+        if self.owner == unit:
+            # Add Elasticity.
+            self.owner.add_status("Elasticity", 10, self)
 
 ################################################################################

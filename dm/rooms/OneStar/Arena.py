@@ -33,7 +33,6 @@ class Arena(DMBattleRoom):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
             monster.increase_stat_flat("atk", self.effects["atk"])

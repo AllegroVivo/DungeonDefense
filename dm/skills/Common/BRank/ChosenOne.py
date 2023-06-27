@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,22 +25,23 @@ class ChosenOne(CommonSkill):
                 "When attacking enemy, inflict extra damage as much "
                 "as 5 % per Curse stack while reducing Curse stack by 5."
             ),
-            rank=2,
-            cooldown=1,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def handle(self, ctx: AttackContext) -> None:
-        """Called when used during a battle."""
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        curse = self.owner.get_status("Curse")
-        if curse is None:
-            return
+        # If we're attacking
+        if self.owner == ctx.source:
+            # And if we're under the effect of Curse
+            curse = self.owner.get_status("Curse")
+            if curse is None:
+                return
 
-        effect = (5 * curse.stacks)
-        curse.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+            # Deal extra damage based on the number of Curse stacks we have.
+            ctx.amplify_pct((5 * curse.stacks) / 100)
+            # Reduce the number of Curse stacks by 5.
+            curse.reduce_stacks_flat(5)
 
 ################################################################################

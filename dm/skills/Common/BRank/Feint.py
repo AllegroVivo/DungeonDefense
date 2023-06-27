@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -23,14 +24,12 @@ class Feint(CommonSkill):
             description=(
                 "Receive 66 % less damage from AoE attacks."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
-        """When called, performs this skill's active effect, if any."""
+    def on_attack(self, ctx: AttackContext) -> None:
 
         # Not sure how to identify AoE attacks yet, so...
         pass

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Monster._monster import MonsterSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 __all__ = ("CunningWhisper",)
 
 ################################################################################
-class CunningWhisper(CommonSkill):
+class CunningWhisper(MonsterSkill):
 
     def __init__(self, state: DMGame, parent: DMUnit = None):
 
@@ -23,8 +24,8 @@ class CunningWhisper(CommonSkill):
             description=(
                 "Apply 3 Haze to an enemy."
             ),
-            rank=2,
-            cooldown=2
+            rank=1,
+            cooldown=CooldownType.SingleTarget,
         )
 
 ################################################################################

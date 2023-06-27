@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts.status_apply import StatusApplicationContext
@@ -21,22 +22,23 @@ class Blindsense(CommonSkill):
             _id="SKL-101",
             name="Blindsense",
             description="Become immune to Blind and Panic.",
-            rank=1,
-            cooldown=0,
-            passive=True
+            rank=2,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Automatically called upon the skill's acquisition."""
 
         self.listen("status_applied")
 
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
+        # If we're the status target
         if self.owner == ctx.target:
+            # If the status is Blind or Panic
             if ctx.status.name in ("Blind", "Panic"):
+                # Cancel the application
                 ctx.will_fail = True
 
 ################################################################################

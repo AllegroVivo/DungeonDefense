@@ -25,7 +25,7 @@ class DMRelicManager:
     def __init__(self, game: DMGame):
 
         self._state: DMGame = game
-        self._obtained: List[DMRelic] = []
+        selfx: List[DMRelic] = []
 
         # Subscribe to stat recalculation events.
         self._state.subscribe_event("reset_stats", self.stat_adjust)

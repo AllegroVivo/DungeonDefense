@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import UnlockPack
+from dm.skills.Common._common import CommonSkill
+from utilities import UnlockPack, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -23,9 +23,8 @@ class Overspeed(CommonSkill):
             description=(
                 "Default DEX increases by 40 %."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True,
+            rank=4,
+            cooldown=CooldownType.Passive,
             unlock=UnlockPack.Awakening
         )
 

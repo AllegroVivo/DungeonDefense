@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,17 +25,21 @@ class TrialOfPower(CommonSkill):
                 "Inflict 30 (+3.0*ATK) damage to an enemy. Apply 2 Weak if "
                 "enemy's ATK is lower than monster's ATK."
             ),
-            rank=2,
-            cooldown=2,
+            rank=4,
+            cooldown=CooldownType.SingleTarget,
             effect=SkillEffect(base=30, scalar=3.0)
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
+        # If we're attacking
         if self.owner == ctx.source:
+            # First off, damage the target.
             ctx.target.damage(self.effect)
+            # If the target's attack is lower than ours
             if ctx.target.attack < self.owner.attack:
+                # Also apply Weak.
                 ctx.target.add_status("Weak", 2, self)
 
 ################################################################################

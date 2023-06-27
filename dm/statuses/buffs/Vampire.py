@@ -44,7 +44,7 @@ class Vampire(DMStatus):
             # Pretty straightforward
             heal_amt = self.stacks
             # Check for the corresponding relic  (If present, doubles healing effect)
-            relic = self.game.get_relic("VampireThorn")
+            relic = self.game.get_relic("X")
             if relic is not None:
                 heal_amt *= 2
 

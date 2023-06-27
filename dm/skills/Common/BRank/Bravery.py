@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,21 +25,23 @@ class Bravery(CommonSkill):
                 "When attacking enemy, inflict extra damage as much "
                 "as 5 % per Panic stack while reducing Panic stack by 5."
             ),
-            rank=2,
-            cooldown=1,
-            passive=True
+            rank=3,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        panic = self.owner.get_status("Panic")
-        if panic is None:
-            return
+        # If we're attacking
+        if self.owner == ctx.source:
+            # And if we're under the effect of Panic
+            panic = self.owner.get_status("Panic")
+            if panic is None:
+                return
 
-        effect = (5 * panic.stacks)
-        panic.reduce_stacks_flat(5)
-
-        ctx.amplify_pct(effect / 100)
+            # Deal extra damage based on the number of Panic stacks we have.
+            ctx.amplify_pct((5 * panic.stacks) / 100)
+            # Reduce the number of Panic stacks by 5.
+            panic.reduce_stacks_flat(5)
 
 ################################################################################

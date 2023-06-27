@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -22,7 +23,7 @@ class Taunt(CommonSkill):
             name="Taunt",
             description="Gain 10 Taunt.",
             rank=1,
-            cooldown=2
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################

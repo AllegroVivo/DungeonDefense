@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -21,15 +22,16 @@ class AchillesHeel(CommonSkill):
             _id="SKL-113",
             name="Achilles Heel",
             description="Apply 5 Vulnerable to an enemy.",
-            rank=2,
-            cooldown=2
+            rank=3,
+            cooldown=CooldownType.SingleTarget
         )
 
 ################################################################################
     def execute(self, ctx: AttackContext) -> None:
 
-        # Get whatever unit type the attacker is not.
+        # Get a random enemy in the room.
         target = self.random.choice(ctx.room.units_of_type(self.owner, inverse=True))
+        # Apply Vulnerable.
         target.add_status("Vulnerable", 5, self)
 
 ################################################################################

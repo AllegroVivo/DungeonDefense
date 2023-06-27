@@ -36,7 +36,7 @@ class Blitz(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         # Establish the base damage.
-        damage = self.damage
+        damage = self.dmg
 
         # If the hero is under the effect of Haze or Charm, triple that.
         haze = unit.get_status("Haze")

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
+from dm.skills.Common._common import CommonSkill
+from utilities import CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -24,20 +25,22 @@ class FearfulAura(CommonSkill):
                 "Apply 1 Panic to enemies that have attacked you or received "
                 "damage from you."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True
+            rank=4,
+            cooldown=CooldownType.Passive
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        ctx.register_post_execute(self.callback)
+        if self.owner in (ctx.source, ctx.target):
+            ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
+        # If damage was applied
         if ctx.damage > 0:
+            # Apply Panic to the enemy.
             target = ctx.target if self.owner == ctx.source else ctx.source
             target.add_status("Panic", 1, self)
 

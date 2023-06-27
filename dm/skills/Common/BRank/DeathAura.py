@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing     import TYPE_CHECKING
-from dm.skills._common import CommonSkill
-from utilities import SkillEffect
+from dm.skills.Common._common import CommonSkill
+from utilities import SkillEffect, CooldownType
 
 if TYPE_CHECKING:
     from dm.core.contexts   import AttackContext
@@ -25,23 +25,24 @@ class DeathAura(CommonSkill):
                 "Apply 11 (+0.7*ATK) Corpse Explosion to enemies that have "
                 "attacked you or received damaged from you."
             ),
-            rank=2,
-            cooldown=0,
-            passive=True,
+            rank=3,
+            cooldown=CooldownType.Passive,
             effect=SkillEffect(base=11, scalar=0.7)
         )
 
 ################################################################################
-    def execute(self, ctx: AttackContext) -> None:
+    def on_attack(self, ctx: AttackContext) -> None:
 
-        # Regardless of whether the owner is attacking or being attacked, the
-        # skill will activate.
-        ctx.register_post_execute(self.callback)
+        # Register callback if the owner is involved in the attack.
+        if self.owner in (ctx.source, ctx.target):
+            ctx.register_post_execute(self.post_execute)
 
 ################################################################################
-    def callback(self, ctx: AttackContext) -> None:
+    def post_execute(self, ctx: AttackContext) -> None:
 
+        # If damage was dealt
         if ctx.damage > 0:
+            # Apply Corpse Explosion to the appropriate unit.
             target = ctx.target if self.owner == ctx.source else ctx.source
             target.add_status("Corpse Explosion", self.effect, self)
 
