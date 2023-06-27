@@ -29,9 +29,7 @@ class CurseWave(DMTrapRoom):
             rank=8,
             unlock=UnlockPack.Myth,
             effects=[
-                Effect(name="Weak", base=3, per_lv=1),
-                Effect(name="Vulnerable", base=3, per_lv=1),
-                Effect(name="Curse", base=3, per_lv=1)
+                Effect(name="Status", base=3, per_lv=1),
             ]
         )
         self.setup_charging(3.3, 3.3)
@@ -39,13 +37,9 @@ class CurseWave(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        heroes = []
         for room in self.adjacent_rooms:
-            heroes.extend(room.heroes)
-
-        for hero in heroes:
-            hero.add_status("Weak", self.effects["Weak"], self)
-            hero.add_status("Vulnerable", self.effects["Vulnerable"], self)
-            hero.add_status("Curse", self.effects["Curse"], self)
+            for hero in room.heroes:
+                for status in ("Weak", "Vulnerable", "Curse"):
+                    hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

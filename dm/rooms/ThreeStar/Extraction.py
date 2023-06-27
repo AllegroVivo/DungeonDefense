@@ -42,7 +42,7 @@ class Extraction(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
 
         self._information += self.effects["Information"]
         if self._information >= 100:

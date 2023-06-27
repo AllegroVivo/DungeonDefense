@@ -37,12 +37,9 @@ class Crater(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        heroes = []
-        for room in self.adjacent_rooms:
-            heroes.extend(room.heroes)
-
-        for hero in heroes:
-            hero.damage(self.damage)
-            hero.add_status("Burn", self.effects["Burn"], self)
+        for room in self.adjacent_rooms + [self]:
+            for hero in room.heroes:
+                hero.damage(self.dmg)
+                hero.add_status("Burn", self.effects["Burn"], self)
 
 ##############################################################################

@@ -37,12 +37,9 @@ class TheSeal(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.add_status("Shield", self.effects["status"], self)
-            monster.add_status("Immune", self.effects["status"], self)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                for status in ("Shield", "Immune"):
+                    monster.add_status(status, self.effects["status"], self)
 
 ################################################################################

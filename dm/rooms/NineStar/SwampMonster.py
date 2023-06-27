@@ -38,7 +38,7 @@ class SwampMonster(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         unit.add_status("Slow", self.effects["Slow"], self)
 
         armor = unit.get_status("Armor")

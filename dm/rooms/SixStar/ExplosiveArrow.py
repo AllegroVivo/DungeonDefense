@@ -41,6 +41,6 @@ class ExplosiveArrow(DMTrapRoom):
         target = self.random.choice(targets)
         # Then damage all heroes in the target's room.
         for hero in target.room.heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
 
 ################################################################################

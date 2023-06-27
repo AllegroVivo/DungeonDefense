@@ -38,12 +38,9 @@ class FireStorm(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.heroes)
-
-        for target in targets:
-            target.damage(self.damage)
-            target.add_status("Burn", self.effects["Burn"], self)
+        for room in self.adjacent_rooms + [self]:
+            for hero in room.heroes:
+                hero.damage(self.dmg)
+                hero.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

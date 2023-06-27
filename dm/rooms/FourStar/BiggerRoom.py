@@ -37,7 +37,6 @@ class BiggerRoom(DMBattleRoom):
 
     ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
             monster.increase_stat_pct("LIFE", self.effects["life"] / 100)  # Convert to percentage

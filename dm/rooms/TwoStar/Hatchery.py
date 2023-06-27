@@ -34,7 +34,6 @@ class Hatchery(DMFacilityRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("egg_hatch")
 

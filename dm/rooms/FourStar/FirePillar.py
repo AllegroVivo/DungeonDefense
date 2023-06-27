@@ -39,7 +39,7 @@ class FirePillar(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         for hero in self.heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
             hero.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

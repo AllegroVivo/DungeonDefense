@@ -30,8 +30,7 @@ class DemonicBarrier(DMBattleRoom):
             rank=9,
             unlock=UnlockPack.Myth,
             effects=[
-                Effect(name="Shield", base=3, per_lv=1),
-                Effect(name="Immune", base=3, per_lv=1),
+                Effect(name="status", base=3, per_lv=1),
                 Effect(name="buff", base=40, per_lv=10)
             ]
         )
@@ -41,19 +40,15 @@ class DemonicBarrier(DMBattleRoom):
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Shield", self.effects["Shield"], self)
-            monster.add_status("Immune", self.effects["Immune"], self)
+            for status in ("Shield", "Immune"):
+                monster.add_status(status, self.effects["status"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.increase_stat_pct("life", self.effects["buff"] / 100)  # Convert to %
-            monster.increase_stat_pct("def", self.effects["buff"] / 100)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                for stat in ("life", "def"):
+                    monster.increase_stat_pct(stat, self.effects["buff"] / 100)
 
 ################################################################################

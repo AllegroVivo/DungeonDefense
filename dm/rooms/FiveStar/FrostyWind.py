@@ -34,7 +34,6 @@ class FrostyWind(DMFacilityRoom):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for hero in self.game.all_heroes:
             hero.reduce_stat_pct("dex", self.effects["dex"] / 100)  # Convert to percentage

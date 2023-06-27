@@ -30,8 +30,7 @@ class Infection(DMTrapRoom):
             rank=5,
             unlock=UnlockPack.Awakening,
             effects=[
-                Effect(name="Poison", base=24, per_lv=16),
-                Effect(name="Corpse Explosion", base=24, per_lv=16)
+                Effect(name="Status", base=24, per_lv=16),
             ]
         )
 
@@ -39,7 +38,7 @@ class Infection(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         for hero in self.heroes:
-            hero.add_status("Poison", self.effects["Poison"], self)
-            hero.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+            for status in ("Poison", "Corpse Explosion"):
+                hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

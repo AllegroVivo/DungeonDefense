@@ -36,7 +36,6 @@ class Scream(DMBattleRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("on_death")
 

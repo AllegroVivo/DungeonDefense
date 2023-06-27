@@ -30,8 +30,7 @@ class BigBang(DMTrapRoom):
             unlock=UnlockPack.Myth,
             base_dmg=121,
             effects=[
-                Effect(name="Burn", base=80, per_lv=40),
-                Effect(name="Shock", base=80, per_lv=40),
+                Effect(name="Status", base=80, per_lv=40),
             ]
         )
         self.setup_charging(6.6, 6.6)
@@ -40,8 +39,8 @@ class BigBang(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.damage(self.damage)
-            hero.add_status("Burn", self.effects["Burn"], self)
-            hero.add_status("Shock", self.effects["Shock"], self)
+            hero.damage(self.dmg)
+            for status in ("Burn", "Shock"):
+                hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

@@ -47,7 +47,6 @@ class Prism(DMBattleRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("on_death")
 
@@ -56,6 +55,6 @@ class Prism(DMBattleRoom):
 
         if ctx.room == self:
             if isinstance(ctx.target, DMHero):
-                self.game.dark_lord.add_status("Mirror", 1)
+                self.game.dark_lord.add_status("Mirror", 1, self)
 
 ################################################################################

@@ -31,20 +31,16 @@ class Plague(DMBattleRoom):
             rank=6,
             unlock=UnlockPack.Awakening,
             effects=[
-                Effect(name="Poison", base=24, per_lv=16),
-                Effect(name="Corpse Explosion", base=24, per_lv=16),
+                Effect(name="Status", base=24, per_lv=16),
             ]
         )
 
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.heroes)
-
-        for target in targets:
-            target.add_status("Poison", self.effects["Poison"], self)
-            target.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+        for room in self.adjacent_rooms + [self]:
+            for hero in room.heroes:
+                for status in ("Poison", "Corpse Explosion"):
+                    hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

@@ -22,8 +22,8 @@ class MeatWagon(DMFacilityRoom):
             _id="ROOM-201",
             name="Meat Wagon",
             description=(
-                "Once recharged, give 2 (+1 per Lv) Immortality to adjacent "
-                "monsters and get 5 (+1 per Lv) Gold."
+                "Once recharged, give {status} Immortality to adjacent "
+                "monsters and get {gold} Gold."
             ),
             level=level,
             rank=6,
@@ -37,13 +37,12 @@ class MeatWagon(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.monsters)
+        # Apply Immortality to all monsters in adjacent rooms.
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                monster.add_status("Immortality", self.effects["Immortality"], self)
 
-        for target in targets:
-            target.add_status("Immortality", self.effects["Immortality"], self)
-
+        # Add gold.
         self.game.inventory.add_gold(self.effects["Gold"])
 
 ################################################################################

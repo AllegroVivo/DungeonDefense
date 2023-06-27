@@ -42,7 +42,6 @@ class Haste(DMBattleRoom):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:
             monster.increase_stat_pct("DEX", self.effects["DEX"] / 100)  # Convert to percentage

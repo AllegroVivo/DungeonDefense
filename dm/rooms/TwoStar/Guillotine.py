@@ -4,7 +4,7 @@ from pygame     import Vector2
 from typing     import TYPE_CHECKING, Optional
 
 from ..traproom   import DMTrapRoom
-from ...core.objects.hero import DMHero
+from ...core.objects.monster import DMMonster
 
 if TYPE_CHECKING:
     from dm.core.game.game import DMGame
@@ -33,10 +33,9 @@ class Guillotine(DMTrapRoom):
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
 
-        if isinstance(unit, DMHero):
+        if not isinstance(unit, DMMonster):
             scalar = unit.life / unit.max_life
-            unit.damage(self.damage * (scalar + 1))  # Make it 100% + whatever the scalar is.
+            unit.damage(self.dmg * (scalar + 1))  # Make it 100% + whatever the scalar is.
 
 ################################################################################

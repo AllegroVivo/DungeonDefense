@@ -39,7 +39,6 @@ class SecretLaboratory(DMFacilityRoom):
 
 ################################################################################
     def on_charge(self) -> None:
-        """Called when this room is charged."""
 
         self._research += self.effects["research"]
         if self._research >= 300:

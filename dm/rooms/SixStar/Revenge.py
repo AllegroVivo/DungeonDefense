@@ -39,15 +39,14 @@ class Revenge(DMFacilityRoom):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
-        if ctx.room in self.adjacent_rooms:
+        if ctx.room in self.adjacent_rooms + [self]:
             ctx.register_post_execute(self.callback)
 
 ################################################################################
     def callback(self, ctx: AttackContext) -> None:
 
-        if ctx.damage > 0:
+        if not ctx.will_fail:
             ctx.target.add_status("Fury", self.effects["Fury"] / 100 * ctx.source.attack, self)
 
 ################################################################################

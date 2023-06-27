@@ -37,7 +37,7 @@ class Library(DMFacilityRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
                 monster.add_status("Focus", self.effects["Focus"], self)
 

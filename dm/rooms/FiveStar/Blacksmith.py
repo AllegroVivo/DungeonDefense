@@ -37,7 +37,7 @@ class Blacksmith(DMFacilityRoom):
         """Called automatically when a stat refresh is initiated."""
 
         targets = []
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             targets.extend(room.monsters)
 
         for monster in targets:

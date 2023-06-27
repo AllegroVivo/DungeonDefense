@@ -31,9 +31,7 @@ class ChaosRain(DMTrapRoom):
             unlock=UnlockPack.Awakening,
             base_dmg=73,
             effects=[
-                Effect(name="Poison", base=32, per_lv=24),
-                Effect(name="Burn", base=32, per_lv=24),
-                Effect(name="Shock", base=32, per_lv=24),
+                Effect(name="Status", base=32, per_lv=24),
             ]
         )
 
@@ -42,9 +40,8 @@ class ChaosRain(DMTrapRoom):
 
         if unit.room == self:
             # Ouch
-            unit.damage(self.damage)
-            unit.add_status("Poison", self.effects["Poison"], self)
-            unit.add_status("Burn", self.effects["Burn"], self)
-            unit.add_status("Shock", self.effects["Shock"], self)
+            unit.damage(self.dmg)
+            for status in ("Poison", "Burn", "Shock"):
+                unit.add_status(status, self.effects["Status"], self)
 
 ################################################################################

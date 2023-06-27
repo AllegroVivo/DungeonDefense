@@ -38,8 +38,7 @@ class IronWall(DMBattleRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        rooms = self.game.dungeon.get_adjacent_rooms(self.position)
-        for room in rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
                 monster.add_status("Armor", self.effects["Armor"], self)
 

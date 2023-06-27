@@ -42,6 +42,6 @@ class Crossbow(DMTrapRoom):
         # No specification on how many targets, so I'm going with 3.
         targets = self.random.sample(heroes, 3)
         for target in targets:
-            target.damage(self.damage)
+            target.damage(self.dmg)
 
 ################################################################################

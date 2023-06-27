@@ -47,7 +47,7 @@ class SilentTemple(DMFacilityRoom):
     def handle(self, ctx: AttackContext) -> None:
 
         if isinstance(ctx.source, DMMonster):
-            if ctx.room in self.adjacent_rooms:
+            if ctx.room in self.adjacent_rooms + [self]:
                 focus = ctx.source.get_status("Focus")
                 if focus is not None:
                     ctx.amplify_pct(focus.stacks * 0.05)

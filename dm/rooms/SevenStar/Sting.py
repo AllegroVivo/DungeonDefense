@@ -38,7 +38,7 @@ class Sting(DMTrapRoom):
     def on_charge(self) -> None:
 
         targets = []
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             targets.extend(room.heroes)
 
         target = self.random.choice(targets)

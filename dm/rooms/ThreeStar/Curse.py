@@ -38,7 +38,7 @@ class CurseRoom(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         unit.add_status("Weak", self.effects["Weak"], self)
         unit.add_status("Vulnerable", self.effects["Vulnerable"], self)
 

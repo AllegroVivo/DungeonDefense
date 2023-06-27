@@ -40,12 +40,12 @@ class Snowman(DMTrapRoom):
     def on_charge(self) -> None:
 
         targets = []
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             targets.extend(room.heroes)
 
         target = self.random.choice(targets)
         for hero in target.room.heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
             hero.add_status("Slow", self.effects["Slow"], self)
 
 ################################################################################

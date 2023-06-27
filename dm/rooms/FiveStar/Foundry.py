@@ -36,11 +36,8 @@ class Foundry(DMFacilityRoom):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.monsters)
-
-        for monster in targets:
-            monster.increase_stat_pct("def", self.effects["def"] / 100)  # Convert to percentage
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                monster.increase_stat_pct("def", self.effects["def"] / 100)  # Convert to percentage
 
 ################################################################################

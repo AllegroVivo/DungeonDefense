@@ -45,11 +45,11 @@ class BrokenMirror(DMTrapRoom):
             heroes.extend(room.heroes)
 
         for hero in heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
             hero.add_status("Haze", self.effects["Haze"], self)
             mirror = hero.get_status("Mirror")
             if mirror is not None:
-                hero.damage(self.damage * (self.effects["buff"] / 100))
+                hero.damage(self.dmg * (self.effects["buff"] / 100))
                 mirror.reduce_stacks_flat(1)
 
 ################################################################################

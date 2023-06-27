@@ -37,11 +37,8 @@ class ElectricDischarge(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        targets = []
         for room in self.adjacent_rooms:
-            targets.extend(room.heroes)
-
-        for target in targets:
-            target.add_status("Shock", self.effects["Shock"], self)
+            for hero in room.heroes:
+                hero.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

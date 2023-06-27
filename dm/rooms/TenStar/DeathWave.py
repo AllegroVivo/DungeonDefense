@@ -29,8 +29,7 @@ class DeathWave(DMTrapRoom):
             rank=10,
             unlock=UnlockPack.Myth,
             effects=[
-                Effect(name="Slow", base=80, per_lv=40),
-                Effect(name="Corpse Explosion", base=80, per_lv=40),
+                Effect(name="Status", base=80, per_lv=40),
             ]
         )
         self.setup_charging(6.6, 3.3)
@@ -39,7 +38,7 @@ class DeathWave(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.add_status("Slow", self.effects["Slow"], self)
-            hero.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+            for status in ("Poison", "Corpse Explosion"):
+                hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

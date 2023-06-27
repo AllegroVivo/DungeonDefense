@@ -29,8 +29,7 @@ class IronSkin(DMFacilityRoom):
             rank=9,
             unlock=UnlockPack.Myth,
             effects=[
-                Effect(name="Armor", base=128, per_lv=96),
-                Effect(name="Thorn", base=128, per_lv=96),
+                Effect(name="Status", base=128, per_lv=96),
             ]
         )
         self.setup_charging(3.3, 3.3)
@@ -38,12 +37,9 @@ class IronSkin(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.add_status("Armor", self.effects["Armor"], self)
-            monster.add_status("Thorn", self.effects["Thorn"], self)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                for status in ("Armor", "Thorn"):
+                    monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

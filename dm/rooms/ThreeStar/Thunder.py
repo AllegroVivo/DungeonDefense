@@ -39,7 +39,7 @@ class Thunder(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         target = self.random.choice(self.game.dungeon.heroes)
-        target.damage(self.damage)
+        target.damage(self.dmg)
         target.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

@@ -29,22 +29,17 @@ class PlagueSpreader(DMTrapRoom):
             rank=9,
             unlock=UnlockPack.Myth,
             effects=[
-                Effect(name="Poison", base=48, per_lv=36),
-                Effect(name="Corpse Explosion", base=48, per_lv=36),
+                Effect(name="Status", base=48, per_lv=36),
             ]
         )
         self.setup_charging(3.3, 3.3)
 
 ################################################################################
     def on_charge(self) -> None:
-        """A general event response function."""
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.heroes)
-
-        for target in targets:
-            target.add_status("Poison", self.effects["Poison"], self)
-            target.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+        for room in self.adjacent_rooms + [self]:
+            for hero in room.heroes:
+                for status in ("Poison", "Corpse Explosion"):
+                    hero.add_status(status, self.effects["Status"], self)
 
 ################################################################################

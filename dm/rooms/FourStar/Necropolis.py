@@ -41,7 +41,7 @@ class Necropolis(DMBattleRoom):
         if ctx.room == self:
             if ctx.target in self.monsters:
                 for monster in self.game.deployed_monsters:
-                    monster.add_status("X", self.death_value, self)
+                    monster.add_status("Immortality", self.death_value, self)
 
 ################################################################################
     @property
@@ -52,7 +52,6 @@ class Necropolis(DMBattleRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("on_death", self.on_death)
         self.listen("battle_start")
@@ -61,6 +60,6 @@ class Necropolis(DMBattleRoom):
     def notify(self) -> None:
 
         for monster in self.monsters:
-            monster.add_status("X", self.effects["X"], self)
+            monster.add_status("Immortality", self.effects["Immortality"], self)
 
 ################################################################################

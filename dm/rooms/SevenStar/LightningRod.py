@@ -39,7 +39,7 @@ class LightningRod(DMTrapRoom):
     def on_charge(self) -> None:
 
         target = self.random.choice(self.game.all_heroes)
-        target.damage(self.damage)
+        target.damage(self.dmg)
         target.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

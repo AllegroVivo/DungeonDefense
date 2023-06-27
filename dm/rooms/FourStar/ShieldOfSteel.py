@@ -51,7 +51,7 @@ class ShieldOfSteel(DMBattleRoom):
 ################################################################################
     def notify(self) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
                 monster.add_status("Shield", 3, self)
 

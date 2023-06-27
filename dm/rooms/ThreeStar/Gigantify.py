@@ -42,7 +42,6 @@ class Gigantify(DMBattleRoom):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:  # (Only 1 monster can be deployed)
             monster.increase_stat_pct("life", self.effects["buff"])

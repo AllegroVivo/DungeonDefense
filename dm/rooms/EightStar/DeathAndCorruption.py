@@ -40,12 +40,9 @@ class DeathAndCorruption(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        targets = []
         for room in self.adjacent_rooms:
-            targets.extend(room.heroes)
-
-        for target in targets:
-            target.damage(self.damage)  # type: ignore
-            target.add_status("X", self.effects["X"], self)
+            for hero in room.heroes:
+                hero.damage(self.dmg)  # type: ignore
+                hero.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
 
 ################################################################################

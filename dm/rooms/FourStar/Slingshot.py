@@ -37,7 +37,7 @@ class Slingshot(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         armor = unit.get_status("Armor")
         if armor is not None:
             armor.reduce_stacks_flat(self.effects["Armor"])

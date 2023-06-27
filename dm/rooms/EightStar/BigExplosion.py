@@ -36,6 +36,6 @@ class BigExplosion(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
 
 ################################################################################

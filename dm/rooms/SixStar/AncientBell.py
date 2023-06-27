@@ -36,11 +36,8 @@ class AncientBell(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.add_status("Focus", self.effects["Focus"], self)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                monster.add_status("Focus", self.effects["Focus"], self)
 
 ################################################################################

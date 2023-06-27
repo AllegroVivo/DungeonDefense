@@ -37,7 +37,7 @@ class Lightning(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         unit.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

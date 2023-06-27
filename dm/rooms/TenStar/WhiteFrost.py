@@ -39,7 +39,7 @@ class WhiteFrost(DMTrapRoom):
     def on_charge(self) -> None:
 
         for hero in self.game.all_heroes:
-            hero.damage(self.damage)
+            hero.damage(self.dmg)
             hero.add_status("Slow", self.effects["Slow"], self)
             hero.add_status("Frostbite", 3, self)
 

@@ -37,7 +37,7 @@ class Incineration(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         unit.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

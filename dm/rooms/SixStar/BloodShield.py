@@ -41,7 +41,7 @@ class BloodShield(DMFacilityRoom):
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
 
-        if ctx.room in self.adjacent_rooms:
+        if ctx.room in self.adjacent_rooms + [self]:
             if isinstance(ctx.target, DMMonster):
                 ctx.register_post_execute(self.callback)
 

@@ -23,27 +23,23 @@ class ThornBush(DMBattleRoom):
             _id="ROOM-195",
             name="Thorn Bush",
             description=(
-                "Gives {value} Armor Thorn to all monsters in adjacent rooms "
+                "Gives {value} Armor, Thorn to all monsters in adjacent rooms "
                 "whenever a hero enters."
             ),
             level=level,
             rank=6,
             unlock=UnlockPack.Advanced,
             effects=[
-                Effect(name="Armor", base=36, per_lv=24),
-                Effect(name="Thorn", base=36, per_lv=24),
+                Effect(name="Status", base=36, per_lv=24),
             ]
         )
 
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.units_of_type(unit, inverse=True))
-
-        for target in targets:
-            target.add_status("Armor", self.effects["Armor"], self)
-            target.add_status("Thorn", self.effects["Thorn"], self)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                for status in ("Armor", "Thorn"):
+                    monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

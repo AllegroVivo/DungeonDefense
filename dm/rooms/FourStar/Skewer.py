@@ -33,7 +33,7 @@ class Skewer(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         for hero in self.heroes:
             hero.immobilize(1.5)  # Extra .5 seconds seems fair for an upgraded room.
 

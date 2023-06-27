@@ -35,14 +35,12 @@ class Graveyard(DMBattleRoom):
 
 ################################################################################
     def notify(self, unit: DMUnit) -> None:
-        """A general event response function."""
 
         for monster in self.monsters:
             monster.add_status("Immortality", self.effects["Immortality"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("battle_start")
 

@@ -42,7 +42,6 @@ class SaplingOfYggdrasil(DMFacilityRoom):
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("battle_start", self.battle_start)
         self.listen("day_advance", self.notify)

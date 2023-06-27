@@ -34,7 +34,7 @@ class Explosion(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         targets = []
-        # compile a list of targets in those rooms
+        # Compile a list of targets in those rooms
         for room in self.adjacent_rooms + [self]:
             targets.extend(room.units_of_type(unit))
 

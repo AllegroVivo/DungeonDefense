@@ -40,9 +40,8 @@ class TheAbsolute(DMBattleRoom):
         """Called automatically when a stat refresh is initiated."""
 
         for monster in self.monsters:  # Only one, but this keeps it uniform.
-            monster.increase_stat_pct("LIFE", self.effects["buff"] / 100)
-            monster.increase_stat_pct("ATK", self.effects["buff"] / 100)
-            monster.increase_stat_pct("DEF", self.effects["buff"] / 100)
             monster.increase_stat_pct("DEX", 2.00)
+            for stat in ("LIFE", "ATK", "DEF"):
+                monster.increase_stat_pct(stat, self.effects["buff"])
 
 ################################################################################

@@ -37,7 +37,7 @@ class PoisonArrow(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.damage(self.damage)
+        unit.damage(self.dmg)
         unit.add_status("Poison", self.effects["Poison"], self)
 
 ################################################################################

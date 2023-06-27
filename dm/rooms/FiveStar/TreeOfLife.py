@@ -38,7 +38,7 @@ class TreeOfLife(DMBattleRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
                 monster.add_status("Regeneration", self.effects["Regeneration"], self)
 
@@ -51,7 +51,7 @@ class TreeOfLife(DMBattleRoom):
 ################################################################################
     def notify(self) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
                 monster.add_status("Absorption", 1, self)
 

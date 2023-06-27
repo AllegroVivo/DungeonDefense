@@ -52,7 +52,7 @@ class ChainLightning(DMTrapRoom):
         targets.append(unit)
 
         for target in targets:
-            target.damage(self.damage)
+            target.damage(self.dmg)
             target.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

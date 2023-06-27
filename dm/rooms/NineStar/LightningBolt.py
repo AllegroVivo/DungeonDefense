@@ -44,9 +44,8 @@ class LightningBolt(DMTrapRoom):
             heroes.extend(room.heroes)
 
         targets = random.sample(heroes, 4)
-
         for target in targets:
-            target.damage(self.damage)
+            target.damage(self.dmg)
             target.add_status("Shock", self.effects["Shock"], self)
 
 ################################################################################

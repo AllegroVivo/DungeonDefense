@@ -29,8 +29,7 @@ class Bloodthirst(DMBattleRoom):
             level=level,
             rank=4,
             effects=[
-                Effect(name="Vampire", base=20, per_lv=12),
-                Effect(name="Fury", base=20, per_lv=12),
+                Effect(name="Status", base=20, per_lv=12),
             ]
         )
 
@@ -38,7 +37,7 @@ class Bloodthirst(DMBattleRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         for monster in self.monsters:
-            monster.add_status("Vampire", self.effects["Vampire"], self)
-            monster.add_status("Fury", self.effects["Fury"], self)
+            for status in ("Vampire", "Fury"):
+                monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

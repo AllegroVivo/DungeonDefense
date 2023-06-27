@@ -30,17 +30,16 @@ class BloodPool(DMBattleRoom):
             rank=5,
             unlock=UnlockPack.Awakening,
             effects=[
-                Effect(name="Vampire", base=20, per_lv=12),
-                Effect(name="Fury", base=20, per_lv=12),
+                Effect(name="Status", base=20, per_lv=12),
             ]
         )
 
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
-                monster.add_status("Vampire", self.effects["Vampire"], self)
-                monster.add_status("Fury", self.effects["Fury"], self)
+                for status in ("Vampire", "Fury"):
+                    monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

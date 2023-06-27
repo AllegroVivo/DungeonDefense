@@ -37,12 +37,9 @@ class SwirlOfAnger(DMFacilityRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        monsters = []
         for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.add_status("Fury", self.effects["Fury"], self)
-            monster.add_status("Merciless", 1, self)
+            for monster in room.monsters:
+                monster.add_status("Fury", self.effects["Fury"], self)
+                monster.add_status("Merciless", 1, self)
 
 ################################################################################

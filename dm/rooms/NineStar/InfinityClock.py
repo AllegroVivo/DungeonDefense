@@ -39,23 +39,15 @@ class InfinityClock(DMBattleRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        if unit.room == self:
-            monsters = []
-            for room in self.adjacent_rooms:
-                monsters.extend(room.monsters)
-
-            for monster in monsters:
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
                 monster.add_status("Acceleration", self.effects["Acceleration"], self)
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.increase_stat_pct("dex", self.effects["dex"] / 100)  # Convert to %
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                monster.increase_stat_pct("dex", self.effects["dex"] / 100)  # Convert to %
 
 ################################################################################

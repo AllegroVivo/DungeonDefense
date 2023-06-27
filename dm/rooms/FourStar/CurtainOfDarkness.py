@@ -38,19 +38,18 @@ class CurtainOfDarkness(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.add_status("X", self.effects["X"], self)
+        unit.add_status("Blind", self.effects["Blind"], self)
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("battle_start")
 
 ################################################################################
     def notify(self) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for monster in room.monsters:
-                monster.add_status("X", self.effects["X"], self)
+                monster.add_status("Defense", self.effects["Defense"], self)
 
 ################################################################################

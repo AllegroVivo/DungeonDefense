@@ -36,7 +36,7 @@ class ElectricField(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for hero in room.heroes:
                 hero.add_status("Shock", self.effects["Shock"], self)
 

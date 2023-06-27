@@ -41,17 +41,14 @@ class MeteorShower(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        targets = []
         for room in self.adjacent_rooms:
-            targets.extend(room.units_of_type(unit))
+            for hero in room.heroes:
+                damage = self.dmg
+                burn = hero.get_status("Burn")
+                if burn is not None:
+                    damage *= 2
 
-        for target in targets:
-            damage = self.damage
-            burn = target.get_status("Burn")
-            if burn is not None:
-                damage *= 2
-
-            target.damage(damage)
-            target.add_status("Burn", self.effects["Burn"], self)
+                hero.damage(damage)
+                hero.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

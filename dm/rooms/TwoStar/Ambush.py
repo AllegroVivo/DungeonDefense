@@ -36,8 +36,10 @@ class Ambush(DMBattleRoom):
     def stat_adjust(self) -> None:
         """Called automatically when a stat refresh is initiated."""
 
+        # Get a list of traps
         traps = [r for r in self.game.dungeon.all_rooms() if r.room_type == RoomType.Trap]
 
+        # Increase ATK of all monsters in this room
         for monster in self.monsters:
             monster.increase_stat_flat("atk", self.effects["buff"] * len(traps))
 

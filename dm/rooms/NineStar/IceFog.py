@@ -38,12 +38,9 @@ class IceFog(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        heroes = []
         for room in self.adjacent_rooms:
-            heroes.extend(room.heroes)
-
-        for hero in heroes:
-            hero.damage(self.damage)
-            hero.add_status("Slow", self.effects["Slow"], self)
+            for hero in room.heroes:
+                hero.damage(self.dmg)
+                hero.add_status("Slow", self.effects["Slow"], self)
 
 ################################################################################

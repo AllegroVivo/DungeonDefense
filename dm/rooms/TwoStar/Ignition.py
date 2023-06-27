@@ -33,7 +33,7 @@ class Ignition(DMTrapRoom):
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        damage = self.damage
+        damage = self.dmg
 
         burn = unit.get_status("Burn")
         if burn is not None:

@@ -38,12 +38,10 @@ class ElectricalShort(DMTrapRoom):
 
         shock = unit.get_status("Shock")
         if shock is not None:
-            targets = []
-            for room in self.adjacent_rooms:
-                targets.extend(room.heroes)
 
-            for target in targets:
-                target.damage(shock.stacks * self.effects["scalar"] / 100)
+            for room in self.adjacent_rooms + [self]:
+                for hero in room.heroes:
+                    hero.damage(shock.stacks * self.effects["scalar"] / 100)
 
             shock.deplete_all_stacks()
 

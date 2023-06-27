@@ -29,15 +29,14 @@ class Disease(DMTrapRoom):
             level=level,
             rank=4,
             effects=[
-                Effect(name="Poison", base=24, per_lv=16),
-                Effect(name="Corpse Explosion", base=24, per_lv=16),
+                Effect(name="Status", base=24, per_lv=16),
             ]
         )
 
 ################################################################################
     def on_enter(self, unit: DMUnit) -> None:
 
-        unit.add_status("Poison", self.effects["Poison"], self)
-        unit.add_status("Corpse Explosion", self.effects["Corpse Explosion"], self)
+        for status in ("Poison", "Corpse Explosion"):
+            unit.add_status(status, self.effects["Status"], self)
 
 ################################################################################

@@ -42,7 +42,6 @@ class Pressure(DMBattleRoom):
 
 ################################################################################
     def stat_adjust(self) -> None:
-        """Called automatically when a stat refresh is initiated."""
 
         for hero in self.heroes:
             hero.reduce_stat_pct("DEX", self.effects["DEX"])

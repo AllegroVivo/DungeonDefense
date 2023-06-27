@@ -41,7 +41,7 @@ class BlossomingFlame(DMFacilityRoom):
 ################################################################################
     def notify(self, ctx: StatusApplicationContext) -> None:
 
-        if ctx.source in self.adjacent_rooms:
+        if ctx.source in self.adjacent_rooms + [self]:
             if ctx.status.name == "Burn":
                 ctx.increase_stacks_pct(self.effects["buff"] / 100)
 

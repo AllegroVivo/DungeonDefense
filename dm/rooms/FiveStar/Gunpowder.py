@@ -38,7 +38,6 @@ class Gunpowder(DMBattleRoom):
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:
-        """Automatically called as part of all battle loops."""
 
         burn = ctx.target.get_status("Burn")
         if burn is not None:

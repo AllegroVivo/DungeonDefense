@@ -41,11 +41,11 @@ class Flamethrower(DMTrapRoom):
         """A general event response function."""
 
         targets = []
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             targets.extend(room.heroes)
 
         target = self.random.choice(targets)
-        target.damage(self.damage)
+        target.damage(self.dmg)
         target.add_status("Burn", self.effects["Burn"], self)
 
 ################################################################################

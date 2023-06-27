@@ -40,16 +40,12 @@ class Dynamite(DMBattleRoom):
         if ctx.room == self:
             burn = ctx.target.get_status("Burn")
             if burn is not None:
-                targets = []
                 for room in self.adjacent_rooms:
-                    targets.extend(room.units_of_type(ctx.target))
-
-                for target in targets:
-                    target.damage(burn.stacks * (self.effects["Burn"] / 100))
+                    for hero in room.heroes:
+                        hero.damage(burn.stacks * (self.effects["Burn"] / 100))
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("on_death")
 

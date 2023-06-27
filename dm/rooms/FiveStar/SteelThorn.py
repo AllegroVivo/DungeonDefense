@@ -30,8 +30,7 @@ class SteelThorn(DMBattleRoom):
             rank=5,
             unlock=UnlockPack.Advanced,
             effects=[
-                Effect(name="Armor", base=36, per_lv=24),
-                Effect(name="Thorn", base=36, per_lv=24),
+                Effect(name="Status", base=36, per_lv=24),
             ]
         )
 
@@ -39,7 +38,7 @@ class SteelThorn(DMBattleRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         for monster in self.monsters:
-            monster.add_status("Armor", self.effects["Armor"], self)
-            monster.add_status("Thorn", self.effects["Thorn"], self)
+            for status in ("Armor", "Thorn"):
+                monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

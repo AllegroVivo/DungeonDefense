@@ -29,9 +29,7 @@ class Yggdrasil(DMTrapRoom):
             rank=9,
             unlock=UnlockPack.Adventure,
             effects=[
-                Effect(name="Armor", base=60, per_lv=20),
-                Effect(name="Fury", base=60, per_lv=20),
-                Effect(name="Regeneration", base=60, per_lv=20),
+                Effect(name="Status", base=60, per_lv=20),
             ]
         ),
         self.setup_charging(3.3, 3.3)
@@ -40,8 +38,7 @@ class Yggdrasil(DMTrapRoom):
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Armor", self.effects["Armor"], self)
-            monster.add_status("Fury", self.effects["Fury"], self)
-            monster.add_status("Regeneration", self.effects["Regeneration"], self)
+            for status in ("Armor", "Fury", "Regeneration"):
+                monster.add_status(status, self.effects["Status"], self)
 
 ################################################################################

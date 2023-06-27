@@ -35,8 +35,8 @@ class ArrowBomb(DMTrapRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        for room in self.adjacent_rooms:
+        for room in self.adjacent_rooms + [self]:
             for hero in room.heroes:
-                hero.damage(self.damage)
+                hero.damage(self.dmg)
 
 ################################################################################

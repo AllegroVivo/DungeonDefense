@@ -37,9 +37,8 @@ class PoisonLeak(DMTrapRoom):
     def on_enter(self, unit: DMUnit) -> None:
 
         targets = []
-        for room in self.adjacent_rooms:
-            targets.extend(room.units_of_type(unit))
-            for target in targets:
-                target.add_status("Poison", self.effects["Poison"], self)
+        for room in self.adjacent_rooms + [self]:
+            for hero in room.heroes:
+                hero.add_status("Poison", self.effects["Poison"], self)
 
 ################################################################################

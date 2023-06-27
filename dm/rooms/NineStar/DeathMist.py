@@ -53,17 +53,13 @@ class DeathMist(DMBattleRoom):
 ################################################################################
     def on_charge(self) -> None:
 
-        monsters = []
-        for room in self.adjacent_rooms:
-            monsters.extend(room.monsters)
-
-        for monster in monsters:
-            monster.add_status("Immortality", self.effects["Immortality"], self)
-            monster.add_status("Immortal Rage", 1, self)
+        for room in self.adjacent_rooms + [self]:
+            for monster in room.monsters:
+                monster.add_status("Immortality", self.effects["Immortality"], self)
+                monster.add_status("Immortal Rage", 1, self)
 
 ################################################################################
     def on_acquire(self) -> None:
-        """Called automatically when this room is added to the map."""
 
         self.listen("status_execute")
 

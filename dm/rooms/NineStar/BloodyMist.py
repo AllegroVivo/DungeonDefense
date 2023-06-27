@@ -45,8 +45,8 @@ class BloodyMist(DMBattleRoom):
     def on_charge(self) -> None:
 
         for monster in self.game.deployed_monsters:
-            monster.add_status("Vampire", self.effects["status"], self)
-            monster.add_status("Fury", self.effects["status"], self)
+            for status in ("Vampire", "Fury"):
+                monster.add_status(status, self.effects["status"], self)
 
 ################################################################################
     def handle(self, ctx: AttackContext) -> None:

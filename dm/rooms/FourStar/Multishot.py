@@ -36,6 +36,6 @@ class Multishot(DMTrapRoom):
         options = self.units_of_type(unit)
         targets = self.random.sample(options, 3)
         for target in targets:
-            target.damage(self.damage)
+            target.damage(self.dmg)
 
 ################################################################################
